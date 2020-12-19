@@ -1,8 +1,8 @@
 <div class='kop-en-knoppen'>
 	<article>
-		<h1>Sjerp's CRM - v3.1 - tabel: <?= $tabel_naam ?> </h1>
+		<h2>Sjerp's end-to-end encrypted CRM - v3.1 <br>tabel: <?= $tabel_naam ?> </h2>
 
-		<p>Uitleg? <br>Bel sjerp: 0616541143 of<br>Mail dev@sjerpbouwtsites.nl<br>Vind je iets kut of een fout? Hier is me <a target='_blank' href='<?= base_url() ?>todo.html'>planning</a></p>
+		<p>WERKLOCATIE. NIET HUIDIGE CRM! GA VOOR CRM naar <a href='https://vloerwerk.org/CRM-oud'>het oude crm</a><br>Uitleg? <br>Bel sjerp: 0616541143 of<br>Mail dev@sjerpbouwtsites.nl<br>Vind je iets kut of een fout? Hier is me <a target='_blank' href='<?= base_url() ?>todo.html'>planning</a></p>
 
 	</article>
 

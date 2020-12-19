@@ -1,3 +1,15 @@
+function toonWaarschuwingIndienNietEerderBezocht() {
+	const heeftEerderBezocht =
+		localStorage.getItem("vw-crm-eerder-bezocht") === "ja";
+	if (!heeftEerderBezocht) {
+		alert(
+			"Je bezoekt nu het NIEUWE crm. Hier werkt Sjerp. Ga voor het huidige CRM naar https://vloerwerk.org/CRM-oud"
+		);
+		localStorage.setItem("vw-crm-eerder-bezocht", "ja");
+	}
+}
+toonWaarschuwingIndienNietEerderBezocht();
+
 /* eslint-disable */
 var prod = false;
 
@@ -366,7 +378,7 @@ function dezeRijNaam(el) {
 	return $(el).closest(".form-rij").find('[data-naam="naam"]').val();
 }
 
-var init = {
+var naDecryptie = {
 	vulSelects: function () {
 		var selects = document.querySelectorAll("select[class$='-select']"),
 			selNaam,
@@ -480,7 +492,8 @@ var form = {
 
 function initActies() {
 	//filters e.d. vullen met nieuwe info
-	for (var f in init) init[f]();
+	for (var f in naDecryptie) naDecryptie[f]();
+
 	communiceer("CRM geinitialiseerd");
 }
 

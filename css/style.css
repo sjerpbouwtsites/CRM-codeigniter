@@ -112,9 +112,11 @@ input[type="submit"] {
 	background-color: #eee;
 	padding: 20px;
 }
+
 .kop-en-knoppen article {
-	margin: 50px 0;
+	margin: 0px 0 20px;
 }
+
 @media (max-width: 600px) {
 	.kop-en-knoppen article {
 		margin-top: 0;
@@ -559,17 +561,32 @@ textarea.pers-input {
 	}
 }
 
-/* melding dat iemand op de dev server is */
-.dev-toast {
-	background-color: #221;
-	color: white;
-	font-weight: bold;
-	padding: 20px 10px;
-	min-width: 250px;
-	transform: rotate(45deg);
-	position: absolute;
-	top: 30px;
-	right: -70px;
-	text-align: center;
-	line-height: 1;
+@media (min-width: 1200px) {
+	/* melding dat iemand op de dev server is */
+	.dev-toast {
+		background-color: #13100f;
+		color: white;
+		font-weight: bold;
+		padding: 20px 10px;
+		min-width: 290px;
+		transform: rotate(45deg);
+		position: absolute;
+		top: 30px;
+		right: -140px;
+		text-align: center;
+		line-height: 1;
+	}
+	.dev-toast--live {
+		background-color: #df7021;
+		color: white;
+		font-weight: bold;
+		padding: 20px 10px;
+		min-width: 290px;
+		transform: rotate(45deg);
+		position: absolute;
+		top: 30px;
+		right: -140px;
+		text-align: center;
+		line-height: 1;
+	}
 }
