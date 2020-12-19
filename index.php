@@ -1,5 +1,5 @@
 <?php
-echo "harry kijk niet zo scheel";
+echo "harry kijk niet   zo scheel";
 /**
  * CodeIgniter
  *
