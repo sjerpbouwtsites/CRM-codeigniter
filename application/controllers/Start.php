@@ -1,13 +1,16 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Start extends CI_Controller {
+class Start extends CI_Controller
+{
 
-	public function index() {
+	public function index()
+	{
 		$this->leden();
 	}
 
-	public function leden(){
+	public function leden()
+	{
 
 		$this->load->model('CRM');
 
@@ -23,7 +26,7 @@ class Start extends CI_Controller {
 
 		$data = array_merge($data, $this->CRM->maak_form_data());
 
-		$this->CRM->willekeurige_rij();
+		$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
 
 		$data = array_merge($data, $this->CRM->toon_stijl());
 
@@ -33,10 +36,8 @@ class Start extends CI_Controller {
 
 		$data['oude_iv'] = $this->CRM->pak_iv();
 
-		if (isset($opslaan_ant)) echo "<script>console.dir(".json_encode($opslaan_ant).")</script>";
+		if (isset($opslaan_ant)) echo "<script>console.dir(" . json_encode($opslaan_ant) . ")</script>";
 
 		$this->load->view('start.php', $data);
-
 	}
-
 }

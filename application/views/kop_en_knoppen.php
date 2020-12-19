@@ -6,16 +6,6 @@
 
 	</article>
 
-	<nav id='crm'>
-		<a class='<?php echo ($tabel_naam === "leden" ? "actief" : ""); ?>' href="<?= base_url() ?>?tabel=leden">leden</a>
-		<a class='<?php echo ($tabel_naam === "nijmegen" ? "actief" : ""); ?>' href="<?= base_url() ?>?tabel=nijmegen">nijmegen</a>
-		<a class='<?php echo ($tabel_naam === "contacten" ? "actief" : ""); ?>' href="<?= base_url() ?>?tabel=contacten">contacten</a>
-		<a class='<?php echo ($tabel_naam === "juridisch" ? "actief" : ""); ?>' href="<?= base_url() ?>?tabel=juridisch">juridisch</a>
-		<a class='<?php echo ($tabel_naam === "inlog" ? "actief" : ""); ?>' href="<?= base_url() ?>?tabel=inlog">inloggegevens</a>
-
-
-	</nav>
-
 	<nav id='mobiel'>
 		<button class='mob-toon' data-toon='form-acties'>toon admin veld</button>
 	</nav>
