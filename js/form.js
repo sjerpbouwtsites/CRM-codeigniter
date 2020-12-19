@@ -560,22 +560,20 @@ function verzendInStukkenCallback(e) {
 
 function recursieveAxios(batches, batchCounter, formDataSys) {
 	return axios
-		.post(
-			document.getElementById("grote-tabel-formulier").action,
-			{
-				batch: batches[batchCounter],
+		.request({
+			url: document.getElementById("grote-tabel-formulier").action,
+			method: "post",
+			data: {
 				meta: {
 					xsrf: formDataSys.get("form_meta[csrf-token]"),
 					iv: formDataSys.get("form_meta[iv]"),
 					tabel: formDataSys.get("form_meta[tabel_naam]"),
 				},
+				batch: batches[batchCounter],
 			},
-			{
-				//widthCredentials: true,
-			}
-		)
+		})
 		.then((resp) => {
-			console.log(resp);
+			console.info(resp);
 			if (batchCounter < batches.length) {
 				const newBatchCounter = batchCounter + 1;
 				return recursieveAxios(batches, newBatchCounter, formDataSys);

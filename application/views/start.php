@@ -29,7 +29,7 @@ function cel($html = "", $class = '')
 
 
 
-	<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>sla-tabel-op'>
+	<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
 		<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 		<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>

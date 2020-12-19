@@ -26,6 +26,7 @@ class CRM extends CI_Model
 		}
 	}
 
+
 	public function naam_van_mail($mail = '')
 	{
 		$e = explode("@", $mail);
@@ -187,6 +188,12 @@ class CRM extends CI_Model
 			$ids[] = $io->id;
 		}
 		return $ids;
+	}
+
+	public function opslaan_via_api($batch_data)
+	{
+		// var_dump($batch_data);
+		// echo $batch_data['meta']['tabel'];
 	}
 
 	public function opslaan()

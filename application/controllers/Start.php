@@ -52,10 +52,7 @@ class Start extends CI_Controller
 
 		$data = array();
 
-		if (!empty($_POST)) {
-			$this->CRM->zet_post($_POST);
-			$opslaan_ant = $this->CRM->opslaan();
-		}
+
 
 
 		$data['tabel_naam'] = $this->CRM->pak_tabel_naam();
