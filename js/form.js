@@ -1,3 +1,8 @@
+const staat = {
+	ontsleuteld: false,
+	wachtwoord: null,
+};
+
 function toonWaarschuwingIndienNietEerderBezocht() {
 	const heeftEerderBezocht =
 		localStorage.getItem("vw-crm-eerder-bezocht") === "ja";
@@ -9,9 +14,6 @@ function toonWaarschuwingIndienNietEerderBezocht() {
 	}
 }
 toonWaarschuwingIndienNietEerderBezocht();
-
-/* eslint-disable */
-var prod = false;
 
 var acties = {
 	updateLaatsGezien() {
@@ -57,31 +59,37 @@ var acties = {
 		//vind hoogst aanwezige ID en geef die aan nieuwe rij.
 		$("form").on("click", ".toevoegen", function (e) {
 			e.preventDefault();
-			var $formDiv = $(this).closest("form").find(".form-tabel");
-			var $kopie = $formDiv.find(".form-rij").last().clone();
-			var idMap = $formDiv
-				.find(".pers-id")
-				.map(function () {
-					return Number(this.value);
-				})
-				.get();
-			var nweId = Math.max.apply(this, idMap) + 1;
-			$kopie.find("input, textarea").each(function () {
-				$(this).attr(
-					"name",
-					"form[" + nweId + "][" + $(this).attr("data-naam") + "]"
-				);
-				$(this).val("");
-			});
-			$kopie.find(".pers-id").val(nweId);
-			$formDiv.append($kopie);
-
-			$("html, body").animate(
-				{
-					scrollTop: $kopie.offset().top + 500,
-				},
-				500
+			var formRijAr = Array.from(document.querySelectorAll(".form-rij"));
+			var laatsteRij = formRijAr[formRijAr.length - 1];
+			var htmlVanLaatsteRij = laatsteRij.outerHTML + " "; // fake een clone?
+			var wrapper = document.createElement("div");
+			wrapper.innerHTML = htmlVanLaatsteRij;
+			const alleIdInputs = Array.from(document.querySelectorAll(".pers-id"));
+			const hogerDanWelkIdAanwezig =
+				Math.max(...alleIdInputs.map((input) => Number(input.value))) + 1;
+			var cloneRij = wrapper.firstChild;
+			var idVanLaatsteRij = laatsteRij.querySelector(".pers-id").value;
+			Array.from(cloneRij.getElementsByTagName("input")).forEach(
+				(cloneInput) => {
+					// kan in de naam of value zitten.
+					if (cloneInput.getAttribute("data-naam") === "id") {
+						cloneInput.value = hogerDanWelkIdAanwezig;
+					} else if (cloneInput.getAttribute("data-naam") === "laatst_gezien") {
+						cloneInput.value = new Date().toLocaleDateString();
+					} else {
+						cloneInput.value = "";
+					}
+					// niet zomaar op html string vervangen want kan ook in tel nr zitten
+					cloneInput.setAttribute(
+						"name",
+						cloneInput.name.replace(idVanLaatsteRij, hogerDanWelkIdAanwezig)
+					);
+				}
 			);
+
+			cloneRij.id = `nieuwe-rij-${hogerDanWelkIdAanwezig}`;
+			document.querySelector(".form-tabel").appendChild(cloneRij);
+			window.location.hash = cloneRij.id;
 		});
 	},
 	toonVerstopSector: function () {
@@ -357,6 +365,11 @@ var acties = {
 		    `;
 			});
 	},
+	wachtwoordVeldNawerk: function () {
+		const o = document.getElementById("ontsleutel");
+		o.value = "";
+		o.focus();
+	},
 };
 
 function stapelFilters() {
@@ -444,27 +457,17 @@ var naDecryptie = {
 };
 
 var form = {
-	versleutel: function () {
-		$("button.versleutel").on("click", function (e) {
-			e.preventDefault();
-
-			var sleutelBasis = versleutel.value;
-
-			if (!sleutelBasis) {
-				communiceer("vul wat in");
-				return;
-			}
-
-			var t = 0;
-
-			maakSleutelEnVersleutel(sleutelBasis);
-		});
-	},
 	ontsleutel: function () {
+		document
+			.getElementById("ontsleutel")
+			.addEventListener("keyup", function (e) {
+				if (e.key.toLowerCase() === "enter") {
+					e.preventDefault();
+					$("button.ontsleutel").click();
+				}
+			});
 		$("button.ontsleutel").on("click", function (e) {
 			e.preventDefault();
-
-			$("form").removeClass("versleuteld");
 
 			var sleutel = $("#ontsleutel").val();
 
@@ -473,22 +476,118 @@ var form = {
 				return;
 			}
 
-			document.getElementById("versleutel").value = sleutel;
+			staat.wachtwoord = sleutel;
+			maakSleutelEnOntsleutel(sleutel)
+				.then(() => {
+					document
+						.getElementById("grote-tabel-formulier")
+						.classList.add("ontsleuteld");
+					document.getElementById("sleutelaars").classList.add("ontsleuteld");
 
-			maakSleutelEnOntsleutel(sleutel);
+					staat.ontsleuteld = true;
+				})
+				.catch((e) => {
+					communiceer(`fout in het ontsleutelen ${e}`);
+					throw e;
+				});
 		});
 	},
-	alleenVersleuteldVerzenden: function () {
-		if (prod) {
-			$("form").on("submit", function (e) {
-				if (!this.classList.contains("versleuteld")) {
-					e.preventDefault();
-					communiceer("eerst versleutelen");
-				}
-			});
-		}
+	verzendenInStukken: function () {
+		const groteFormulier = document.getElementById("grote-tabel-formulier");
+		const groteFormulierVerzendKnop = document.getElementById(
+			"verzend-grote-formulier-knop"
+		);
+		groteFormulierVerzendKnop.addEventListener(
+			"click",
+			verzendInStukkenCallback
+		);
+		groteFormulier.addEventListener("submit", verzendInStukkenCallback);
 	},
 };
+
+function verzendInStukkenCallback(e) {
+	e.preventDefault();
+	// eerst versleutelen
+	if (!staat.wachtwoord) throw new Error("wachtwoord vergeten door app");
+	const versleutelMet = staat.wachtwoord;
+	maakSleutelEnVersleutel(versleutelMet)
+		.then(() => {
+			const groteFormulier = document.getElementById("grote-tabel-formulier");
+			const formDataSys = new FormData(groteFormulier);
+
+			const SUPERformData = {};
+			const formRijenVanafIndex1 = Array.from(
+				document.querySelectorAll(".form-rij")
+			).filter((rij, index) => index > 0);
+
+			formRijenVanafIndex1.forEach((rij) => {
+				Array.from(rij.getElementsByTagName("input")).forEach((input) => {
+					const naam = input.name;
+					const value = input.value;
+					SUPERformData[naam] = value;
+				});
+			});
+
+			window.SUPERformData = SUPERformData; // debug
+
+			// JEZUS DIT GAAT HELEMAAL MIS waah
+
+			const inputsPerRij = document.querySelectorAll(
+				".form-rij + .form-rij input"
+			).length;
+
+			const batches = [];
+			const itemsPerBatch = 300;
+			const aantalBatches = Math.ceil(
+				formRijenVanafIndex1[0].getElementsByTagName("input").length /
+					itemsPerBatch
+			); // max is 500
+			for (let batchIndex = 0; batchIndex <= aantalBatches; batchIndex++) {
+				batches[batchIndex] = {};
+			}
+
+			Object.entries(SUPERformData).forEach(([key, value], index) => {
+				const currentBatchIndex = Math.floor(index / itemsPerBatch);
+				batches[currentBatchIndex][key] = value;
+			});
+			recursieveAxios(batches, 0, formDataSys);
+		}) // then van maakSleutelEnVersleutel
+		.catch((e) => {
+			communiceer(`fout in de versleuteling ${e}`, 1000);
+			throw e;
+		});
+}
+
+function recursieveAxios(batches, batchCounter, formDataSys) {
+	return axios
+		.post(
+			document.getElementById("grote-tabel-formulier").action,
+			{
+				batch: batches[batchCounter],
+				meta: {
+					xsrf: formDataSys.get("form_meta[csrf-token]"),
+					iv: formDataSys.get("form_meta[iv]"),
+					tabel: formDataSys.get("form_meta[tabel_naam]"),
+				},
+			},
+			{
+				//widthCredentials: true,
+			}
+		)
+		.then((resp) => {
+			console.log(resp);
+			if (batchCounter < batches.length) {
+				const newBatchCounter = batchCounter + 1;
+				return recursieveAxios(batches, newBatchCounter, formDataSys);
+			} else {
+				return true;
+			}
+		})
+		.catch((error) => {
+			throw error;
+			return false;
+		});
+}
 
 function initActies() {
 	//filters e.d. vullen met nieuwe info

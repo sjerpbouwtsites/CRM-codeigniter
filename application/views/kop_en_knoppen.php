@@ -10,19 +10,16 @@
 		<button class='mob-toon' data-toon='form-acties'>toon admin veld</button>
 	</nav>
 
-	<div class='sleutelaars'>
-		<div>
-			<label for='ontsleutel'>
-				<input id='ontsleutel' type='text' placeholder='wachtwoord' autocapitalize="off">
-			</label>
-			</label>
-			<button class='ontsleutel'>ontsleutel</button>
-		</div>
-		<div>
-			<label for='versleutel'>
-				<input id='versleutel' type='text' placeholder='wachtwoord' autocapitalize="off">
-			</label>
-			<button class='versleutel'>versleutel</button>
+	<div id='sleutelaars' class='sleutelaars'>
+		<div class='sleutelaars-inner'>
+			<h2 class='versleutelde-titel'>Ontsleutel om verder te gaan. </h2>
+			<div>
+				<label for='ontsleutel'>
+					<input id='ontsleutel' type='text' placeholder='wachtwoord' autocapitalize="off">
+				</label>
+				</label>
+				<button class='ontsleutel'>ontsleutel</button>
+			</div>
 		</div>
 	</div>
 </div>

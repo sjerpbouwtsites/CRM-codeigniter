@@ -12,6 +12,25 @@ Array.prototype.getUnique = function () {
 	return a;
 };
 
+// function makeAJAXCall(url, methodType = "POST") {
+// 	return new Promise((resolveAjax, rejectAjax) => {
+// 		var xhr = new XMLHttpRequest();
+// 		xhr.open(methodType, url, true);
+// 		xhr.onreadystatechange = function () {
+// 			// ready State 4 is verbinding is klaar.
+// 			if (xhr.readyState === 4 && xhr.state === 200) {
+// 				resolveAjax(xhr.response);
+// 			}
+// 			const klasseStaat = xhr.state.toString()[0];
+// 			if (klasseStaat === "5" || klasseStaat === "4") {
+// 				// 403, 502 etc
+// 				rejectAjax(xhr);
+// 			}
+// 		};
+// 		xhr.send();
+// 	});
+// }
+
 function byteArrayToHexString(byteArray) {
 	var hexString = "";
 	var nextHexByte;
@@ -47,11 +66,22 @@ function byteArrayToBase64(byteArray) {
 }
 
 function base64ToByteArray(base64String) {
-	var binaryString = window.atob(base64String);
-	var byteArray = new Uint8Array(binaryString.length);
-	for (var i = 0; i < binaryString.length; i++) {
-		byteArray[i] += binaryString.charCodeAt(i);
+	try {
+		var binaryString = window.atob(base64String);
+		var byteArray = new Uint8Array(binaryString.length);
+		for (var i = 0; i < binaryString.length; i++) {
+			byteArray[i] += binaryString.charCodeAt(i);
+		}
+	} catch (error) {
+		if (
+			confirm(
+				`in een rare situatie loopt ie te zeiken en heb ff geen zin t op te lossen. Groeten! ${error}`
+			)
+		) {
+			location.reload();
+		}
 	}
+
 	return byteArray;
 }
 

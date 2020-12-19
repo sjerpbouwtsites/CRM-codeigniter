@@ -27,45 +27,13 @@ function cel($html = "", $class = '')
 	} ?>
 	<?= $kop_en_knoppen ?>
 
-	<form class='crm-formulier' method='POST' action='<?= $_SERVER['REQUEST_URI'] ?>'>
 
-		<input type='hidden' name='form_meta[tabel_naam]' value='<?= $tabel_naam ?>'>
+
+	<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>sla-tabel-op'>
+
+		<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 		<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
-
-		<div class='actievelden'>
-			<div class='actieveld labels-checkboxes'>
-				<h2>Toon kolommen</h2>
-				<div class='label-en-checkboxes'>
-					<?= $label_en_checkboxes ?>
-				</div>
-			</div>
-			<div class='actieveld form-acties'>
-				<h2>Acties<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a></h2>
-
-				<div class='form-knoppen'>
-					<button class='toevoegen'>toevoegen</button>
-					<select class='sector-select'></select>
-					<select class='ik_wil-select' data-split='true'></select><br>
-					<button class='selectie-ongedaan'>selectie ongedaan</button>
-					<button class='sorteer-op-naam'>sorteer op naam</button>
-					<button class='sorteer-op-laatst-gezien'>sorteer op laatst-gezien</button>
-					<button class='lijst-email'>lijst emails</button>
-					<button class='lijst-telefoon'>lijst tel nrs</button>
-					<label for='lijst-ook-naam'>
-						lijst ook de namen.
-						<input type='checkbox' id='lijst-ook-naam' name='lijst-ook-naam'>
-					</label>
-					<br>
-					<label for='stapel-filters'>
-						stapel filters
-						<input type='checkbox' id='stapel-filters' name='stapel-filters'>
-					</label>
-				</div>
-				<input class='opgepast verzenden' type='submit' value='verzenden / opslaan'>
-				<button class='opgepast ongedaan'>bewerkingen ongedaan</button>
-			</div>
-		</div>
-
+		<input type='hidden' name='form_meta[tabel_naam]' value='<?= $tabel_naam ?>'>
 
 		<?php
 
@@ -145,6 +113,40 @@ function cel($html = "", $class = '')
 
 		?>
 
+	</form>
+
+	<form class='actievelden'>
+		<div class='actieveld labels-checkboxes'>
+			<h2>Toon kolommen</h2>
+			<div class='label-en-checkboxes'>
+				<?= $label_en_checkboxes ?>
+			</div>
+		</div>
+		<div class='actieveld form-acties'>
+			<h2>Acties<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a></h2>
+
+			<div class='form-knoppen'>
+				<button class='toevoegen'>toevoegen</button>
+				<select class='sector-select'></select>
+				<select class='ik_wil-select' data-split='true'></select><br>
+				<button class='selectie-ongedaan'>selectie ongedaan</button>
+				<button class='sorteer-op-naam'>sorteer op naam</button>
+				<button class='sorteer-op-laatst-gezien'>sorteer op laatst-gezien</button>
+				<button class='lijst-email'>lijst emails</button>
+				<button class='lijst-telefoon'>lijst tel nrs</button>
+				<label for='lijst-ook-naam'>
+					lijst ook de namen.
+					<input type='checkbox' id='lijst-ook-naam' name='lijst-ook-naam'>
+				</label>
+				<br>
+				<label for='stapel-filters'>
+					stapel filters
+					<input type='checkbox' id='stapel-filters' name='stapel-filters'>
+				</label>
+			</div>
+			<button id='verzend-grote-formulier-knop' class='opgepast verzenden'>💾 opslaan</button>
+			<button class='opgepast ongedaan'>🏳 herstel </button>
+		</div>
 	</form>
 
 	<div id='printer'>

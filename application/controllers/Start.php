@@ -1,16 +1,52 @@
 <?php
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Start extends CI_Controller
 {
+
+	function __construct()
+	{
+		parent::__construct();
+	}
 
 	public function index()
 	{
 		$this->leden();
 	}
 
+	/**
+	 * en dat is hoe _wij_ beveiliging doen.
+	 */
+	public function make_csrf()
+	{
+		$a = explode(':', uniqid('ACAB_LOL', true))[0];
+		$b = explode(':', uniqid('AJAX_ADAM', true))[0];
+		return "$a-$b";
+	}
+
 	public function leden()
 	{
+
+		$csrf = $this->make_csrf();
+
+		// and send it too the cookie.
+
+		$cookie_dev = [
+			'samesite' =>  'Strict',
+			'expires' => time() + 60 * 60 * 24 * 2,
+			'secure'  => true,
+		];
+
+		$cookie_prod = [
+			'samesite' =>  'Strict',
+			'expires' => time() + 60 * 60 * 24 * 2,
+			'domain'  => base_url(),
+			'secure'  => true,
+		];
+
+		$is_local = !!strpos(base_url(), 'localhost');
+		setcookie('XSRF-TOKEN', $csrf, $is_local ? $cookie_dev : $cookie_prod);
 
 		$this->load->model('CRM');
 
@@ -35,6 +71,8 @@ class Start extends CI_Controller
 		$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
 
 		$data['oude_iv'] = $this->CRM->pak_iv();
+
+		$data['csrf_form'] = $csrf;
 
 		if (isset($opslaan_ant)) echo "<script>console.dir(" . json_encode($opslaan_ant) . ")</script>";
 

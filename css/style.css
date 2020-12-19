@@ -98,7 +98,6 @@ input[type="submit"] {
 }
 .opgepast.verzenden {
 	background-color: #22ce41;
-	display: none;
 }
 .opgepast.verzenden:hover {
 	background-color: #57cc6c;
@@ -154,18 +153,30 @@ nav#crm a:hover {
 }
 
 .sleutelaars {
-	margin-left: -20px;
-	margin-right: -20px;
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	z-index: 9999;
+	left: 0;
+	top: 0;
 	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: center;
+	background-color: black;
+}
+.sleutelaars.ontsleuteld {
+	display: none;
+}
+
+.versleutelde-titel {
+	color: white;
+	font-variant: small-caps;
+	font-size: 30px;
 }
 
 .sleutelaars div {
-	padding: 40px 20px;
-	flex-basis: 50%;
 	box-sizing: border-box;
-	background-color: black;
+
 	text-align: center;
 }
 
@@ -201,14 +212,16 @@ nav#crm a:hover {
 	border-width: 0px;
 	min-width: 280px;
 }
-.sleutelaars div + div input {
-	line-height: 48px;
-	padding: 0 8px;
-	border-width: 1px;
+.sleutelaars input:focus {
+	outline: 5px solid lightblue;
 }
 
 form.crm-formulier {
 	padding: 20px;
+	display: none;
+}
+.crm-formulier.ontsleuteld {
+	display: block;
 }
 .form-knoppen {
 	margin-bottom: 0;
