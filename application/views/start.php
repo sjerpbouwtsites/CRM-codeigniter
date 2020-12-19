@@ -22,6 +22,8 @@ function cel($html = "", $class = '')
 
 	<?php if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
 		echo "<div class='dev-toast'><span>DIT IS DEV<br>GEEN PANIEK</span></div>";
+	} else {
+		echo "<div class='dev-toast--live'><span>⚔ LIVE 🏴‍☠️<br>Verbonden met <br>werk-database.</span></div>";
 	} ?>
 	<?= $kop_en_knoppen ?>
 
@@ -42,8 +44,6 @@ function cel($html = "", $class = '')
 
 				<div class='form-knoppen'>
 					<button class='toevoegen'>toevoegen</button>
-					<select class='groep-select'></select>
-					<select class='wijk-select'></select>
 					<select class='sector-select'></select>
 					<select class='ik_wil-select' data-split='true'></select><br>
 					<button class='selectie-ongedaan'>selectie ongedaan</button>
