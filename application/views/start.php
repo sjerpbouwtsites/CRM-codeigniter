@@ -23,7 +23,7 @@ function cel($html = "", $class = '')
 	<?php if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
 		echo "<div class='dev-toast'><span>DIT IS DEV<br>GEEN PANIEK</span></div>";
 	} else {
-		echo "<div class='dev-toast--live'><span>⚔ LIVE 🏴‍☠️<br>Verbonden met <br>werk-database.</span></div>";
+		echo "<div class='dev-toast dev-toast--live'><span>⚔ LIVE 🏴‍☠️<br>Verbonden met <br>werk-database.</span></div>";
 	} ?>
 	<?= $kop_en_knoppen ?>
 

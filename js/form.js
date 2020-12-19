@@ -2,225 +2,200 @@
 var prod = false;
 
 var acties = {
-  updateLaatsGezien() {
-    document
-      .querySelector(".form-tabel")
-      .addEventListener("click", function(e) {
-        if (e.target.classList.contains("update-laatst-gezien")) {
-          e.preventDefault();
-          var datumInstance = new Date();
-          var vandaag =
-            datumInstance.getDate() +
-            "-" +
-            (datumInstance.getMonth() + 1) +
-            "-" +
-            datumInstance.getFullYear();
-          e.target.parentNode.querySelector("input").value = vandaag;
-        }
-      });
-  },
-  verwijderen: function() {
-    //verwijder functionaliteit
-    $("form").on("click", ".rij-verwijderen", function(e) {
-      e.preventDefault();
+	updateLaatsGezien() {
+		document
+			.querySelector(".form-tabel")
+			.addEventListener("click", function (e) {
+				if (e.target.classList.contains("update-laatst-gezien")) {
+					e.preventDefault();
+					var datumInstance = new Date();
+					var vandaag =
+						datumInstance.getDate() +
+						"-" +
+						(datumInstance.getMonth() + 1) +
+						"-" +
+						datumInstance.getFullYear();
+					e.target.parentNode.querySelector("input").value = vandaag;
+				}
+			});
+	},
+	verwijderen: function () {
+		//verwijder functionaliteit
+		$("form").on("click", ".rij-verwijderen", function (e) {
+			e.preventDefault();
 
-      //als meer dan één aanwezig, verwijderen, anders legen.
+			//als meer dan één aanwezig, verwijderen, anders legen.
 
-      if ($(".form-rij:not(.kop)").length > 1) {
-        $(e.target)
-          .closest(".form-rij:not(.kop)")
-          .remove();
-      } else {
-        $(e.target)
-          .closest(".form-rij:not(.kop)")
-          .find("input, textarea")
-          .each(function() {
-            if (this.getAttribute("data-naam") !== "id") {
-              this.value = "";
-            }
-          });
-      }
-    });
-  },
-  toevoegen: function() {
-    //laatste rij kopieeren;
-    //vind hoogst aanwezige ID en geef die aan nieuwe rij.
-    $("form").on("click", ".toevoegen", function(e) {
-      e.preventDefault();
-      var $formDiv = $(this)
-        .closest("form")
-        .find(".form-tabel");
-      var $kopie = $formDiv
-        .find(".form-rij")
-        .last()
-        .clone();
-      var idMap = $formDiv
-        .find(".pers-id")
-        .map(function() {
-          return Number(this.value);
-        })
-        .get();
-      var nweId = Math.max.apply(this, idMap) + 1;
-      $kopie.find("input, textarea").each(function() {
-        $(this).attr(
-          "name",
-          "form[" + nweId + "][" + $(this).attr("data-naam") + "]"
-        );
-        $(this).val("");
-      });
-      $kopie.find(".pers-id").val(nweId);
-      $formDiv.append($kopie);
+			if ($(".form-rij:not(.kop)").length > 1) {
+				$(e.target).closest(".form-rij:not(.kop)").remove();
+			} else {
+				$(e.target)
+					.closest(".form-rij:not(.kop)")
+					.find("input, textarea")
+					.each(function () {
+						if (this.getAttribute("data-naam") !== "id") {
+							this.value = "";
+						}
+					});
+			}
+		});
+	},
+	toevoegen: function () {
+		//laatste rij kopieeren;
+		//vind hoogst aanwezige ID en geef die aan nieuwe rij.
+		$("form").on("click", ".toevoegen", function (e) {
+			e.preventDefault();
+			var $formDiv = $(this).closest("form").find(".form-tabel");
+			var $kopie = $formDiv.find(".form-rij").last().clone();
+			var idMap = $formDiv
+				.find(".pers-id")
+				.map(function () {
+					return Number(this.value);
+				})
+				.get();
+			var nweId = Math.max.apply(this, idMap) + 1;
+			$kopie.find("input, textarea").each(function () {
+				$(this).attr(
+					"name",
+					"form[" + nweId + "][" + $(this).attr("data-naam") + "]"
+				);
+				$(this).val("");
+			});
+			$kopie.find(".pers-id").val(nweId);
+			$formDiv.append($kopie);
 
-      $("html, body").animate(
-        {
-          scrollTop: $kopie.offset().top + 500
-        },
-        500
-      );
-    });
-  },
-  toonVerstopGroep: function() {
-    this.toonVerstopGeneriek("groep");
-  },
-  toonVerstopWijk: function() {
-    this.toonVerstopGeneriek("wijk");
-  },
-  toonVerstopSector: function() {
-    this.toonVerstopGeneriek("sector");
-  },
+			$("html, body").animate(
+				{
+					scrollTop: $kopie.offset().top + 500,
+				},
+				500
+			);
+		});
+	},
+	toonVerstopSector: function () {
+		this.toonVerstopGeneriek("sector");
+	},
 
-  toonVerstopGeneriek: function(naam) {
-    $("." + naam + "-select").on("change", function() {
-      if (!this.value) return;
+	toonVerstopGeneriek: function (naam) {
+		$("." + naam + "-select").on("change", function () {
+			if (!this.value) return;
 
-      var $rijen = $(this)
-          .closest("form")
-          .find(".form-rij:not(.kop)"),
-        iv,
-        keuze = this.value;
+			var $rijen = $(this).closest("form").find(".form-rij:not(.kop)"),
+				iv,
+				keuze = this.value;
 
-      if (stapelFilters()) {
-        $rijen.filter(":visible").each(function() {
-          iv = $(this)
-            .find("[data-naam='" + naam + "']")
-            .val();
-          if (iv !== keuze) {
-            $(this)
-              .closest(".form-rij")
-              .hide();
-          }
-        });
-      } else {
-        $rijen.hide();
-        $rijen
-          .find(" [data-naam='" + naam + "'][value='" + keuze + "']")
-          .closest(".form-rij")
-          .show();
-      }
-    });
-  },
-  toonIkWil: function() {
-    var iv,
-      s,
-      keuze,
-      $rijen,
-      stapelFiltersB = stapelFilters();
+			if (stapelFilters()) {
+				$rijen.filter(":visible").each(function () {
+					iv = $(this)
+						.find("[data-naam='" + naam + "']")
+						.val();
+					if (iv !== keuze) {
+						$(this).closest(".form-rij").hide();
+					}
+				});
+			} else {
+				$rijen.hide();
+				$rijen
+					.find(" [data-naam='" + naam + "'][value='" + keuze + "']")
+					.closest(".form-rij")
+					.show();
+			}
+		});
+	},
+	toonIkWil: function () {
+		var iv,
+			s,
+			keuze,
+			$rijen,
+			stapelFiltersB = stapelFilters();
 
-    $(".ik_wil-select").on("change", function() {
-      if (!this.value) return;
+		$(".ik_wil-select").on("change", function () {
+			if (!this.value) return;
 
-      keuze = this.value.toLowerCase();
-      $rijen = $(this)
-        .closest("form")
-        .find(".form-rij:not(.kop)");
+			keuze = this.value.toLowerCase();
+			$rijen = $(this).closest("form").find(".form-rij:not(.kop)");
 
-      $rijen = stapelFiltersB ? $rijen.filter(":visible") : $rijen;
+			$rijen = stapelFiltersB ? $rijen.filter(":visible") : $rijen;
 
-      if (!stapelFiltersB) $rijen.hide();
+			if (!stapelFiltersB) $rijen.hide();
 
-      $rijen.each(function() {
-        iv = $(this)
-          .find("[data-naam='ik_wil']")
-          .val()
-          .toLowerCase();
-        if (iv) {
-          s = iv.split(" ");
-          if (s.indexOf(keuze) !== -1) {
-            if (stapelFiltersB) {
-              $(this).hide();
-            } else {
-              $(this).show();
-            }
-          }
-        }
-      });
-    });
-  },
-  selectieOngedaan: function() {
-    $(".selectie-ongedaan").on("click", function(e) {
-      e.preventDefault();
-      $(this)
-        .closest("form")
-        .find(".form-rij ~ .form-rij")
-        .show();
-    });
-  },
-  toonKolommen: function() {
-    $("form .toon").on("change", function() {
-      var id = this.id.replace("check-", "");
-      var isChecked = $("#" + this.id + ":checked").length;
-      if (isChecked) {
-        $(this)
-          .closest("form")
-          .find(".cel-" + id)
-          .show();
-      } else {
-        $(this)
-          .closest("form")
-          .find(".cel-" + id)
-          .hide();
-      }
-    });
-  },
-  alertMailLijst: function() {
-    this.alertGeneriek("email", ",");
-  },
-  alertTelLijst: function() {
-    this.alertGeneriek("telefoon", ",");
-  },
-  alertGeneriek: function(type, lijm) {
-    lijm = (lijm || ";") + "\t";
+			$rijen.each(function () {
+				iv = $(this).find("[data-naam='ik_wil']").val().toLowerCase();
+				if (iv) {
+					s = iv.split(" ");
+					if (s.indexOf(keuze) !== -1) {
+						if (stapelFiltersB) {
+							$(this).hide();
+						} else {
+							$(this).show();
+						}
+					}
+				}
+			});
+		});
+	},
+	selectieOngedaan: function () {
+		$(".selectie-ongedaan").on("click", function (e) {
+			e.preventDefault();
+			$(this).closest("form").find(".form-rij ~ .form-rij").show();
+		});
+	},
+	toonKolommen: function () {
+		$("form .toon").on("change", function () {
+			var id = this.id.replace("check-", "");
+			var isChecked = $("#" + this.id + ":checked").length;
+			if (isChecked) {
+				$(this)
+					.closest("form")
+					.find(".cel-" + id)
+					.show();
+			} else {
+				$(this)
+					.closest("form")
+					.find(".cel-" + id)
+					.hide();
+			}
+		});
+	},
+	alertMailLijst: function () {
+		this.alertGeneriek("email", ",");
+	},
+	alertTelLijst: function () {
+		this.alertGeneriek("telefoon", ",");
+	},
+	alertGeneriek: function (type, lijm) {
+		lijm = (lijm || ";") + "\t";
 
-    $(".lijst-" + type).on("click", function(e) {
-      var ookNamen = lijstOokNamen();
-      var blokTel;
-      //if (ookNamen) lijm = "<br>";
-      e.preventDefault();
-      var res = $(".form-rij")
-        .filter(":visible")
-        .find("[data-naam='" + type + "']")
-        .map(function() {
-          console.log(this.value);
+		$(".lijst-" + type).on("click", function (e) {
+			var ookNamen = lijstOokNamen();
+			var blokTel;
+			//if (ookNamen) lijm = "<br>";
+			e.preventDefault();
+			var res = $(".form-rij")
+				.filter(":visible")
+				.find("[data-naam='" + type + "']")
+				.map(function () {
+					console.log(this.value);
 
-          if (this.value && this.value !== "NEP@HEBBENWENIET.NL") {
-            if (ookNamen) {
-              if (type === "telefoon") {
-                return dezeRijNaam(this) + ": " + this.value + "<br>";
-              } else {
-                return dezeRijNaam(this) + " &lt;" + this.value + "&gt; ";
-              }
-            } else {
-              return this.value;
-            }
-          } else {
-            communiceer("Niets gevonden?");
-          }
-        })
-        .get();
+					if (this.value && this.value !== "NEP@HEBBENWENIET.NL") {
+						if (ookNamen) {
+							if (type === "telefoon") {
+								return dezeRijNaam(this) + ": " + this.value + "<br>";
+							} else {
+								return dezeRijNaam(this) + " &lt;" + this.value + "&gt; ";
+							}
+						} else {
+							return this.value;
+						}
+					} else {
+						communiceer("Niets gevonden?");
+					}
+				})
+				.get();
 
-      communiceer(res.join(lijm));
+			communiceer(res.join(lijm));
 
-      /*			var p = document.getElementById('printer');
+			/*			var p = document.getElementById('printer');
 			var pp = p.getElementsByTagName('p')[0];
 			//pp.innerHTML = res.join(lijm);
 
@@ -231,325 +206,316 @@ var acties = {
 				t.join(lijm)
 			}*/
 
-      //en laatste beetje.
-      //blokTel = Math.ceil(i/20) * 20;
-      //			htmlProd += "<span class='alert-blok' data-teller='"+blokTel+"'>"+t.join(lijm)+"</span>";
-      //htmlProd += "<span class='alert-blok' >"+t.join(lijm)+"</span>";
-      //pp.innerHTML = htmlProd;
+			//en laatste beetje.
+			//blokTel = Math.ceil(i/20) * 20;
+			//			htmlProd += "<span class='alert-blok' data-teller='"+blokTel+"'>"+t.join(lijm)+"</span>";
+			//htmlProd += "<span class='alert-blok' >"+t.join(lijm)+"</span>";
+			//pp.innerHTML = htmlProd;
 
-      //p.style.display = "block";
-    });
-  },
+			//p.style.display = "block";
+		});
+	},
 
-  ongedaanMaken: function() {
-    $(".ongedaan").on("click", function(e) {
-      e.preventDefault();
-      if (confirm("Alle wijzigingen in dit scherm wissen?")) {
-        location.href = document.body.getAttribute("data-base-url");
-      }
-    });
-  },
-  mobielActieveldenTonen: function() {
-    $("#mobiel").on("click", ".mob-toon", function(e) {
-      e.preventDefault();
-      var sel = "." + this.getAttribute("data-toon");
-      console.log(sel);
-      $(sel).toggle();
-    });
-  },
-  sluitPrinter: function() {
-    var p = document.getElementById("printer");
-    var s = document.getElementById("sluit-printer");
-    s.addEventListener("click", function(e) {
-      e.preventDefault();
-      p.getElementsByTagName("p")[0].innerHTML = "";
-      $("#printer").hide(200);
-    });
-  },
-  sluitActieveld: function() {
-    $("#sluit-form-acties").on("click", function(e) {
-      e.preventDefault();
-      $(".actieveld.form-acties").hide(200);
-    });
-  },
-  sorteerOpLaatsGezien() {
-    document
-      .querySelector(".sorteer-op-laatst-gezien")
-      .addEventListener("click", function(e) {
-        e.preventDefault();
+	ongedaanMaken: function () {
+		$(".ongedaan").on("click", function (e) {
+			e.preventDefault();
+			if (confirm("Alle wijzigingen in dit scherm wissen?")) {
+				location.href = document.body.getAttribute("data-base-url");
+			}
+		});
+	},
+	mobielActieveldenTonen: function () {
+		$("#mobiel").on("click", ".mob-toon", function (e) {
+			e.preventDefault();
+			var sel = "." + this.getAttribute("data-toon");
+			console.log(sel);
+			$(sel).toggle();
+		});
+	},
+	sluitPrinter: function () {
+		var p = document.getElementById("printer");
+		var s = document.getElementById("sluit-printer");
+		s.addEventListener("click", function (e) {
+			e.preventDefault();
+			p.getElementsByTagName("p")[0].innerHTML = "";
+			$("#printer").hide(200);
+		});
+	},
+	sluitActieveld: function () {
+		$("#sluit-form-acties").on("click", function (e) {
+			e.preventDefault();
+			$(".actieveld.form-acties").hide(200);
+		});
+	},
+	sorteerOpLaatsGezien() {
+		document
+			.querySelector(".sorteer-op-laatst-gezien")
+			.addEventListener("click", function (e) {
+				e.preventDefault();
 
-        var origineleFormTabel = document.querySelector(".form-tabel");
+				var origineleFormTabel = document.querySelector(".form-tabel");
 
-        // Add all lis to an array
-        var rijen = Array.from(
-          document.querySelectorAll(".form-tabel .form-rij.kop ~ .form-rij")
-        ).map(rij => {
-          Array.from(rij).forEach(cel => cel.classList.add("tering form-cel"));
-          return rij;
-        });
+				// Add all lis to an array
+				var rijen = Array.from(
+					document.querySelectorAll(".form-tabel .form-rij.kop ~ .form-rij")
+				).map((rij) => {
+					Array.from(rij).forEach((cel) =>
+						cel.classList.add("tering form-cel")
+					);
+					return rij;
+				});
 
-        // Sort the rijen in descending order
-        rijen.sort(function(a, b) {
-          const naamA = a
-            .querySelector(".cel-laatst_gezien input")
-            .value.split("-")
-            .reverse();
-          naamB = b
-            .querySelector(".cel-laatst_gezien input")
-            .value.split("-")
-            .reverse();
+				// Sort the rijen in descending order
+				rijen.sort(function (a, b) {
+					const naamA = a
+						.querySelector(".cel-laatst_gezien input")
+						.value.split("-")
+						.reverse();
+					naamB = b
+						.querySelector(".cel-laatst_gezien input")
+						.value.split("-")
+						.reverse();
 
-          if (naamA > naamB) {
-            return -1;
-          }
-          if (naamA < naamB) {
-            return 1;
-          }
+					if (naamA > naamB) {
+						return -1;
+					}
+					if (naamA < naamB) {
+						return 1;
+					}
 
-          return 0;
-        });
+					return 0;
+				});
 
-        origineleFormTabel.innerHTML = `
+				origineleFormTabel.innerHTML = `
 		    	<div class='kop form-rij'>${
-            document.querySelector(".form-rij.kop").innerHTML
-          }</div>
+						document.querySelector(".form-rij.kop").innerHTML
+					}</div>
 		    	${rijen
-            .map(rij => {
-              return `<div class='form-rij'>${rij.innerHTML}</div>`;
-            })
-            .join("")}
+						.map((rij) => {
+							return `<div class='form-rij'>${rij.innerHTML}</div>`;
+						})
+						.join("")}
 		    `;
-      });
-  },
-  sorteerOpNaam() {
-    document
-      .querySelector(".sorteer-op-naam")
-      .addEventListener("click", function(e) {
-        e.preventDefault();
+			});
+	},
+	sorteerOpNaam() {
+		document
+			.querySelector(".sorteer-op-naam")
+			.addEventListener("click", function (e) {
+				e.preventDefault();
 
-        var origineleFormTabel = document.querySelector(".form-tabel");
+				var origineleFormTabel = document.querySelector(".form-tabel");
 
-        // Add all lis to an array
-        var rijen = Array.from(
-          document.querySelectorAll(".form-tabel .form-rij.kop ~ .form-rij")
-        ).map(rij => {
-          Array.from(rij).forEach(cel => cel.classList.add("tering form-cel"));
-          return rij;
-        });
+				// Add all lis to an array
+				var rijen = Array.from(
+					document.querySelectorAll(".form-tabel .form-rij.kop ~ .form-rij")
+				).map((rij) => {
+					Array.from(rij).forEach((cel) =>
+						cel.classList.add("tering form-cel")
+					);
+					return rij;
+				});
 
-        // Sort the rijen in descending order
-        rijen.sort(function(a, b) {
-          const naamA = a.querySelector(".cel-naam input").value;
-          naamB = b.querySelector(".cel-naam input").value;
+				// Sort the rijen in descending order
+				rijen.sort(function (a, b) {
+					const naamA = a.querySelector(".cel-naam input").value;
+					naamB = b.querySelector(".cel-naam input").value;
 
-          console.log(naamA, naamB);
+					console.log(naamA, naamB);
 
-          if (naamA < naamB) {
-            return -1;
-          }
-          if (naamA > naamB) {
-            return 1;
-          }
+					if (naamA < naamB) {
+						return -1;
+					}
+					if (naamA > naamB) {
+						return 1;
+					}
 
-          return 0;
-        });
+					return 0;
+				});
 
-        origineleFormTabel.innerHTML = `
+				origineleFormTabel.innerHTML = `
 		    	<div class='kop form-rij'>${
-            document.querySelector(".form-rij.kop").innerHTML
-          }</div>
+						document.querySelector(".form-rij.kop").innerHTML
+					}</div>
 		    	${rijen
-            .map(rij => {
-              return `<div class='form-rij'>${rij.innerHTML}</div>`;
-            })
-            .join("")}
+						.map((rij) => {
+							return `<div class='form-rij'>${rij.innerHTML}</div>`;
+						})
+						.join("")}
 		    `;
-      });
-  }
+			});
+	},
 };
 
 function stapelFilters() {
-  return !!$("#stapel-filters:checked").length;
+	return !!$("#stapel-filters:checked").length;
 }
 
 function lijstOokNamen() {
-  return !!$("#lijst-ook-naam:checked").length;
+	return !!$("#lijst-ook-naam:checked").length;
 }
 
 function dezeRijNaam(el) {
-  if (!window.alGedaanNaam) {
-    window.alGedaanNaam = true;
-    console.log("el", el);
-    console.log("rij", $(el).closest(".form-rij"));
-    console.log(
-      "naam",
-      $(el)
-        .closest(".form-rij")
-        .find('[data-naam="naam"]')
-    );
-  }
+	if (!window.alGedaanNaam) {
+		window.alGedaanNaam = true;
+		console.log("el", el);
+		console.log("rij", $(el).closest(".form-rij"));
+		console.log("naam", $(el).closest(".form-rij").find('[data-naam="naam"]'));
+	}
 
-  return $(el)
-    .closest(".form-rij")
-    .find('[data-naam="naam"]')
-    .val();
+	return $(el).closest(".form-rij").find('[data-naam="naam"]').val();
 }
 
 var init = {
-  vulSelects: function() {
-    var selects = document.querySelectorAll("select[class$='-select']"),
-      selNaam,
-      optNamen,
-      alInSelect,
-      i,
-      j,
-      selSelector;
+	vulSelects: function () {
+		var selects = document.querySelectorAll("select[class$='-select']"),
+			selNaam,
+			optNamen,
+			alInSelect,
+			i,
+			j,
+			selSelector;
 
-    for (i = selects.length - 1; i >= 0; i--) {
-      selSelector = "." + selects[i].className;
-      selNaam = selects[i].className.replace("-select", "");
+		for (i = selects.length - 1; i >= 0; i--) {
+			selSelector = "." + selects[i].className;
+			selNaam = selects[i].className.replace("-select", "");
 
-      optNamen = $("[data-naam='" + selNaam + "']")
-        .map(function() {
-          if (this.value) return this.value;
-        })
-        .get();
+			optNamen = $("[data-naam='" + selNaam + "']")
+				.map(function () {
+					if (this.value) return this.value;
+				})
+				.get();
 
-      if (selects[i].hasAttribute("data-split")) {
-        optNamen = optNamen
-          .join(" ")
-          .split(" ")
-          .getUnique();
-      }
+			if (selects[i].hasAttribute("data-split")) {
+				optNamen = optNamen.join(" ").split(" ").getUnique();
+			}
 
-      alInSelect = [];
+			alInSelect = [];
 
-      $(selSelector)
-        .empty()
-        .append("<option value=''>" + selNaam.replace("_", " ") + "</option>");
+			$(selSelector)
+				.empty()
+				.append("<option value=''>" + selNaam.replace("_", " ") + "</option>");
 
-      optNamen.sort().reverse();
+			optNamen.sort().reverse();
 
-      for (j = optNamen.length - 1; j >= 0; j--) {
-        if (!optNamen[j]) continue;
-        if (alInSelect.indexOf(optNamen[j]) !== -1) continue;
+			for (j = optNamen.length - 1; j >= 0; j--) {
+				if (!optNamen[j]) continue;
+				if (alInSelect.indexOf(optNamen[j]) !== -1) continue;
 
-        $(selSelector).append(
-          "<option value='" + optNamen[j] + "'>" + optNamen[j] + "</option>"
-        );
+				$(selSelector).append(
+					"<option value='" + optNamen[j] + "'>" + optNamen[j] + "</option>"
+				);
 
-        alInSelect.push(optNamen[j]);
-      }
-    }
-  },
-  toonActievelden: function() {
-    if (window.innerWidth > 600) {
-      var actieVelden = document.getElementsByClassName("actieveld");
+				alInSelect.push(optNamen[j]);
+			}
+		}
+	},
+	toonActievelden: function () {
+		if (window.innerWidth > 600) {
+			var actieVelden = document.getElementsByClassName("actieveld");
 
-      for (var i = actieVelden.length - 1; i >= 0; i--) {
-        actieVelden[i].style.display = "block";
-      }
-    } else {
-      var mobKnoppen = document.getElementsByClassName("mob-toon");
-      for (var i = mobKnoppen.length - 1; i >= 0; i--) {
-        mobKnoppen[i].style.display = "inline";
-      }
-    }
-  },
-  marginOnderaanBody: function() {
-    //vanwege pos fixed actievelden
-    var margin = $(".actievelden").height() + 30;
-    $("body").css("marginBottom", margin + "px");
-  }
+			for (var i = actieVelden.length - 1; i >= 0; i--) {
+				actieVelden[i].style.display = "block";
+			}
+		} else {
+			var mobKnoppen = document.getElementsByClassName("mob-toon");
+			for (var i = mobKnoppen.length - 1; i >= 0; i--) {
+				mobKnoppen[i].style.display = "inline";
+			}
+		}
+	},
+	marginOnderaanBody: function () {
+		//vanwege pos fixed actievelden
+		var margin = $(".actievelden").height() + 30;
+		$("body").css("marginBottom", margin + "px");
+	},
 };
 
 var form = {
-  versleutel: function() {
-    $("button.versleutel").on("click", function(e) {
-      e.preventDefault();
+	versleutel: function () {
+		$("button.versleutel").on("click", function (e) {
+			e.preventDefault();
 
-      var sleutelBasis = versleutel.value;
+			var sleutelBasis = versleutel.value;
 
-      if (!sleutelBasis) {
-        communiceer("vul wat in");
-        return;
-      }
+			if (!sleutelBasis) {
+				communiceer("vul wat in");
+				return;
+			}
 
-      var t = 0;
+			var t = 0;
 
-      maakSleutelEnVersleutel(sleutelBasis);
-    });
-  },
-  ontsleutel: function() {
-    $("button.ontsleutel").on("click", function(e) {
-      e.preventDefault();
+			maakSleutelEnVersleutel(sleutelBasis);
+		});
+	},
+	ontsleutel: function () {
+		$("button.ontsleutel").on("click", function (e) {
+			e.preventDefault();
 
-      $("form").removeClass("versleuteld");
+			$("form").removeClass("versleuteld");
 
-      var sleutel = $("#ontsleutel").val();
+			var sleutel = $("#ontsleutel").val();
 
-      if (!sleutel) {
-        communiceer("vul wat in");
-        return;
-      }
+			if (!sleutel) {
+				communiceer("vul wat in");
+				return;
+			}
 
-      document.getElementById("versleutel").value = sleutel;
+			document.getElementById("versleutel").value = sleutel;
 
-      maakSleutelEnOntsleutel(sleutel);
-    });
-  },
-  alleenVersleuteldVerzenden: function() {
-    if (prod) {
-      $("form").on("submit", function(e) {
-        if (!this.classList.contains("versleuteld")) {
-          e.preventDefault();
-          communiceer("eerst versleutelen");
-        }
-      });
-    }
-  }
+			maakSleutelEnOntsleutel(sleutel);
+		});
+	},
+	alleenVersleuteldVerzenden: function () {
+		if (prod) {
+			$("form").on("submit", function (e) {
+				if (!this.classList.contains("versleuteld")) {
+					e.preventDefault();
+					communiceer("eerst versleutelen");
+				}
+			});
+		}
+	},
 };
 
 function initActies() {
-  //filters e.d. vullen met nieuwe info
-  for (var f in init) init[f]();
-  communiceer("CRM geinitialiseerd");
+	//filters e.d. vullen met nieuwe info
+	for (var f in init) init[f]();
+	communiceer("CRM geinitialiseerd");
 }
 
-$(function() {
-  if (!window.crypto) {
-    if (
-      confirm(
-        "Boodschap van Sjerp: je browser is inadequaat. Download een nieuwe.\nSnap je het niet bel dan 0616541143."
-      )
-    ) {
-      location.href = "https://firefox.com";
-    } else {
-      location.href = "http://www.rmo.nl/";
-    }
-  }
+$(function () {
+	if (!window.crypto) {
+		if (
+			confirm(
+				"Boodschap van Sjerp: je browser is inadequaat. Download een nieuwe.\nSnap je het niet bel dan 0616541143."
+			)
+		) {
+			location.href = "https://firefox.com";
+		} else {
+			location.href = "http://www.rmo.nl/";
+		}
+	}
 
-  //executeer alle func objen
-  var fo = [acties, form],
-    fol = fo.length,
-    i,
-    fn;
+	//executeer alle func objen
+	var fo = [acties, form],
+		fol = fo.length,
+		i,
+		fn;
 
-  //de voornaamste reden dat zit is opgeschreven is dat het onleesbaar is.
-  for (i = 0; i < fol; i++) for (fn in fo[i]) fo[i][fn]();
+	//de voornaamste reden dat zit is opgeschreven is dat het onleesbaar is.
+	for (i = 0; i < fol; i++) for (fn in fo[i]) fo[i][fn]();
 });
 
 function communiceer(tekst, tijd) {
-  $("#printer p")
-    .empty()
-    .append(tekst);
-  $("#printer").fadeIn(200);
-  /*	printer.getElementsByTagName('p')[0].textContent = tekst;
+	$("#printer p").empty().append(tekst);
+	$("#printer").fadeIn(200);
+	/*	printer.getElementsByTagName('p')[0].textContent = tekst;
 	printer.style.display = "block";*/
 
-  if (tijd) {
-    setTimeout(function() {
-      $("#printer").fadeOut(200);
-    }, tijd);
-  }
+	if (tijd) {
+		setTimeout(function () {
+			$("#printer").fadeOut(200);
+		}, tijd);
+	}
 }
