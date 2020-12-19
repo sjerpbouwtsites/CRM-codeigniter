@@ -1,0 +1,1 @@
+ALTER TABLE leden DROP COLUMN tabel;
