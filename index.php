@@ -1,8 +1,5 @@
 <?php
 
-echo "he Continuous Integration! Voel jij je ook zo corporate vandaag  🤔 ";
-die();
-
 /**
  * CodeIgniter
  *
