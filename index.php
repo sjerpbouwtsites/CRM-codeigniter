@@ -1,6 +1,6 @@
 <?php
 
-echo "he Continuous Integration! Voel jij je ook zo corporate vandaag 🤔 ";
+echo "he Continuous Integration! Voel jij je ook zo corporate vandaag  🤔 ";
 die();
 
 /**
