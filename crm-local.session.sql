@@ -1,1 +1,1 @@
-ALTER TABLE leden DROP COLUMN tabel;
+ALTER TABLE leden DROP COLUMN wijk;
