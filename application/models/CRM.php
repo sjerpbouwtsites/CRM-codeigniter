@@ -39,12 +39,16 @@ class CRM extends CI_Model
 
 	public function zet_tabel_naam($tabelnaam)
 	{
-		if (!array_key_exists($tabelnaam, $this->toegestane_tabel_namen)) {
-			throw new Error('deze tabel bestaat nog niet in de db.');
+
+		if (!in_array($tabelnaam, $this->toegestane_tabel_namen)) {
+			throw new Error("de tabel $tabelnaam bestaat nog niet in de db.");
 		}
 		$this->tabel = $tabelnaam;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function zet_post($post = array())
 	{
 		$this->post_data = $post;
