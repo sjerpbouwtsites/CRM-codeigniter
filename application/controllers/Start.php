@@ -8,11 +8,25 @@ class Start extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
+		$this->tabel = null;
 	}
 
+	// dus vloerwerk.org/CRM
 	public function index()
 	{
+		$this->tabel = 'leden';
 		$this->leden();
+	}
+
+	/**
+	 * Aangeroepen vanuit de routes om andere tabellen dan leden te zien.
+	 */
+	public function tabel($tabel_naam)
+	{
+		if ($tabel_naam === '') {
+			throw new Error("BOE! een sys error HAHAHA 😱 Je url klopt niet of een tabel die zocht is niet geinstalleerd. Later!");
+		}
+		$this->tabel = $tabel_naam;
 	}
 
 	/**
@@ -49,11 +63,12 @@ class Start extends CI_Controller
 		setcookie('XSRF-TOKEN', $csrf, $is_local ? $cookie_dev : $cookie_prod);
 
 		$this->load->model('CRM');
+		$this->CRM->zet_tabel_naam($this->tabel);
 		$this->CRM->registreer_csrf_token($csrf);
 
 		$data = array();
 
-		$data['tabel_naam'] = $this->CRM->pak_tabel_naam();
+		$data['tabel_naam'] = $this->tabel;
 
 		$data = array_merge($data, $this->CRM->maak_form_data());
 

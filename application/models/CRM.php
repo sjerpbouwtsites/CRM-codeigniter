@@ -4,27 +4,50 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class CRM extends CI_Model
 {
 
+	public $tabel = 'leden';
+	// gevuld door toegestane_tabel_namen()
+	public $toegestane_tabel_namen = [];
+
 	function __construct()
 	{
 		$this->form_data = array();
 		$this->een_naam_klein = '';
 		$this->load->database();
 		$this->post_data = NULL;
+		$this->zet_toegestane_tabel_namen();
 		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 9;
+	}
+
+	/**
+	 * tabelnamen komen van extern, uit de url of request.
+	 * Dit bepaalt welke tabelnamen gezet mogen worden adhv bestaande tabelnamen.
+	 */
+	public function zet_toegestane_tabel_namen()
+	{
+		// maar een keer vullen.
+		if (!count($this->toegestane_tabel_namen)) {
+			$alle_db_tabellen_query = $this->db->query("SHOW TABLES");
+			foreach ($alle_db_tabellen_query->result() as $resultObj) {
+				$tabelnaam = $resultObj->Tables_in_CRM_local;
+				if ($tabelnaam !== 'CSRF' || $tabelnaam !== 'meta') {
+					$this->toegestane_tabel_namen[] = $tabelnaam;
+				}
+			}
+		}
+		return $this->toegestane_tabel_namen;
+	}
+
+	public function zet_tabel_naam($tabelnaam)
+	{
+		if (!array_key_exists($tabelnaam, $this->toegestane_tabel_namen)) {
+			throw new Error('deze tabel bestaat nog niet in de db.');
+		}
+		$this->tabel = $tabelnaam;
 	}
 
 	public function zet_post($post = array())
 	{
 		$this->post_data = $post;
-	}
-
-	public function pak_tabel_naam()
-	{
-		if (!empty($this->post_data) and array_key_exists('form_meta', $this->post_data)) {
-			return $this->post_data['form_meta']['tabel_naam'];
-		} else {
-			return array_key_exists("tabel", $_GET) ? $_GET['tabel'] : "leden";
-		}
 	}
 
 
@@ -55,7 +78,7 @@ class CRM extends CI_Model
 	public function maak_form_data()
 	{
 
-		$tabel = $this->pak_tabel_naam();
+		$tabel = $this->tabel;
 
 		$q = $this->db->query("SELECT * FROM $tabel")->result_array();
 
@@ -181,7 +204,7 @@ class CRM extends CI_Model
 	public function maak_db_id_lijst()
 	{
 
-		$tabel = $this->pak_tabel_naam();
+		$tabel = $this->tabel;
 
 		$id_objs = $this->db->query("SELECT id FROM $tabel")->result();
 		$ids = [];
@@ -231,11 +254,15 @@ class CRM extends CI_Model
 		];
 	}
 
+	/**
+	 * old form-based function
+	 * @deprecated
+	 */
 	public function opslaan()
 	{
 
 		$form = $this->post_data['form'];
-		$tabel = $this->pak_tabel_naam();
+		$tabel = $this->tabel;
 
 		$this->zet_iv($this->post_data['form_meta']['iv']);
 
@@ -296,7 +323,7 @@ class CRM extends CI_Model
 	public function pak_iv()
 	{
 
-		$tabel = $this->pak_tabel_naam();
+		$tabel = $this->tabel;
 
 		$q = $this->db->query("SELECT waarde FROM meta WHERE sleutel='$tabel-iv'")->result();
 		return $q[0]->waarde;
@@ -305,7 +332,7 @@ class CRM extends CI_Model
 	public function zet_iv($iv = '')
 	{
 
-		$tabel = $this->pak_tabel_naam();
+		$tabel = $this->tabel;
 
 		if ($iv === '') return false;
 
