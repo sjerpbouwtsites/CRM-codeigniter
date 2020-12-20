@@ -20,7 +20,7 @@ class Start extends CI_Controller
 	 */
 	public function make_csrf()
 	{
-		$a = explode(':', uniqid('ACAB_LOL', true))[0];
+		$a = explode(':', uniqid('ACAB_THXBAI', true))[0];
 		$b = explode(':', uniqid('AJAX_ADAM', true))[0];
 		return "$a-$b";
 	}
@@ -49,11 +49,9 @@ class Start extends CI_Controller
 		setcookie('XSRF-TOKEN', $csrf, $is_local ? $cookie_dev : $cookie_prod);
 
 		$this->load->model('CRM');
+		$this->CRM->registreer_csrf_token($csrf);
 
 		$data = array();
-
-
-
 
 		$data['tabel_naam'] = $this->CRM->pak_tabel_naam();
 

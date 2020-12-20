@@ -1,4 +1,6 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
 require(APPPATH . '/libraries/REST_Controller.php');
 
 use chriskacerguis\RestServer\RestController;
@@ -22,6 +24,6 @@ class Api extends RestController
     $this->load->model('CRM');
 
     $r = $this->CRM->opslaan_via_api($this->post('meta'), $this->post('batch'));
-    $this->response($r, 200);
+    $this->response($r['message'], $r['statuscode']);
   }
 }

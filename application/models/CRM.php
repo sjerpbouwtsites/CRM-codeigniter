@@ -10,6 +10,7 @@ class CRM extends CI_Model
 		$this->een_naam_klein = '';
 		$this->load->database();
 		$this->post_data = NULL;
+		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 9;
 	}
 
 	public function zet_post($post = array())
@@ -190,10 +191,44 @@ class CRM extends CI_Model
 		return $ids;
 	}
 
-	public function opslaan_via_api($batch_data)
+	/**
+	 * verwerkt batch reageert met HTTP status en message. 
+	 * @return array ['statuscode', 'message']
+	 */
+	public function opslaan_via_api($batches_meta, $batch_data)
 	{
-		// var_dump($batch_data);
-		// echo $batch_data['meta']['tabel'];
+		// controlerenof xsrf goed is.
+		$csrf_db_check_res = $this->controleer_csrf_token($batches_meta['xsrf']);
+		if ($csrf_db_check_res === 'niet-gevonden') {
+			return [
+				'statuscode' => 403,
+				'message'		 => 'Je netverzoek voldoet niet aan de vereisten. Cookies moeten toegestaan zijn voor dit domein. Cookies wissen betekent verbinding effectief verbreken.'
+			];
+		}
+		if ($csrf_db_check_res === 'verouderd') {
+			return [
+				'statuscode' => 401,
+				'message'		 => 'Je gegsevens zijn verouderd en voldoen niet aan de vereisten. Je mag maximaal 24 uur doen over het invullen en opslaan van het systeem.'
+			];
+		}
+		// daadwerkelijke xsrf check
+		$cookie_exists = array_key_exists('XSRF-TOKEN', $_COOKIE);
+		if (!$cookie_exists) {
+			return [
+				'statuscode' => 401,
+				'message'		 => 'Waarom gaf je geen Cookies? Heb je die uit staan?'
+			];
+		} else if ($_COOKIE['XSRF-TOKEN'] !== $batches_meta['xsrf']) {
+			return [
+				'statuscode' => 403,
+				'message'		 => 'Je verzoek is contrarevolutionair.'
+			];
+		}
+
+		return [
+			'statuscode' => 200,
+			'message'    => 'NOG TE BOUWEN',
+		];
 	}
 
 	public function opslaan()
@@ -276,5 +311,59 @@ class CRM extends CI_Model
 
 		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$tabel-iv'");
 		return true;
+	}
+
+	/**
+	 * Aangeroepen in controller Start bij maken voorkant
+	 * csrf dubbel dienst als auth token
+	 */
+	public function registreer_csrf_token($csrf)
+	{
+		if (!$csrf) {
+			throw new Error('csrf token registreren maar token is leeg');
+		}
+		$this->db->query("INSERT INTO CSRF (token) VALUES ('$csrf')");
+
+		if ($this->csrf_table_cleanup_corvee) {
+			$this->csrf_table_cleanup();
+		}
+
+		return true;
+	}
+
+	/**
+	 * remove tokens older then 2 days.
+	 */
+	public function csrf_table_cleanup()
+	{
+		$this->db->query("DELETE FROM CSRF WHERE TIMESTAMPDIFF(DAY, modified_on, NOW()) > 2");
+	}
+
+	/**
+	 * Controleer of token in db is en of die actueel is.
+	 * @returns (string) statuscode niet-gevonden|gevonden|verouderd
+	 */
+	public function controleer_csrf_token($csrf)
+	{
+		if (!$csrf) {
+			throw new Error('csrf token controleren maar token is leeg');
+		}
+		$token_in_db_en_actueel_query = $this->db->query("SELECT COUNT(id) as aantal FROM CSRF WHERE token = '$csrf' AND TIMESTAMPDIFF(DAY, modified_on, NOW()) < 1");
+		$token_in_db_query = $this->db->query("SELECT COUNT(id) as aantal FROM CSRF WHERE token = '$csrf'");
+
+		$token_in_db = $token_in_db_query->result()[0]->aantal !== '0';
+		$token_vers = $token_in_db_en_actueel_query->result()[0]->aantal !== '0';
+
+		if (!$token_in_db) {
+			return 'niet-gevonden';
+		}
+		if ($token_in_db && !$token_vers) {
+			return 'verouderd';
+		}
+		if ($token_in_db && $token_vers) {
+			return 'gevonden';
+		}
+		// opgefokt?
+		return new Error('shitlogic @controleer_csrf_token');
 	}
 }
