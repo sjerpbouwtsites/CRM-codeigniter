@@ -507,83 +507,92 @@ var form = {
 
 function verzendInStukkenCallback(e) {
 	e.preventDefault();
+	//button disablen
+	document
+		.getElementById("verzend-grote-formulier-knop")
+		.setAttribute("disabled", true);
 	// eerst versleutelen
 	if (!staat.wachtwoord) throw new Error("wachtwoord vergeten door app");
 	const versleutelMet = staat.wachtwoord;
 	maakSleutelEnVersleutel(versleutelMet)
 		.then(() => {
+			document
+				.getElementsByTagName("body")[0]
+				.classList.add("voorbereid-op-afsluiten");
+			communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
 			const groteFormulier = document.getElementById("grote-tabel-formulier");
 			const formDataSys = new FormData(groteFormulier);
 
-			const SUPERformData = {};
-			const formRijenVanafIndex1 = Array.from(
-				document.querySelectorAll(".form-rij")
-			).filter((rij, index) => index > 0);
-
-			formRijenVanafIndex1.forEach((rij) => {
-				Array.from(rij.getElementsByTagName("input")).forEach((input) => {
-					const naam = input.name;
-					const value = input.value;
-					SUPERformData[naam] = value;
+			/**
+			 * makkelijker te verzenden en beter te vertalen naar SQL
+			 */
+			const SQLVriendelijkePostData = {
+				meta: {},
+				ids: [],
+				kolommen: [],
+				waardenPerId: {},
+			};
+			// voor bereiden met de ids.
+			Array.from(formDataSys.entries())
+				.filter(([key, value]) => key.includes("[id]"))
+				.forEach(([key, uniekeIdUitForm]) => {
+					SQLVriendelijkePostData.ids.push(uniekeIdUitForm);
+					SQLVriendelijkePostData.waardenPerId[uniekeIdUitForm] = [];
 				});
+
+			// kolommen bepalen
+			const eersteId = SQLVriendelijkePostData.ids[0];
+			SQLVriendelijkePostData.kolommen = Array.from(formDataSys.keys())
+				.filter((veldNaam) => {
+					return veldNaam.includes(eersteId) && !veldNaam.includes("[id]");
+				})
+				.map((veldNaam) => {
+					return veldNaam
+						.replace("form", "")
+						.replace(/\W/g, "")
+						.replace(/\d/g, "");
+				});
+
+			// per id waardenPerId invullen.
+			Array.from(formDataSys.entries()).forEach(([key, value]) => {
+				if (key.includes("form_meta") || key.includes("[id]")) {
+					return;
+				}
+				const id = key.replace(/\D/g, "");
+				SQLVriendelijkePostData.waardenPerId[id].push(value);
 			});
 
-			window.SUPERformData = SUPERformData; // debug
+			// tenslotte de meta data
+			SQLVriendelijkePostData.meta = {
+				xsrf: formDataSys.get("form_meta[csrf-token]"),
+				iv: formDataSys.get("form_meta[iv]"),
+				tabel: formDataSys.get("form_meta[tabel_naam]"),
+			};
 
-			// JEZUS DIT GAAT HELEMAAL MIS waah
-
-			const inputsPerRij = document.querySelectorAll(
-				".form-rij + .form-rij input"
-			).length;
-
-			const batches = [];
-			const itemsPerBatch = 300;
-			const aantalBatches = Math.ceil(
-				formRijenVanafIndex1[0].getElementsByTagName("input").length /
-					itemsPerBatch
-			); // max is 500
-			for (let batchIndex = 0; batchIndex <= aantalBatches; batchIndex++) {
-				batches[batchIndex] = {};
-			}
-
-			Object.entries(SUPERformData).forEach(([key, value], index) => {
-				const currentBatchIndex = Math.floor(index / itemsPerBatch);
-				batches[currentBatchIndex][key] = value;
-			});
-			recursieveAxios(batches, 0, formDataSys);
+			return axios
+				.request({
+					url: document.getElementById("grote-tabel-formulier").action,
+					method: "post",
+					data: SQLVriendelijkePostData,
+				})
+				.then((antwoord) => {
+					// afsluiten
+					communiceer(
+						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af.`,
+						2000
+					);
+					document.getElementsByTagName("body")[0].classList.add("afsluiten");
+				})
+				.catch((e) => {
+					communiceer(`En dat is een 🥁🥁🥁 fout ${antwoord.status}!
+					De server zegt: 
+					${antwoord.data}`);
+					throw e;
+				});
 		}) // then van maakSleutelEnVersleutel
 		.catch((e) => {
 			communiceer(`fout in de versleuteling ${e}`, 1000);
 			throw e;
-		});
-}
-
-function recursieveAxios(batches, batchCounter, formDataSys) {
-	return axios
-		.request({
-			url: document.getElementById("grote-tabel-formulier").action,
-			method: "post",
-			data: {
-				meta: {
-					xsrf: formDataSys.get("form_meta[csrf-token]"),
-					iv: formDataSys.get("form_meta[iv]"),
-					tabel: formDataSys.get("form_meta[tabel_naam]"),
-				},
-				batch: batches[batchCounter],
-			},
-		})
-		.then((resp) => {
-			console.info(resp);
-			if (batchCounter < batches.length) {
-				const newBatchCounter = batchCounter + 1;
-				return recursieveAxios(batches, newBatchCounter, formDataSys);
-			} else {
-				return true;
-			}
-		})
-		.catch((error) => {
-			throw error;
-			return false;
 		});
 }
 

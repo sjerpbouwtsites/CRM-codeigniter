@@ -23,7 +23,12 @@ class Api extends RestController
 
     $this->load->model('CRM');
 
-    $r = $this->CRM->opslaan_via_api($this->post('meta'), $this->post('batch'));
+    $r = $this->CRM->opslaan_vanuit_api(
+      $this->post('meta'),
+      $this->post('ids'),
+      $this->post('kolommen'),
+      $this->post('waardenPerId')
+    );
     $this->response($r['message'], $r['statuscode']);
   }
 }

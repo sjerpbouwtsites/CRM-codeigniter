@@ -222,10 +222,10 @@ class CRM extends CI_Model
 	 * verwerkt batch reageert met HTTP status en message. 
 	 * @return array ['statuscode', 'message']
 	 */
-	public function opslaan_via_api($batches_meta, $batch_data)
+	public function opslaan_vanuit_api($meta, $ids, $kolommen, $waarden_per_id)
 	{
 		// controlerenof xsrf goed is.
-		$csrf_db_check_res = $this->controleer_csrf_token($batches_meta['xsrf']);
+		$csrf_db_check_res = $this->controleer_csrf_token($meta['xsrf']);
 		if ($csrf_db_check_res === 'niet-gevonden') {
 			return [
 				'statuscode' => 403,
@@ -245,12 +245,26 @@ class CRM extends CI_Model
 				'statuscode' => 401,
 				'message'		 => 'Waarom gaf je geen Cookies? Heb je die uit staan?'
 			];
-		} else if ($_COOKIE['XSRF-TOKEN'] !== $batches_meta['xsrf']) {
+		} else if ($_COOKIE['XSRF-TOKEN'] !== $meta['xsrf']) {
 			return [
 				'statuscode' => 403,
 				'message'		 => 'Je verzoek is contrarevolutionair.'
 			];
 		}
+
+		$kolommen_string = "(" . implode(', ', $kolommen) . ")";
+		$waarden_string_map = [];
+		foreach ($waarden_per_id as $id => $waarden) {
+			$waarden_met_apostrophe = array_map(function ($waarde) {
+				return "'" . $waarde . "'";
+			}, $waarden);
+			$waarden_string_map[] .= "(" . implode(",", $waarden_met_apostrophe) . ")";
+		}
+		$waarden_string = implode(", ", $waarden_string_map);
+
+		$this->db->query("TRUNCATE TABLE leden");
+
+		$this->db->query("INSERT INTO leden $kolommen_string VALUES $waarden_string");
 
 		return [
 			'statuscode' => 200,
