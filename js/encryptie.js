@@ -35,62 +35,54 @@ function convertPassphraseToKey(passphraseString) {
 function maakSleutelEnVersleutel(sleutelBasis) {
 	return new Promise((resolveVersleutel, rejectVersleutel) => {
 		communiceer("versleutelen begonnen");
-		convertPassphraseToKey(sleutelBasis)
-			.then(function (key) {
-				var iv = window.crypto.getRandomValues(new Uint8Array(16));
-				printIV.value = byteArrayToBase64(iv);
-				var $formPers = $("form [class|='pers']");
-				$formPers.each(function (i, veld) {
-					var type = veld.getAttribute("data-naam");
+		convertPassphraseToKey(sleutelBasis).then(function (key) {
+			var iv = window.crypto.getRandomValues(new Uint8Array(16));
+			printIV.value = byteArrayToBase64(iv);
 
-					if (type === "id") {
-						return;
-					}
-
-					// wat is dit voor shit
-					var ditIsDeLaatste = !($formPers.length - 1 - i);
-
+			const veldEncryptiePromises = Array.from(
+				document.querySelectorAll(".pers-input")
+			).map((veld) => {
+				return new Promise((resolveVeld, rejectVeld) => {
 					var w = veld.value.trim();
-					if (type === "telefoon") {
+					if (veld.getAttribute("naam") === "telefoon") {
 						w = w.replace(/[^0-9]+|\s+/gim, "");
 					}
-
 					var encryptieRes = window.crypto.subtle.encrypt(
 						{ name: "AES-CBC", iv: iv },
 						key,
 						stringToByteArray(w)
 					);
-
 					encryptieRes
 						.then(function (ciphertextBuf) {
 							var ciphertextBytes = new Uint8Array(ciphertextBuf);
 							var base64Ciphertext = byteArrayToBase64(ciphertextBytes);
 							veld.value = base64Ciphertext;
-
-							if (ditIsDeLaatste) {
-								communiceer("versleutelen klaar", 1000);
-								$("form").addClass("versleuteld");
-								resolveVersleutel(true);
-							}
+							resolveVeld();
 						})
 						.catch(function (err) {
-							communiceer(err.message);
-							rejectVersleutel(err);
+							const errMsg = `veld ${veld.getAttribute(
+								"name"
+							)} cijferen mislukt: ${err.message}\n`;
+							communiceer("fuck!");
+							err.message = `${errMsg}${err.message}`;
+							rejectVeld(err);
 						});
-
-					veld.setAttribute("oude-type", veld.getAttribute("type"));
-					veld.setAttribute("type", "text");
-
-					if (veld.hasAttribute("required")) {
-						veld.removeAttribute("required");
-						veld.setAttribute("oud-required", "true");
-					}
 				});
-			})
-			.catch(function (err) {
-				communiceer("versleutelen mislukt: " + err.message);
-				rejectVersleutel(err);
 			});
+
+			Promise.all(veldEncryptiePromises)
+				.then(() => {
+					communiceer("versleutelen klaar", 1000);
+					$("form").addClass("versleuteld");
+					resolveVersleutel(true);
+				})
+				.catch((err) => {
+					throw err; // naar versleutel catch
+				});
+		});
+	}).catch(function (error) {
+		communiceer(verwerkFout(error, true));
+		rejectVersleutel(error);
 	});
 }
 
@@ -145,7 +137,7 @@ function maakSleutelEnOntsleutel(sleutel) {
 						resolveOntsleutel(true);
 					})
 					.catch((error) => {
-						throw error; // naar ontsleutel eigen reject
+						throw error;
 					});
 			})
 			.catch(function (error) {
