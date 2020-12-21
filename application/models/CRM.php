@@ -3,7 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class CRM extends CI_Model
 {
-
+	/**
+	 * naam van de db tabel
+	 */
 	public $tabel = 'leden';
 	// gevuld door toegestane_tabel_namen()
 	public $toegestane_tabel_namen = [];
@@ -15,7 +17,7 @@ class CRM extends CI_Model
 		$this->load->database();
 		$this->post_data = NULL;
 		$this->zet_toegestane_tabel_namen();
-		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 9;
+		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 90;
 	}
 
 	/**
@@ -106,8 +108,6 @@ class CRM extends CI_Model
 			$this->form_data[] = $this->form_data_helper();
 			$this->een_naam_klein = '';
 		}
-
-		ksort($this->form_data);
 
 		return array(
 			'form_data' 		=> $this->form_data,
@@ -265,6 +265,8 @@ class CRM extends CI_Model
 		$this->db->query("TRUNCATE TABLE leden");
 
 		$this->db->query("INSERT INTO leden $kolommen_string VALUES $waarden_string");
+
+		$this->zet_iv($meta['iv']);
 
 		return [
 			'statuscode' => 200,

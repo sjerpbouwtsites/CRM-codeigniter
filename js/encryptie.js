@@ -47,6 +47,7 @@ function maakSleutelEnVersleutel(sleutelBasis) {
 						return;
 					}
 
+					// wat is dit voor shit
 					var ditIsDeLaatste = !($formPers.length - 1 - i);
 
 					var w = veld.value.trim();
@@ -57,7 +58,7 @@ function maakSleutelEnVersleutel(sleutelBasis) {
 					var encryptieRes = window.crypto.subtle.encrypt(
 						{ name: "AES-CBC", iv: iv },
 						key,
-						stringToByteArray(veld.value)
+						stringToByteArray(w)
 					);
 
 					encryptieRes
@@ -140,6 +141,7 @@ function maakSleutelEnOntsleutel(sleutel) {
 						})
 						.catch(function (err) {
 							communiceer("ontcijferen mislukt: " + err.message);
+							throw err;
 						});
 				});
 

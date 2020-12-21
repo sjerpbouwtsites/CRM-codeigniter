@@ -186,6 +186,13 @@ nav#crm a:hover {
 	align-items: center;
 	background-color: black;
 }
+/* form,
+.actievelden > * {
+	display: block !important;
+}
+#sleutelaars {
+	display: block !important;
+} */
 .sleutelaars.ontsleuteld {
 	display: none;
 }
