@@ -102,55 +102,55 @@ function maakSleutelEnOntsleutel(sleutel) {
 			.then(function (aesKey) {
 				communiceer("decryptie begint");
 
-				var $formPers = $("form [class|='pers']");
-
-				$formPers.each(function (i, veld) {
-					var type = veld.getAttribute("data-naam");
-
-					if (type === "id" || !veld.value.length) {
-						return;
-					}
-
-					var ditIsDeLaatste = !($formPers.length - 1 - i);
-
-					var ciphertextBytes = base64ToByteArray(veld.value);
-
-					window.crypto.subtle
-						.decrypt({ name: "AES-CBC", iv: ivBytes }, aesKey, ciphertextBytes)
-						.then(function (plaintextBuffer) {
-							var nweTekst = byteArrayToString(plaintextBuffer);
-
-							veld.setAttribute("value", nweTekst);
-							veld.value = nweTekst;
-							if (
-								veld.getAttribute("data-naam") === "ik_wil" ||
-								veld.getAttribute("data-naam") === "aantekening"
-							) {
-								veld.textContent = nweTekst;
-							}
-
-							veld.setAttribute("type", veld.getAttribute("oude-type"));
-
-							if (veld.hasAttribute("oud-required")) {
-								veld.setAttribute("required", "true");
-							}
-
-							if (ditIsDeLaatste) {
-								initActies();
-							}
-						})
-						.catch(function (err) {
-							communiceer("ontcijferen mislukt: " + err.message);
-							throw err;
-						});
+				const veldDecryptiePromises = Array.from(
+					document.querySelectorAll(".pers-input")
+				).map((versleuteldVeld) => {
+					return new Promise((veldResolve, veldReject) => {
+						if (!versleuteldVeld.value.length) {
+							veldResolve();
+						}
+						var ciphertextBytes = base64ToByteArray(versleuteldVeld.value);
+						window.crypto.subtle
+							.decrypt(
+								{ name: "AES-CBC", iv: ivBytes },
+								aesKey,
+								ciphertextBytes
+							)
+							.then(function (plaintextBuffer) {
+								var nweTekst = byteArrayToString(plaintextBuffer);
+								versleuteldVeld.setAttribute("value", nweTekst);
+								versleuteldVeld.value = nweTekst;
+								if (
+									versleuteldVeld.getAttribute("data-naam") === "ik_wil" ||
+									versleuteldVeld.getAttribute("data-naam") === "aantekening"
+								) {
+									versleuteldVeld.textContent = nweTekst;
+								}
+								veldResolve();
+							})
+							.catch(function (err) {
+								const errMsg = `veld ${versleuteldVeld.getAttribute(
+									"name"
+								)}ontcijferen mislukt: ${err.message}\n`;
+								communiceer("fuck!");
+								err.message = `${errMsg}${err.message}`;
+								veldReject(err);
+							});
+					});
 				});
 
-				communiceer("decryptie klaar", 1000);
-				resolveOntsleutel(true);
+				Promise.all(veldDecryptiePromises)
+					.then(() => {
+						communiceer("decryptie klaar", 1000);
+						resolveOntsleutel(true);
+					})
+					.catch((error) => {
+						throw error; // naar ontsleutel eigen reject
+					});
 			})
-			.catch(function (err) {
-				communiceer(verwerkFout(err, true));
-				rejectOntsleutel(err);
+			.catch(function (error) {
+				communiceer(verwerkFout(error, true));
+				rejectOntsleutel(error);
 			});
 	});
 }

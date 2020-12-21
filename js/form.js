@@ -483,8 +483,8 @@ var form = {
 						.getElementById("grote-tabel-formulier")
 						.classList.add("ontsleuteld");
 					document.getElementById("sleutelaars").classList.add("ontsleuteld");
-
 					staat.ontsleuteld = true;
+					initActies();
 				})
 				.catch((e) => {
 					communiceer(`fout in het ontsleutelen ${e}`);
