@@ -616,6 +616,9 @@ $(function () {
 		}
 	}
 
+	//reset het formulier indien oude data nog ingevuld
+	Array.from(document.forms).forEach((form) => form.reset());
+
 	//executeer alle func objen
 	var fo = [acties, form],
 		fol = fo.length,

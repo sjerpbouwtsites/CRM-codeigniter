@@ -1,2 +1,2 @@
 ALTER TABLE leden
-ADD COLUMN sector TEXT;
+ADD COLUMN contact VARCHAR(255);

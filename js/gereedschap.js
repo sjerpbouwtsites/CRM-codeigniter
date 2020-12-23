@@ -73,13 +73,7 @@ function base64ToByteArray(base64String) {
 			byteArray[i] += binaryString.charCodeAt(i);
 		}
 	} catch (error) {
-		if (
-			confirm(
-				`in een rare situatie loopt ie te zeiken en heb ff geen zin t op te lossen. Groeten! ${error}`
-			)
-		) {
-			location.reload();
-		}
+		return error;
 	}
 
 	return byteArray;
