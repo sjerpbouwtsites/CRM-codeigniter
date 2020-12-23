@@ -266,15 +266,21 @@ class CRM extends CI_Model
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
 
-		$this->db->query("TRUNCATE TABLE leden");
+		try {
+			$this->db->query("TRUNCATE TABLE leden");
+			$this->db->query("INSERT INTO leden $kolommen_string VALUES $waarden_string");
 
-		$this->db->query("INSERT INTO leden $kolommen_string VALUES $waarden_string");
-
-		$this->zet_iv($meta['iv']);
+			$this->zet_iv($meta['iv']);
+		} catch (\Throwable $th) {
+			return [
+				'statuscode' => 500,
+				'message'    => $th,
+			];
+		}
 
 		return [
 			'statuscode' => 200,
-			'message'    => 'NOG TE BOUWEN',
+			'message'    => 'Ging goed!',
 		];
 	}
 

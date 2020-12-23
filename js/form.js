@@ -104,65 +104,41 @@ var acties = {
 				document.getElementById("voeg-rij-toe").removeAttribute("disabled");
 			});
 	},
-	toonVerstopSector: function () {
-		this.toonVerstopGeneriek("sector");
-	},
-
-	toonVerstopGeneriek: function (naam) {
-		$("." + naam + "-select").on("change", function () {
+	selectieFilterChange: function () {
+		$(".selectie-filter").on("change", function () {
 			if (!this.value) return;
+			const stapelFiltersB = stapelFilters();
+			const dezeSelect = this.parentNode;
+			const filterOp = this.value.toLowerCase();
+			const rijenTeFilterenH = Array.from(
+				document.querySelectorAll(".form-rij + .form-rij")
+			);
 
-			var $rijen = $(this).closest("form").find(".form-rij:not(.kop)"),
-				iv,
-				keuze = this.value;
-
-			if (stapelFilters()) {
-				$rijen.filter(":visible").each(function () {
-					iv = $(this)
-						.find("[data-naam='" + naam + "']")
-						.val();
-					if (iv !== keuze) {
-						$(this).closest(".form-rij").hide();
-					}
-				});
-			} else {
-				$rijen.hide();
-				$rijen
-					.find(" [data-naam='" + naam + "'][value='" + keuze + "']")
-					.closest(".form-rij")
-					.show();
+			// als niet stapelen als display none eraf
+			if (!stapelFiltersB) {
+				rijenTeFilterenH.forEach((rij) => rij.removeAttribute("style"));
 			}
-		});
-	},
-	toonIkWil: function () {
-		var iv,
-			s,
-			keuze,
-			$rijen,
-			stapelFiltersB = stapelFilters();
 
-		$(".ik_wil-select").on("change", function () {
-			if (!this.value) return;
+			// als wel stapelen alleen verder met zichtbare
+			const rijenTeFilteren = !stapelFiltersB
+				? rijenTeFilterenH
+				: rijenTeFilterenH.filter((rij) => {
+						return rij.hasAttribute("style")
+							? rij.getAttribute("style").includes("none")
+							: true;
+				  });
+			const splitsZoekVeld = dezeSelect.hasAttribute("data-split");
+			rijenTeFilteren.forEach((rij) => {
+				const relevanteValue = rij
+					.querySelector(`[data-naam='${this.getAttribute("data-filter")}']`)
+					.value.toLowerCase();
 
-			keuze = this.value.toLowerCase();
-			$rijen = $("#grote-tabel-formulier").find(".form-rij:not(.kop)");
+				const gevonden = splitsZoekVeld
+					? relevanteValue.split(" ").includes(filterOp)
+					: relevanteValue.includes(filterOp);
 
-			$rijen = stapelFiltersB ? $rijen.filter(":visible") : $rijen;
-
-			if (!stapelFiltersB) $rijen.hide();
-
-			$rijen.each(function () {
-				console.log("fdfd");
-				iv = $(this).find("[data-naam='ik_wil']").val().toLowerCase();
-				if (iv) {
-					s = iv.split(" ");
-					if (s.indexOf(keuze) !== -1) {
-						if (stapelFiltersB) {
-							$(this).hide();
-						} else {
-							$(this).show();
-						}
-					}
+				if (!gevonden) {
+					rij.style.display = "none";
 				}
 			});
 		});
@@ -170,7 +146,9 @@ var acties = {
 	selectieOngedaan: function () {
 		$(".selectie-ongedaan").on("click", function (e) {
 			e.preventDefault();
-			$(this).closest("form").find(".form-rij ~ .form-rij").show();
+			Array.from(
+				document.querySelectorAll(".form-rij + .form-rij")
+			).forEach((rij) => rij.removeAttribute("style"));
 		});
 	},
 	toonKolommen: function () {
@@ -406,47 +384,54 @@ function dezeRijNaam(el) {
 
 var naDecryptie = {
 	vulSelects: function () {
-		var selects = document.querySelectorAll("select[class$='-select']"),
-			selNaam,
-			optNamen,
-			alInSelect,
-			i,
-			j,
-			selSelector;
-
-		for (i = selects.length - 1; i >= 0; i--) {
-			selSelector = "." + selects[i].className;
-			selNaam = selects[i].className.replace("-select", "");
-
-			optNamen = $("[data-naam='" + selNaam + "']")
-				.map(function () {
-					if (this.value) return this.value;
-				})
-				.get();
-
-			if (selects[i].hasAttribute("data-split")) {
-				optNamen = optNamen.join(" ").split(" ").getUnique();
-			}
-
-			alInSelect = [];
-
-			$(selSelector)
-				.empty()
-				.append("<option value=''>" + selNaam.replace("_", " ") + "</option>");
-
-			optNamen.sort().reverse();
-
-			for (j = optNamen.length - 1; j >= 0; j--) {
-				if (!optNamen[j]) continue;
-				if (alInSelect.indexOf(optNamen[j]) !== -1) continue;
-
-				$(selSelector).append(
-					"<option value='" + optNamen[j] + "'>" + optNamen[j] + "</option>"
+		Array.from(document.getElementsByClassName("selectie-filter")).forEach(
+			(selectElement) => {
+				const filtert = selectElement.getAttribute("data-filter");
+				const moetGesplit = selectElement.getAttribute("data-split");
+				const gerelateerdeInvoerVelden = document.querySelectorAll(
+					`[data-naam='${filtert}']`
 				);
+				const invoerVeldenValues = Array.from(gerelateerdeInvoerVelden)
+					.map((veld) => veld.value)
+					.map((veldValue) => {
+						if (moetGesplit) {
+							return veldValue.split(" ");
+						} else {
+							return veldValue;
+						}
+					})
+					.sort()
+					.reverse();
 
-				alInSelect.push(optNamen[j]);
+				const uniekeWaarden = [];
+				invoerVeldenValues.forEach((v) => {
+					if (!v) {
+						return;
+					}
+					if (typeof v === "string") {
+						if (!uniekeWaarden.includes(v)) {
+							uniekeWaarden.push(v);
+						}
+					} else {
+						// dus array
+						v.forEach((w) => {
+							if (!uniekeWaarden.includes(w)) {
+								uniekeWaarden.push(w);
+							}
+						});
+					}
+				});
+
+				selectElement.innerHTML = `
+						<option value=''>${filtert}</option>
+						${uniekeWaarden
+							.map((optie) => {
+								return `<option value='${optie}'>${optie}</option>`;
+							})
+							.join("")}
+					`;
 			}
-		}
+		);
 	},
 	toonActievelden: function () {
 		if (window.innerWidth > 600) {
@@ -461,11 +446,6 @@ var naDecryptie = {
 				mobKnoppen[i].style.display = "inline";
 			}
 		}
-	},
-	marginOnderaanBody: function () {
-		//vanwege pos fixed actievelden
-		var margin = $(".actievelden").height() + 30;
-		$("body").css("marginBottom", margin + "px");
 	},
 };
 

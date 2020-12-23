@@ -127,10 +127,10 @@ function cel($html = "", $class = '')
 
 			<div class='form-knoppen'>
 				<button id='voeg-rij-toe' class='toevoegen'>toevoegen</button>
-				<select class='groep-select'></select>
-				<select class='sector-select'></select>
-				<select class='woonplaats-select'></select>
-				<select id='ik-wil-select' class='ik_wil-select' data-split='true'></select><br>
+				<select class='groep-select selectie-filter' data-filter='groep'></select>
+				<select class='sector-select selectie-filter' data-filter='sector'></select>
+				<select class='woonplaats-select selectie-filter' data-filter='woonplaats'></select>
+				<select id='ik-wil-select' data-filter='ik_wil' class='selectie-filter ik_wil-select' data-split='true'></select><br>
 				<button class='selectie-ongedaan'>selectie ongedaan</button>
 				<button class='sorteer-op-naam'>sorteer op naam</button>
 				<button class='sorteer-op-laatst-gezien'>sorteer op laatst-gezien</button>
