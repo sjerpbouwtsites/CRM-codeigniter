@@ -27,6 +27,7 @@ class Start extends CI_Controller
 			throw new Error("BOE! een sys error HAHAHA 😱 Je url klopt niet of een tabel die zocht is niet geinstalleerd. Later!");
 		}
 		$this->tabel = $tabel_naam;
+		$this->leden();
 	}
 
 	/**

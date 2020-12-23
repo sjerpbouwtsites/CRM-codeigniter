@@ -32,7 +32,7 @@ CREATE TABLE contacten (
   woonplaats VARCHAR(255),
   groep VARCHAR(255),
   contact VARCHAR(255);
-)
+);
 /* bondgenoten
  */
 CREATE TABLE bondgenoten (
@@ -47,4 +47,9 @@ CREATE TABLE bondgenoten (
   woonplaats VARCHAR(255),
   groep VARCHAR(255),
   contact VARCHAR(255)
-)
+);
+/* iv voor bondgenoten */
+INSERT INTO meta (meta_id, sleutel, waarde)
+VALUES (6, 'bondgenoten-iv', 'r9cDptXhQy4m3glOuh6wew==');
+UPDATE meta
+SET waarde = 'r9cDptXhQy4m3glOuh6wew==';
