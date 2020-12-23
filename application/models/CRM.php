@@ -74,6 +74,7 @@ class CRM extends CI_Model
 			"naam" 			=> array($niet_leeg ? $p['naam'] 		: "", "text"),
 			"groep" 			=> array($niet_leeg ? $p['groep'] 		: "", "groep"),
 			"sector" 			=> array($niet_leeg ? $p['sector'] 		: "", "sector"),
+			"contact" 			=> array($niet_leeg ? $p['contact'] 		: "", "contact"),
 			"woonplaats" 			=> array($niet_leeg ? $p['woonplaats'] 		: "", "woonplaats"),
 			"email" 		=> array($niet_leeg ? $p['email'] 		: "", "email", "required"),
 			"telefoon" 		=> array($niet_leeg ? $p['telefoon'] 	: "", "tel"),
