@@ -57,46 +57,52 @@ var acties = {
 	toevoegen: function () {
 		//laatste rij kopieeren;
 		//vind hoogst aanwezige ID en geef die aan nieuwe rij.
-		$("form").on("click", ".toevoegen", function (e) {
-			e.preventDefault();
-			var formRijAr = Array.from(document.querySelectorAll(".form-rij"));
-			var laatsteRij = formRijAr[formRijAr.length - 1];
-			var htmlVanLaatsteRij = laatsteRij.outerHTML + " "; // fake een clone?
-			var wrapper = document.createElement("div");
-			wrapper.innerHTML = htmlVanLaatsteRij;
-			const alleIdInputs = Array.from(document.querySelectorAll(".pers-id"));
-			const hogerDanWelkIdAanwezig =
-				Math.max(...alleIdInputs.map((input) => Number(input.value))) + 1;
-			var cloneRij = wrapper.firstChild;
-			var idVanLaatsteRij = laatsteRij.querySelector(".pers-id").value;
-			Array.from(cloneRij.querySelectorAll("input, textarea")).forEach(
-				(cloneInput) => {
-					// update name.
-					const nameNew = cloneInput
-						.getAttribute("name")
-						.replace(/\[\d+\]/, `[${hogerDanWelkIdAanwezig}]`);
-					cloneInput.setAttribute("name", nameNew);
+		document
+			.getElementById("voeg-rij-toe")
+			.addEventListener("click", function (e) {
+				e.preventDefault();
+				document.getElementById("voeg-rij-toe").setAttribute("disabled", true);
+				var formRijAr = Array.from(document.querySelectorAll(".form-rij"));
+				var laatsteRij = formRijAr[formRijAr.length - 1];
+				var htmlVanLaatsteRij = laatsteRij.outerHTML + " "; // fake een clone?
+				var wrapper = document.createElement("div");
+				wrapper.innerHTML = htmlVanLaatsteRij;
+				const alleIdInputs = Array.from(document.querySelectorAll(".pers-id"));
+				const hogerDanWelkIdAanwezig =
+					Math.max(...alleIdInputs.map((input) => Number(input.value))) + 1;
+				var cloneRij = wrapper.firstChild;
+				var idVanLaatsteRij = laatsteRij.querySelector(".pers-id").value;
+				Array.from(cloneRij.querySelectorAll("input, textarea")).forEach(
+					(cloneInput) => {
+						// update name.
+						const nameNew = cloneInput
+							.getAttribute("name")
+							.replace(/\[\d+\]/, `[${hogerDanWelkIdAanwezig}]`);
+						cloneInput.setAttribute("name", nameNew);
 
-					// kan in de naam of value zitten.
-					if (cloneInput.getAttribute("data-naam") === "id") {
-						cloneInput.value = hogerDanWelkIdAanwezig;
-					} else if (cloneInput.getAttribute("data-naam") === "laatst_gezien") {
-						cloneInput.value = new Date().toLocaleDateString();
-					} else {
-						cloneInput.value = "";
+						// kan in de naam of value zitten.
+						if (cloneInput.getAttribute("data-naam") === "id") {
+							cloneInput.value = hogerDanWelkIdAanwezig;
+						} else if (
+							cloneInput.getAttribute("data-naam") === "laatst_gezien"
+						) {
+							cloneInput.value = new Date().toLocaleDateString();
+						} else {
+							cloneInput.value = "";
+						}
+						// niet zomaar op html string vervangen want kan ook in tel nr zitten
+						cloneInput.setAttribute(
+							"name",
+							cloneInput.name.replace(idVanLaatsteRij, hogerDanWelkIdAanwezig)
+						);
 					}
-					// niet zomaar op html string vervangen want kan ook in tel nr zitten
-					cloneInput.setAttribute(
-						"name",
-						cloneInput.name.replace(idVanLaatsteRij, hogerDanWelkIdAanwezig)
-					);
-				}
-			);
+				);
 
-			cloneRij.id = `nieuwe-rij-${hogerDanWelkIdAanwezig}`;
-			document.querySelector(".form-tabel").appendChild(cloneRij);
-			window.location.hash = cloneRij.id;
-		});
+				cloneRij.id = `nieuwe-rij-${hogerDanWelkIdAanwezig}`;
+				document.querySelector(".form-tabel").appendChild(cloneRij);
+				window.location.hash = cloneRij.id;
+				document.getElementById("voeg-rij-toe").removeAttribute("disabled");
+			});
 	},
 	toonVerstopSector: function () {
 		this.toonVerstopGeneriek("sector");

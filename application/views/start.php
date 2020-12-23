@@ -126,7 +126,7 @@ function cel($html = "", $class = '')
 			<h2>Acties<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a></h2>
 
 			<div class='form-knoppen'>
-				<button class='toevoegen'>toevoegen</button>
+				<button id='voeg-rij-toe' class='toevoegen'>toevoegen</button>
 				<select class='sector-select'></select>
 				<select class='ik_wil-select' data-split='true'></select><br>
 				<button class='selectie-ongedaan'>selectie ongedaan</button>
