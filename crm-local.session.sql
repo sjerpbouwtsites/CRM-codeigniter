@@ -1,1 +1,2 @@
-ALTER TABLE leden DROP COLUMN wijk;
+ALTER TABLE leden
+ADD COLUMN sector TEXT;

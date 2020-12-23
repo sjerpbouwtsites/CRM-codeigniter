@@ -145,13 +145,14 @@ var acties = {
 			if (!this.value) return;
 
 			keuze = this.value.toLowerCase();
-			$rijen = $(this).closest("form").find(".form-rij:not(.kop)");
+			$rijen = $("#grote-tabel-formulier").find(".form-rij:not(.kop)");
 
 			$rijen = stapelFiltersB ? $rijen.filter(":visible") : $rijen;
 
 			if (!stapelFiltersB) $rijen.hide();
 
 			$rijen.each(function () {
+				console.log("fdfd");
 				iv = $(this).find("[data-naam='ik_wil']").val().toLowerCase();
 				if (iv) {
 					s = iv.split(" ");

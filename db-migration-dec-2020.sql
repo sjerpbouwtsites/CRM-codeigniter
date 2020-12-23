@@ -5,9 +5,6 @@ DROP TABLE nijmegen;
 DROP TABLE inlog;
 DROP TABLE juridisch;
 ALTER TABLE leden DROP COLUMN tabel;
-ALTER TABLE leden DROP COLUMN wijk;
-ALTER TABLE leden DROP COLUMN groep;
-ALTER TABLE leden DROP COLUMN sector;
 /* Hier worden csrf tokens bijgehouden die dubbel dienst doen als ajax-token
  token wordt verstrekt via de HTML die achter de authenticatie zit
  */
