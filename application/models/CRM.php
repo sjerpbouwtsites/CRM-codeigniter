@@ -70,7 +70,7 @@ class CRM extends CI_Model
 
 		return array(
 
-			"id"			=> $niet_leeg ? $p['id'] : "NULL",
+			"id"			=> $niet_leeg ? $p['id'] : "1",
 			"naam" 			=> array($niet_leeg ? $p['naam'] 		: "", "text"),
 			"email" 		=> array($niet_leeg ? $p['email'] 		: "", "email", "required"),
 			"telefoon" 		=> array($niet_leeg ? $p['telefoon'] 	: "", "tel"),
