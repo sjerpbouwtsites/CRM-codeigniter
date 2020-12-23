@@ -116,12 +116,7 @@ function cel($html = "", $class = '')
 	</form>
 
 	<form class='actievelden'>
-		<div class='actieveld labels-checkboxes'>
-			<h2>Toon kolommen</h2>
-			<div class='label-en-checkboxes'>
-				<?= $label_en_checkboxes ?>
-			</div>
-		</div>
+
 		<div class='actieveld form-acties'>
 			<h2>Acties<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a></h2>
 
