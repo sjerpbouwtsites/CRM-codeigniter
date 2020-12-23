@@ -69,8 +69,14 @@ var acties = {
 				Math.max(...alleIdInputs.map((input) => Number(input.value))) + 1;
 			var cloneRij = wrapper.firstChild;
 			var idVanLaatsteRij = laatsteRij.querySelector(".pers-id").value;
-			Array.from(cloneRij.getElementsByTagName("input")).forEach(
+			Array.from(cloneRij.querySelectorAll("input, textarea")).forEach(
 				(cloneInput) => {
+					// update name.
+					const nameNew = cloneInput
+						.getAttribute("name")
+						.replace(/\[\d+\]/, `[${hogerDanWelkIdAanwezig}]`);
+					cloneInput.setAttribute("name", nameNew);
+
 					// kan in de naam of value zitten.
 					if (cloneInput.getAttribute("data-naam") === "id") {
 						cloneInput.value = hogerDanWelkIdAanwezig;
@@ -542,15 +548,15 @@ function verzendInStukkenCallback(e) {
 
 			// kolommen bepalen
 			const eersteId = SQLVriendelijkePostData.ids[0];
-			SQLVriendelijkePostData.kolommen = Array.from(formDataSys.keys())
-				.filter((veldNaam) => {
-					return veldNaam.includes(eersteId) && !veldNaam.includes("[id]");
+			const eersteRijInputs = document
+				.querySelector(".form-rij + .form-rij")
+				.querySelectorAll(".pers-input");
+			SQLVriendelijkePostData.kolommen = Array.from(eersteRijInputs)
+				.map((veld) => {
+					return veld.getAttribute("data-naam");
 				})
-				.map((veldNaam) => {
-					return veldNaam
-						.replace("form", "")
-						.replace(/\W/g, "")
-						.replace(/\d/g, "");
+				.filter((veldNaam) => {
+					return veldNaam !== "id";
 				});
 
 			// per id waardenPerId invullen.
@@ -584,10 +590,17 @@ function verzendInStukkenCallback(e) {
 					document.getElementsByTagName("body")[0].classList.add("afsluiten");
 				})
 				.catch((e) => {
-					communiceer(`En dat is een 🥁🥁🥁 fout ${antwoord.status}!
-					De server zegt: 
-					${antwoord.data}`);
-					throw e;
+					try {
+						communiceer(`En dat is een 🥁🥁🥁 fout ${e.status}!
+						De server zegt: 
+						${e.data}`);
+					} catch (error) {
+						alert(
+							"er ging iets fout, ergens, en bij het lezen van de fout ging iets fout, of de fout is niet begrepen."
+						);
+						console.error(error);
+						throw error;
+					}
 				});
 		}) // then van maakSleutelEnVersleutel
 		.catch((e) => {
