@@ -117,6 +117,7 @@ function cel($html = "", $class = '')
 
 	<form class='actievelden'>
 
+
 		<div class='actieveld form-acties'>
 			<h2>Acties<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a></h2>
 

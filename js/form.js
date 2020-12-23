@@ -577,15 +577,21 @@ function verzendInStukkenCallback(e) {
 					document.getElementsByTagName("body")[0].classList.add("afsluiten");
 				})
 				.catch((e) => {
+					console.log(e);
+					document
+						.getElementsByTagName("body")[0]
+						.classList.remove("voorbereid-op-afsluiten");
+
 					try {
-						communiceer(`En dat is een 🥁🥁🥁 fout ${e.status}!
-						De server zegt: 
-						${e.data}`);
+						communiceer(
+							`En dat is een fout!
+						De server zegt: ${e}`,
+							5000
+						);
 					} catch (error) {
 						alert(
 							"er ging iets fout, ergens, en bij het lezen van de fout ging iets fout, of de fout is niet begrepen."
 						);
-						console.error(error);
 						throw error;
 					}
 				});

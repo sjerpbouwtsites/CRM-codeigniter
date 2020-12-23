@@ -17,7 +17,7 @@ class CRM extends CI_Model
 		$this->load->database();
 		$this->post_data = NULL;
 		$this->zet_toegestane_tabel_namen();
-		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 90;
+		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 95;
 	}
 
 	/**
@@ -243,6 +243,7 @@ class CRM extends CI_Model
 			];
 		}
 		// daadwerkelijke xsrf check
+
 		$cookie_exists = array_key_exists('XSRF-TOKEN', $_COOKIE);
 		if (!$cookie_exists) {
 			return [
@@ -266,9 +267,11 @@ class CRM extends CI_Model
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
 
+		$sql_s = "INSERT INTO " . $this->tabel . " $kolommen_string VALUES $waarden_string";
+
 		try {
-			$this->db->query("TRUNCATE TABLE leden");
-			$this->db->query("INSERT INTO leden $kolommen_string VALUES $waarden_string");
+			$this->db->query("TRUNCATE TABLE " . $this->tabel);
+			$this->db->query($sql_s);
 
 			$this->zet_iv($meta['iv']);
 		} catch (\Throwable $th) {
@@ -280,7 +283,7 @@ class CRM extends CI_Model
 
 		return [
 			'statuscode' => 200,
-			'message'    => 'Ging goed!',
+			'message'    => "Ging goed! met $sql_s",
 		];
 	}
 
