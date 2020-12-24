@@ -205,25 +205,6 @@ var acties = {
 				.get();
 
 			communiceer(res.join(lijm));
-
-			/*			var p = document.getElementById('printer');
-			var pp = p.getElementsByTagName('p')[0];
-			//pp.innerHTML = res.join(lijm);
-
-			var t = [];
-			var htmlProd = '';
-			for (var i = 0; i <= res.length; i++) {
-				t.push(res[i]);
-				t.join(lijm)
-			}*/
-
-			//en laatste beetje.
-			//blokTel = Math.ceil(i/20) * 20;
-			//			htmlProd += "<span class='alert-blok' data-teller='"+blokTel+"'>"+t.join(lijm)+"</span>";
-			//htmlProd += "<span class='alert-blok' >"+t.join(lijm)+"</span>";
-			//pp.innerHTML = htmlProd;
-
-			//p.style.display = "block";
 		});
 	},
 

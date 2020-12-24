@@ -1,0 +1,37 @@
+/*het rode blok om met de gebruiker te communiceren*/
+
+#printer {
+	position: fixed;
+	max-width: 80%;
+	left: 10%;
+	top: 10%;
+	max-height: 80vh;
+	overflow-y: scroll;
+	background-color: #d73f3f;
+	border-radius: 0;
+	display: none;
+	z-index: 1000;
+	padding: 40px;
+}
+
+#printer div {
+	position: relative;
+	padding-right: 40px;
+}
+#printer p {
+	margin: 0;
+	padding: 10px;
+	color: white;
+	font-weight: bold;
+}
+
+#printer a {
+	text-decoration: none;
+	color: white;
+	padding: 10px;
+	display: block;
+	font-weight: bold;
+	position: absolute;
+	right: -40px;
+	top: -40px;
+}

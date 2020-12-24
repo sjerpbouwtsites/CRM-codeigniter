@@ -20,14 +20,7 @@ function cel($html = "", $class = '')
 
 <body data-base-url='<?= base_url() ?>'>
 
-	<?php if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
-		echo "<div class='dev-toast'><span>DIT IS DEV<br>GEEN PANIEK</span></div>";
-	} else {
-		echo "<div class='dev-toast dev-toast--live'><span>⚔ LIVE 🏴‍☠️<br>Verbonden met <br>werk-database.</span></div>";
-	} ?>
 	<?= $kop_en_knoppen ?>
-
-
 
 	<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
@@ -119,7 +112,7 @@ function cel($html = "", $class = '')
 
 
 		<div class='actieveld form-acties'>
-			<h2>Acties<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a></h2>
+			<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a>
 
 			<div class='form-knoppen'>
 				<button id='voeg-rij-toe' class='toevoegen'>toevoegen</button>

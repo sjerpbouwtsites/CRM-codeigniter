@@ -1,0 +1,83 @@
+button[class|="lijst"] {
+	background-color: #0069ff;
+}
+button[class|="lijst"]:hover {
+	background-color: #0069ffdd;
+}
+input[type="submit"] {
+	line-height: 1;
+}
+[for="stapel-filters"] {
+	display: block;
+}
+.opgepast.verzenden {
+	background-color: #22ce41;
+}
+.opgepast.verzenden:hover {
+	background-color: #57cc6c;
+}
+
+.form-knoppen {
+	margin-bottom: 0;
+}
+.form-knoppen > * {
+	margin-bottom: 10px;
+}
+
+.actievelden {
+	position: fixed;
+	bottom: 30px;
+	right: 20px;
+	display: flex;
+	flex-direction: column;
+	max-height: 90vh;
+	overflow-y: scroll;
+}
+
+.actievelden {
+	/*margin-top: 20px;*/
+}
+
+.actieveld {
+	padding: 20px;
+	background-color: white;
+	border: 1px solid #ddd;
+	display: none;
+	vertical-align: top;
+	border-radius: 0;
+}
+@media (max-width: 600px) {
+	.actievelden {
+		bottom: 0;
+		right: 0;
+		max-height: 100vh;
+		width: 100vw;
+		margin-top: 0;
+		border: 0;
+	}
+	.actieveld {
+		display: none;
+	}
+
+	/* sluit controls */
+	#sluit-form-acties {
+		display: block;
+		background-color: #d73f3f;
+		position: absolute;
+		top: -20px;
+		right: -20px;
+		padding: 5px 10px;
+	}
+	#sluit-form-acties img {
+		display: block;
+	}
+
+	#mobiel {
+		display: block;
+		margin-bottom: -10px;
+	}
+	#mobiel button {
+		margin-bottom: 10px;
+		display: none;
+	}
+}

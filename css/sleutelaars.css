@@ -1,0 +1,57 @@
+.sleutelaars {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: black;
+}
+
+.sleutelaars div {
+	box-sizing: border-box;
+
+	text-align: center;
+}
+.sleutelaars.ontsleuteld {
+	display: none;
+}
+
+.versleutelde-titel {
+	color: white;
+	font-variant: small-caps;
+	font-size: 30px;
+}
+
+.sleutelaars div + div {
+	background-color: white;
+}
+
+.sleutelaars button {
+	height: 50px;
+	padding-left: 50px;
+	padding-right: 20px;
+	text-transform: uppercase;
+	background-position: 10px 10px;
+	background-size: 30px 30px;
+	background-repeat: no-repeat;
+}
+.sleutelaars button.ontsleutel {
+	background-image: url("/CRM/afb/lock-open-outline.png");
+}
+.sleutelaars button.versleutel {
+	background-image: url("/CRM/afb/lock-outline.png");
+}
+
+.sleutelaars input {
+	line-height: 50px;
+	padding: 0 10px;
+	border-width: 0px;
+	min-width: 280px;
+}
+.sleutelaars input:focus {
+	outline: 5px solid lightblue;
+}

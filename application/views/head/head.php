@@ -7,6 +7,10 @@
 		<script src="<?= base_url('js/encryptie.js') ?>"></script>
 		<script src="<?= base_url('js/form.js') ?>"></script>
 		<link rel='stylesheet' href="<?= base_url('css/normaliseer.css') ?>">
+		<link rel='stylesheet' href="<?= base_url('css/sleutelaars.css') ?>">
+		<link rel='stylesheet' href="<?= base_url('css/controls.css') ?>">
+		<link rel='stylesheet' href="<?= base_url('css/printer.css') ?>">
+		<link rel='stylesheet' href="<?= base_url('css/form.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/style.css') ?>">
 		<meta name="viewport" content="width=device-width">
 		<style>
