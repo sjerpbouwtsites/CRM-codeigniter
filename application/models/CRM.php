@@ -228,6 +228,9 @@ class CRM extends CI_Model
 	 */
 	public function opslaan_vanuit_api($meta, $ids, $kolommen, $waarden_per_id)
 	{
+
+		$this->zet_tabel_naam($meta['tabel']);
+
 		// controlerenof xsrf goed is.
 		$csrf_db_check_res = $this->controleer_csrf_token($meta['xsrf']);
 		if ($csrf_db_check_res === 'niet-gevonden') {
@@ -285,7 +288,7 @@ class CRM extends CI_Model
 		}
 
 		$leden_er_in = count($ids);
-		$sql_s = "SELECT count(id) as count FROM leden";
+		$sql_s = "SELECT count(id) as count FROM " . $this->tabel;
 		$leden_huidig = $this->db->query($sql_s)->result()[0]->count;
 
 		return [
