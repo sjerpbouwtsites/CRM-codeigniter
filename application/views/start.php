@@ -8,7 +8,7 @@
 
 function cel($html = "", $class = '')
 {
-	echo "<div class='$class form-cel' >$html</div>";
+	echo "<div title='$class' class='$class form-cel' >$html</div>";
 }
 
 
@@ -22,36 +22,39 @@ function cel($html = "", $class = '')
 
 	<?= $kop_en_knoppen ?>
 
-	<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
-		<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
-		<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
-		<input type='hidden' name='form_meta[tabel_naam]' value='<?= $tabel_naam ?>'>
+	<div class='formulier-en-controls'>
 
-		<?php
+		<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>post-batch'>
+
+			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
+			<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
+			<input type='hidden' name='form_meta[tabel_naam]' value='<?= $tabel_naam ?>'>
+
+			<?php
 
 
-		echo "<div class='form-tabel'>";
+			echo "<div class='form-tabel'>";
 
-		echo "<div class='kop form-rij'>";
+			echo "<div class='kop form-rij'>";
 
-		cel();
+			cel();
 
-		if ($een_naam_klein !== '') {
-			foreach ($form_data[$een_naam_klein] as $k => $v) {
+			if ($een_naam_klein !== '') {
+				foreach ($form_data[$een_naam_klein] as $k => $v) {
 
-				if ($k === 'id') continue;
-				cel(str_replace("_", " ", $k), "cel-$k");
+					if ($k === 'id') continue;
+					cel(str_replace("_", " ", $k), "cel-$k");
+				}
 			}
-		}
 
-		echo "</div>";
+			echo "</div>";
 
-		foreach ($form_data as $pers) :
+			foreach ($form_data as $pers) :
 
-			echo "<div class='form-rij'>";
+				echo "<div class='form-rij'>";
 
-			cel("<input
+				cel("<input
 							class='pers-id'
 							type='hidden'
 							name='form[{$pers['id']}][id]'
@@ -60,21 +63,21 @@ function cel($html = "", $class = '')
 							>", "rij-verwijderen");
 
 
-			foreach ($pers as $k => $v) :
+				foreach ($pers as $k => $v) :
 
-				if ($k === 'id') continue;
+					if ($k === 'id') continue;
 
-				if ($v[1] === "textarea") {
+					if ($v[1] === "textarea") {
 
-					$cel_html = "<textarea
+						$cel_html = "<textarea
 									class='pers-input'
 									name='form[{$pers['id']}][$k]'
 									placeholder='" . str_replace("_", " ", $k) . "'
 									data-naam='$k'
 								>{$v[0]}</textarea>";
-				} else {
+					} else {
 
-					$cel_html = "<input
+						$cel_html = "<input
 									class='pers-input'
 									name='form[{$pers['id']}][$k]'
 									value='${v[0]}'
@@ -84,62 +87,32 @@ function cel($html = "", $class = '')
 									data-naam='$k'
                                 >";
 
-					if ($k === 'laatst_gezien') {
-						$cel_html = "<span class='cel-vervanger'>
+						if ($k === 'laatst_gezien') {
+							$cel_html = "<span class='cel-vervanger'>
                                         $cel_html
                                         <button class='update-laatst-gezien'>NU</button>
                                     </span>
                                     ";
+						}
 					}
-				}
 
 
-				cel($cel_html, "cel-$k");
+					cel($cel_html, "cel-$k");
+
+				endforeach;
+
+				echo "</div>";
 
 			endforeach;
 
 			echo "</div>";
 
-		endforeach;
+			?>
 
-		echo "</div>";
+		</form>
 
-		?>
-
-	</form>
-
-	<form class='actievelden'>
-
-
-		<div class='actieveld form-acties'>
-			<a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a>
-
-			<div class='form-knoppen'>
-				<button id='voeg-rij-toe' class='toevoegen'>toevoegen</button>
-				<select class='groep-select selectie-filter' data-filter='groep'></select>
-				<select class='sector-select selectie-filter' data-filter='sector'></select>
-				<select class='woonplaats-select selectie-filter' data-filter='woonplaats'></select>
-				<select id='ik-wil-select' data-filter='ik_wil' class='selectie-filter ik_wil-select' data-split='true'></select><br>
-				<button class='selectie-ongedaan'>selectie ongedaan</button>
-				<button class='sorteer-op-naam'>sorteer op naam</button>
-				<button class='sorteer-op-laatst-gezien'>sorteer op laatst-gezien</button>
-				<button class='lijst-email'>lijst emails</button>
-				<button class='lijst-telefoon'>lijst tel nrs</button>
-				<label for='lijst-ook-naam'>
-					lijst ook de namen.
-					<input type='checkbox' id='lijst-ook-naam' name='lijst-ook-naam'>
-				</label>
-				<br>
-				<label for='stapel-filters'>
-					stapel filters
-					<input type='checkbox' id='stapel-filters' name='stapel-filters'>
-				</label>
-			</div>
-			<button id='verzend-grote-formulier-knop' class='opgepast verzenden'>💾 opslaan</button>
-			<button class='opgepast ongedaan'>🏳 herstel </button>
-		</div>
-	</form>
-
+		<?= $controls ?>
+	</div>
 	<div id='printer'>
 		<div>
 			<p>tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst </p>

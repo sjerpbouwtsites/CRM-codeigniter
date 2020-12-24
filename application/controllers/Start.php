@@ -39,6 +39,16 @@ class Start extends CI_Controller
 		return "$a-$b";
 	}
 
+	/**
+	 * DIRTY
+	 */
+	public function get_controls()
+	{
+		ob_start();
+		$this->load->view('controls');
+		return ob_get_clean();
+	}
+
 	public function leden()
 	{
 
@@ -69,22 +79,15 @@ class Start extends CI_Controller
 		$data = array();
 
 		$data['tabel_naam'] = $this->CRM->tabel;
-
 		$data = array_merge($data, $this->CRM->maak_form_data());
-
 		$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
-
 		$data = array_merge($data, $this->CRM->toon_stijl());
-
 		$data['head_el'] = $this->load->view('head/head', $data, TRUE);
-
 		$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
-
 		$data['oude_iv'] = $this->CRM->pak_iv();
-
 		$data['csrf_form'] = $csrf;
+		$data['controls'] = $this->get_controls();
 
-		if (isset($opslaan_ant)) echo "<script>console.dir(" . json_encode($opslaan_ant) . ")</script>";
 
 		$this->load->view('start.php', $data);
 	}

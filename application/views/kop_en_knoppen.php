@@ -1,10 +1,5 @@
 <div class='kop-en-knoppen'>
-	<article>
-		<h2>Sjerp's end-to-end encrypted CRM - v3.1 <br>tabel: <?= $tabel_naam ?> </h2>
 
-		<p>WERKLOCATIE. NIET HUIDIGE CRM! GA VOOR CRM naar <a href='https://vloerwerk.org/CRM-oud'>het oude crm</a><br>Uitleg? <br>Bel sjerp: 0616541143 of<br>Mail dev@sjerpbouwtsites.nl<br>Vind je iets kut of een fout? Hier is me <a target='_blank' href='<?= base_url() ?>todo.html'>planning</a></p>
-
-	</article>
 
 	<nav id='mobiel'>
 		<button class='mob-toon' data-toon='form-acties'>toon admin veld</button>
@@ -13,12 +8,12 @@
 	<div id='sleutelaars' class='sleutelaars'>
 		<div class='sleutelaars-inner'>
 			<h2 class='versleutelde-titel'>Ontsleutel om verder te gaan. </h2>
-			<div>
+			<div class='sleutelaars-inner-2'>
 				<label for='ontsleutel'>
 					<input id='ontsleutel' type='text' placeholder='wachtwoord' autocapitalize="off">
 				</label>
 				</label>
-				<button class='ontsleutel'>ontsleutel</button>
+				<button class='ontsleutel'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
 			</div>
 		</div>
 	</div>

@@ -2,6 +2,9 @@ body {
 	font-family: "Verdana", "Arial";
 	background-color: #f5f5f5;
 }
+* {
+	box-sizing: border-box;
+}
 body.voorbereid-op-afsluiten {
 	background-image: url("/volg-het-ware-pad.jpg");
 	background-size: cover;
@@ -43,10 +46,11 @@ select,
 	color: white;
 	font-weight: bold;
 	border: 0;
-	line-height: 1.7;
+	line-height: 1;
 	display: inline-block;
-	height: 35px;
+	min-height: 35px;
 	border-radius: 0;
+	padding: 10px;
 }
 
 button:hover,
@@ -66,25 +70,16 @@ select:hover,
 	line-height: 30px;
 }
 
-.kop-en-knoppen {
-	background-color: #eee;
-	padding: 20px;
-}
-
-.kop-en-knoppen article {
-	margin: 0px 0 20px;
-}
-
-@media (max-width: 600px) {
-	.kop-en-knoppen article {
-		margin-top: 0;
-	}
-}
-
 #mobiel {
 	display: none;
 }
 
 #sluit-form-acties {
 	display: none;
+}
+
+.formulier-en-controls {
+	display: flex;
+	flex-direction: row;
+	background-color: #f4f2f2;
 }

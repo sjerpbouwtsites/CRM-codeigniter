@@ -24,6 +24,7 @@
 	color: white;
 	font-variant: small-caps;
 	font-size: 30px;
+	padding: 0 20px;
 }
 
 .sleutelaars div + div {
@@ -32,18 +33,17 @@
 
 .sleutelaars button {
 	height: 50px;
-	padding-left: 50px;
 	padding-right: 20px;
 	text-transform: uppercase;
 	background-position: 10px 10px;
 	background-size: 30px 30px;
 	background-repeat: no-repeat;
 }
-.sleutelaars button.ontsleutel {
-	background-image: url("/CRM/afb/lock-open-outline.png");
-}
-.sleutelaars button.versleutel {
-	background-image: url("/CRM/afb/lock-outline.png");
+.sleutelaars .emoji-groot {
+	font-size: 33px;
+	line-height: 10px;
+	position: relative;
+	top: 6px;
 }
 
 .sleutelaars input {
@@ -54,4 +54,16 @@
 }
 .sleutelaars input:focus {
 	outline: 5px solid lightblue;
+}
+
+@media (max-width: 1024px) {
+	.sleutelaars-inner-2 {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.sleutelaars-inner-2 button {
+		margin-top: 20px;
+		width: 300px;
+	}
 }
