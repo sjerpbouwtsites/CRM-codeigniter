@@ -26,17 +26,18 @@ class CRM extends CI_Model
 	 */
 	public function zet_toegestane_tabel_namen()
 	{
+		// @TODO db naam meenemen 
 		// maar een keer vullen.
-		if (!count($this->toegestane_tabel_namen)) {
-			$alle_db_tabellen_query = $this->db->query("SHOW TABLES");
-			foreach ($alle_db_tabellen_query->result() as $resultObj) {
-				$tabelnaam = $resultObj->Tables_in_CRM_local;
-				if ($tabelnaam !== 'CSRF' || $tabelnaam !== 'meta') {
-					$this->toegestane_tabel_namen[] = $tabelnaam;
-				}
-			}
-		}
-		return $this->toegestane_tabel_namen;
+		// if (!count($this->toegestane_tabel_namen)) {
+		// 	$alle_db_tabellen_query = $this->db->query("SHOW TABLES");
+		// 	foreach ($alle_db_tabellen_query->result() as $resultObj) {
+		// 		$tabelnaam = $resultObj->Tables_in_CRM_local;
+		// 		if ($tabelnaam !== 'CSRF' || $tabelnaam !== 'meta') {
+		// 			$this->toegestane_tabel_namen[] = $tabelnaam;
+		// 		}
+		// 	}
+		// }
+		return ['leden', 'bondgenoten', 'contacten'];
 	}
 
 	public function zet_tabel_naam($tabelnaam)
