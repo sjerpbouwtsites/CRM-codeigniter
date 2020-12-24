@@ -61,6 +61,8 @@ class Start extends CI_Controller
 			'secure'  => true,
 		];
 
+
+
 		$is_local = !!strpos(base_url(), 'localhost');
 		setcookie('XSRF-TOKEN', $csrf, $is_local ? $cookie_dev : $cookie_prod);
 

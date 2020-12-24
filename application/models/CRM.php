@@ -244,18 +244,21 @@ class CRM extends CI_Model
 		}
 		// daadwerkelijke xsrf check
 
-		$cookie_exists = array_key_exists('XSRF-TOKEN', $_COOKIE);
-		if (!$cookie_exists) {
-			return [
-				'statuscode' => 401,
-				'message'		 => 'Waarom gaf je geen Cookies? Heb je die uit staan?'
-			];
-		} else if ($_COOKIE['XSRF-TOKEN'] !== $meta['xsrf']) {
-			return [
-				'statuscode' => 403,
-				'message'		 => 'Je verzoek is contrarevolutionair.'
-			];
-		}
+		/**
+		 * WE SKIPPEN DE CSRF CHECK 
+		 */
+		// $cookie_exists = array_key_exists('XSRF-TOKEN', $_COOKIE);
+		// if (!$cookie_exists) {
+		// 	return [
+		// 		'statuscode' => 401,
+		// 		'message'		 => 'Waarom gaf je geen Cookies? Heb je die uit staan?'
+		// 	];
+		// } else if ($_COOKIE['XSRF-TOKEN'] !== $meta['xsrf']) {
+		// 	return [
+		// 		'statuscode' => 403,
+		// 		'message'		 => 'Je verzoek is contrarevolutionair.'
+		// 	];
+		// }
 
 		$kolommen_string = "(" . implode(', ', $kolommen) . ")";
 		$waarden_string_map = [];
@@ -281,9 +284,13 @@ class CRM extends CI_Model
 			];
 		}
 
+		$leden_er_in = count($ids);
+		$sql_s = "SELECT count(id) as count FROM leden";
+		$leden_huidig = $this->db->query($sql_s)->result()[0]->count;
+
 		return [
 			'statuscode' => 200,
-			'message'    => "Ging goed! met $sql_s",
+			'message'    => "Ging goed! $leden_er_in er in; en nu in DB:" . $leden_huidig,
 		];
 	}
 
