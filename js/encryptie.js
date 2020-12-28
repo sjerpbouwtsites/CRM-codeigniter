@@ -125,61 +125,81 @@ function maakSleutelEnVersleutel(sleutelBasis) {
 
 function maakSleutelEnOntsleutel(sleutel) {
 	return new Promise((resolveOntsleutel, rejectOntsleutel) => {
-		var ivBytes = base64ToByteArray(printIV.value.trim());
-		communiceer("decryptiesleutel wordt gemaakt");
+		const ivBytes = base64ToByteArray(printIV.value.trim());
+
 		convertPassphraseToKey(sleutel)
 			.then(function (aesKey) {
-				communiceer("decryptie begint");
-
-				const veldDecryptiePromises = Array.from(
-					document.querySelectorAll(".pers-input")
-				).map((versleuteldVeld) => {
-					return new Promise((veldResolve, veldReject) => {
-						if (!versleuteldVeld.value.length) {
-							veldResolve();
-						}
-						var ciphertextBytes = base64ToByteArray(versleuteldVeld.value);
-						window.crypto.subtle
-							.decrypt(
-								{ name: "AES-CBC", iv: ivBytes },
-								aesKey,
-								ciphertextBytes
-							)
-							.then(function (plaintextBuffer) {
-								var nweTekst = byteArrayToString(plaintextBuffer);
-								versleuteldVeld.setAttribute("value", nweTekst);
-								versleuteldVeld.value = nweTekst;
-								if (
-									versleuteldVeld.getAttribute("data-naam") === "ik_wil" ||
-									versleuteldVeld.getAttribute("data-naam") === "aantekening"
-								) {
-									versleuteldVeld.textContent = nweTekst;
-								}
-								veldResolve();
-							})
-							.catch(function (err) {
-								const errMsg = `veld ${versleuteldVeld.getAttribute(
-									"name"
-								)}ontcijferen mislukt: ${err.message}\n`;
-								communiceer("fuck!");
-								err.message = `${errMsg}${err.message}`;
-								veldReject(err);
-							});
-					});
-				});
-
-				Promise.all(veldDecryptiePromises)
-					.then(() => {
-						communiceer("decryptie klaar", 1000);
-						resolveOntsleutel(true);
-					})
-					.catch((error) => {
-						throw error;
-					});
+				const veldDecryptiePromises = formInvoerVeldenArray().map(
+					(versleuteldVeld) => {
+						return perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes });
+					}
+				);
+				return Promise.all(veldDecryptiePromises);
 			})
-			.catch(function (error) {
-				communiceer(verwerkFout(error, true));
+			.then(() => {
+				communiceer("decryptie klaar", 1000);
+				resolveOntsleutel(true);
+			})
+			.catch((error) => {
+				`Gaat iets mis bij de ontsleuteling. ${error.message}`;
 				rejectOntsleutel(error);
 			});
+	});
+}
+
+function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
+	return new Promise((veldResolve, veldReject) => {
+		if (!versleuteldVeld.value.length) {
+			veldResolve();
+		}
+		let decryptPromise, ciphertextBytes;
+		try {
+			ciphertextBytes = base64ToByteArray(versleuteldVeld.value);
+			decryptPromise = window.crypto.subtle.decrypt(
+				{ name: "AES-CBC", iv: ivBytes },
+				aesKey,
+				ciphertextBytes
+			);
+		} catch (error) {
+			error = addErrorOrigin("veldSleutelMapper - maak Promise", error);
+			veldReject(error);
+		}
+
+		decryptPromise
+			.then((plaintextBuffer) => {
+				return zetVeldWaarde(plaintextBuffer, versleuteldVeld);
+			})
+			.then(() => {
+				veldResolve();
+			})
+			.catch(function (err) {
+				const veldNaam = versleuteldVeld.getAttribute("data-name");
+				err.message = `Ontsleutel catch bij veld ${veldNaam}. \n ${err.message}`;
+				err = addErrorOrigin("decrypt & in veldsleutelmapper", err);
+				veldReject(err);
+			});
+	});
+}
+/**
+ * @returns Promise<Bool|Error>
+ * @param {*} plaintextBuffer
+ * @param {*} versleuteldVeld
+ */
+function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
+	return new Promise((zetVeldResolve, zetVeldReject) => {
+		try {
+			const nweTekst = byteArrayToString(plaintextBuffer);
+			versleuteldVeld.setAttribute("value", nweTekst);
+			versleuteldVeld.value = nweTekst;
+			if (
+				versleuteldVeld.getAttribute("data-naam") === "ik_wil" ||
+				versleuteldVeld.getAttribute("data-naam") === "aantekening"
+			) {
+				versleuteldVeld.textContent = nweTekst;
+			}
+			zetVeldResolve(true);
+		} catch (error) {
+			zetVeldReject(addErrorOrigin("zetVeldWaarde", error));
+		}
 	});
 }

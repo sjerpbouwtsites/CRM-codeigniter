@@ -121,3 +121,30 @@ function verwerkFout(err, voorvoeging) {
 		"."
 	);
 }
+
+/**
+ * @returns Array<NodeList> lijst van alle invoervelden in crm form.
+ * @throws
+ */
+function formInvoerVeldenArray() {
+	try {
+		return Array.from(document.querySelectorAll(".pers-input"));
+	} catch (error) {
+		console.error("gezocht naar .pers-input maar niets te vinden!");
+		throw error;
+	}
+}
+
+/**
+ * maakt origin key/string; zet nieuwe waarde.
+ * @param {string} origin
+ * @param {Error} error
+ */
+function addErrorOrigin(origin, error) {
+	if (!origin || !error) {
+		throw new Error("add Error Origin faal");
+	}
+	if (!error.origin) error.origin = "";
+	error.origin = `${origin}\n${error.origin}`;
+	return error;
+}
