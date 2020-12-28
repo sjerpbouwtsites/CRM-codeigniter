@@ -7,16 +7,16 @@ const staat = {
 function alsOpLocalHostOnthoudDecrypieEnVoerIn() {
 	if (!staat.dev) return;
 	try {
-		const decryptieVeld = document.querySelector("#ontsleutel");
 		const opgeslagenWW = localStorage.getItem("crm-decryptie");
-
 		if (!opgeslagenWW) {
-			decryptieVeld.addEventListener("change", function () {
-				localStorage.setItem("crm-decryptie", decryptieVeld.value);
-			});
+			document
+				.getElementById("ontsleutel")
+				.addEventListener("change", function () {
+					localStorage.setItem("crm-decryptie", decryptieVeld.value);
+				});
 			return;
 		} else {
-			decryptieVeld.value = opgeslagenWW;
+			document.getElementById("ontsleutel").value = opgeslagenWW;
 			document.getElementById("ontsleutel-knop").click();
 		}
 	} catch (err) {
@@ -39,9 +39,12 @@ function toonWaarschuwingIndienNietEerderBezocht() {
 toonWaarschuwingIndienNietEerderBezocht();
 
 var acties = {
+	resetForm() {
+		document.getElementById("grote-tabel-formulier").reset();
+	},
 	updateLaatsGezien() {
 		document
-			.querySelector(".form-tabel")
+			.getElementById("form-rijen-lijst")
 			.addEventListener("click", function (e) {
 				if (e.target.classList.contains("update-laatst-gezien")) {
 					e.preventDefault();
@@ -122,7 +125,7 @@ var acties = {
 				);
 
 				cloneRij.id = `nieuwe-rij-${hogerDanWelkIdAanwezig}`;
-				document.querySelector(".form-tabel").appendChild(cloneRij);
+				document.getElementById("rijen-lijst-div").appendChild(cloneRij);
 				window.location.hash = cloneRij.id;
 				document.getElementById("voeg-rij-toe").removeAttribute("disabled");
 			});
@@ -235,7 +238,7 @@ var acties = {
 		$(".ongedaan").on("click", function (e) {
 			e.preventDefault();
 			if (confirm("Alle wijzigingen in dit scherm wissen?")) {
-				location.href = document.body.getAttribute("data-base-url");
+				location.reload(true);
 			}
 		});
 	},
@@ -319,7 +322,7 @@ var acties = {
 			.addEventListener("click", function (e) {
 				e.preventDefault();
 
-				var origineleFormTabel = document.querySelector(".form-tabel");
+				var origineleFormTabel = document.getElementById("form-rijen-lijst");
 
 				// Add all lis to an array
 				var rijen = Array.from(
@@ -453,8 +456,28 @@ var naDecryptie = {
 	},
 };
 
+/**
+ * helper van form.ontsleutel.
+ * @returns Promise<string:wachtwoord|Error>
+ */
+function sleutelInputPromise() {
+	return new Promise((sleutelResolve, sleutelReject) => {
+		sleutelEl = document.getElementById("ontsleutel");
+		if (!sleutelEl) {
+			const e = new Error("Je vulde niets in.");
+			staat.wachtwoord = null;
+			sleutelReject(addErrorOrigin(e, "ontsleutel sleutel veld lezen."));
+			return;
+		} else {
+			staat.wachtwoord = sleutelEl.value;
+			sleutelResolve(sleutelEl.value);
+		}
+	});
+}
+
 var form = {
 	ontsleutel: function () {
+		// enter terwijl in invoerveld = klik button
 		document
 			.getElementById("ontsleutel")
 			.addEventListener("keyup", function (e) {
@@ -463,31 +486,32 @@ var form = {
 					$("button.ontsleutel").click();
 				}
 			});
-		$("button.ontsleutel").on("click", function (e) {
-			e.preventDefault();
 
-			var sleutel = $("#ontsleutel").val();
+		document
+			.getElementById("ontsleutel-knop")
+			.addEventListener("click", (ontsleutelButtonEvent) => {
+				ontsleutelButtonEvent.preventDefault();
 
-			if (!sleutel) {
-				communiceer("vul wat in");
-				return;
-			}
+				sleutelInputPromise()
+					.then((sleutel) => {
+						// oooover de velden heen.
+						return maakSleutelEnOntsleutel(sleutel);
+					})
+					.then(() => {
+						document
+							.getElementById("grote-tabel-formulier")
+							.classList.add("ontsleuteld");
+						document.getElementById("sleutelaars").classList.add("ontsleuteld");
+						staat.ontsleuteld = true;
+						initActies();
+					})
 
-			staat.wachtwoord = sleutel;
-			maakSleutelEnOntsleutel(sleutel)
-				.then(() => {
-					document
-						.getElementById("grote-tabel-formulier")
-						.classList.add("ontsleuteld");
-					document.getElementById("sleutelaars").classList.add("ontsleuteld");
-					staat.ontsleuteld = true;
-					initActies();
-				})
-				.catch((e) => {
-					communiceer(`fout in het ontsleutelen ${e}`);
-					throw e;
-				});
-		});
+					.then(() => {})
+					.catch((e) => {
+						communiceer(`fout in het ontsleutelen ${e.message}`);
+						e.origin ? console.dir(e) && console.stack(e) : console.error(e);
+					});
+			});
 	},
 	verzendenInStukken: function () {
 		const groteFormulier = document.getElementById("grote-tabel-formulier");
@@ -625,9 +649,6 @@ $(function () {
 			location.href = "http://www.rmo.nl/";
 		}
 	}
-
-	//reset het formulier indien oude data nog ingevuld
-	Array.from(document.forms).forEach((form) => form.reset());
 
 	//executeer alle func objen
 	var fo = [acties, form],

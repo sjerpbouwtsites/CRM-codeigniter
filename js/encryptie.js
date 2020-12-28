@@ -122,7 +122,10 @@ function maakSleutelEnVersleutel(sleutelBasis) {
 		rejectVersleutel(error);
 	});
 }
-
+/**
+ * @returns Promise<Bool|Error>
+ * @param {wachtwoord} sleutel
+ */
 function maakSleutelEnOntsleutel(sleutel) {
 	return new Promise((resolveOntsleutel, rejectOntsleutel) => {
 		const ivBytes = base64ToByteArray(printIV.value.trim());
@@ -149,23 +152,24 @@ function maakSleutelEnOntsleutel(sleutel) {
 
 function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 	return new Promise((veldResolve, veldReject) => {
-		if (!versleuteldVeld.value.length) {
-			veldResolve();
-		}
-		let decryptPromise, ciphertextBytes;
-		try {
-			ciphertextBytes = base64ToByteArray(versleuteldVeld.value);
-			decryptPromise = window.crypto.subtle.decrypt(
-				{ name: "AES-CBC", iv: ivBytes },
-				aesKey,
-				ciphertextBytes
-			);
-		} catch (error) {
-			error = addErrorOrigin("veldSleutelMapper - maak Promise", error);
-			veldReject(error);
-		}
+		new Promise((cipherResolve, cipherReject) => {
+			if (
+				!versleuteldVeld.value.length ||
+				versleuteldVeld.getAttribute("data-naam") === "id"
+			) {
+				cipherResolve("");
+			}
+			let ciphertextBytes;
 
-		decryptPromise
+			ciphertextBytes = base64ToByteArray(versleuteldVeld.value);
+			decryptPromise = window.crypto.subtle
+				.decrypt({ name: "AES-CBC", iv: ivBytes }, aesKey, ciphertextBytes)
+				.then(cipherResolve)
+				.catch((aargh) => {
+					aargh = addErrorOrigin("veldSleutelMapper - maak Promise", aargh);
+					cipherReject(aargh);
+				});
+		})
 			.then((plaintextBuffer) => {
 				return zetVeldWaarde(plaintextBuffer, versleuteldVeld);
 			})
@@ -173,10 +177,13 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 				veldResolve();
 			})
 			.catch(function (err) {
+				console.error(err);
+				let error = new Error(err.message);
 				const veldNaam = versleuteldVeld.getAttribute("data-name");
-				err.message = `Ontsleutel catch bij veld ${veldNaam}. \n ${err.message}`;
-				err = addErrorOrigin("decrypt & in veldsleutelmapper", err);
-				veldReject(err);
+				error.message = `Ontsleutel catch bij veld ${veldNaam}. \n ${error.message}`;
+				error = addErrorOrigin("decrypt & in veldsleutelmapper", error);
+				console.dir(error) && console.stack();
+				veldReject(error);
 			});
 	});
 }

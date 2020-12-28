@@ -34,7 +34,7 @@ function cel($html = "", $class = '')
 			<?php
 
 
-			echo "<div class='form-tabel'>";
+			echo "<div id='form-rijen-lijst' class='form-tabel'>";
 
 			echo "<div class='kop form-rij'>";
 
