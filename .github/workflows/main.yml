@@ -26,7 +26,7 @@ jobs:
         uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: http://vps-284144-5452.hosted.at.hostnet.nl:8443/modules/git/public/web-hook.php?uuid=0c58bb39-6ea7-1004-81ca-dc648692ddb4
-          data: "${{ <github.head_ref> }}"
+          data: ${{ toJson(github) }}
   ping-plesk2:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -40,4 +40,4 @@ jobs:
         uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: http://vps-284144-5452.hosted.at.hostnet.nl:8443/modules/git/public/web-hook.php?uuid=77d642bc-c827-a7e0-5923-8efbe9284dd8
-          data: "${{ <github.head_ref> }}"
+          data: ${{ toJson(github) }}
