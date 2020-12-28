@@ -128,7 +128,7 @@ var acties = {
 				);
 
 				cloneRij.id = `nieuwe-rij-${hogerDanWelkIdAanwezig}`;
-				document.getElementById("rijen-lijst-div").appendChild(cloneRij);
+				document.getElementById("form-rijen-lijst").appendChild(cloneRij);
 				window.location.hash = cloneRij.id;
 				document.getElementById("voeg-rij-toe").removeAttribute("disabled");
 			});
