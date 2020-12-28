@@ -1,22 +1,22 @@
 /* maak csrf / json token tabel */
 CREATE TABLE CSRF (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  token VARCHAR(255),
-  modified_on DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `token` VARCHAR(255),
+  `modified_on` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 /* alle mensen die geen lid zijn maar contact opnamen in weze */
 CREATE TABLE contacten (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  naam VARCHAR(255),
-  email VARCHAR(255) NOT NULL,
-  telefoon VARCHAR(255),
-  laatst_gezien VARCHAR(255),
-  ik_wil TEXT,
-  aantekening TEXT,
-  sector VARCHAR(255),
-  woonplaats VARCHAR(255),
-  groep VARCHAR(255),
-  contact VARCHAR(255);
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `naam` VARCHAR(255),
+  `email` VARCHAR(255) NOT NULL,
+  `telefoon` VARCHAR(255),
+  `laatst_gezien` VARCHAR(255),
+  `ik_wil` TEXT,
+  `aantekening` TEXT,
+  `sector` VARCHAR(255),
+  `woonplaats` VARCHAR(255),
+  `groep` VARCHAR(255),
+  `contact` VARCHAR(255)
 );
 /*onzin contact*/
 INSERT INTO `contacten` (
@@ -151,4 +151,3 @@ VALUES (1, 'leden-iv', 'AUElUoiQ+gA/65A8hO2p7w=='),
 --
 ALTER TABLE `meta`
 ADD PRIMARY KEY (`meta_id`);
-COMMIT;
