@@ -1,21 +1,27 @@
+.crm-pagina-nav__wrapper {
+	padding-left: 60px;
+	overflow-x: hidden;
+}
+
 .crm-pagina-nav {
 	position: absolute;
 	top: 0;
 	right: 0;
 	width: 420px;
 	max-width: calc(100% - 40px);
-	box-shadow: 6px 2px 6px #222;
-	padding: 20px;
-	background-color: #f2f2f2;
+
 	font-size: 30px;
 	transition: 0.1s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.6s;
-	transform: translate(100%);
+	transform: translate(421px);
 }
 .crm-pagina-nav--open {
 	transform: translateX(0);
 }
 .crm-pagina-nav__inner {
 	position: relative;
+	padding: 20px;
+	box-shadow: 6px 2px 6px #222;
+	background-color: #f2f2f2;
 }
 .crm-pagina-nav__lijst {
 	margin: 0;
@@ -40,14 +46,18 @@
 }
 .crm-pagina-nav__angled-knop {
 	position: absolute;
-	transform: rotate(90deg) translateX(-50px) translateY(138px);
+	transform: rotate(90deg) translateX(-75px) translateY(132px);
 	left: 0;
 	bottom: 0;
 	margin: 0;
 	margin-top: 0px;
 	margin-top: 0px;
 	margin-top: 0px;
+	margin-top: 0px;
 	padding: 0.75em;
+	padding-top: 0.75em;
+	padding-right: 0.75em;
+	padding-left: 0.75em;
 	padding-top: 0.75em;
 	padding-top: 0.5em;
 	background-color: #c02424;
@@ -59,6 +69,8 @@
 	font-weight: bold;
 	text-transform: uppercase;
 	transition: 0.1s ease-in-out 0.4s;
+	padding-left: 1.25em;
+	padding-right: 1.25em;
 }
 
 .crm-pagina-nav__link {

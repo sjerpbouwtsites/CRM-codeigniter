@@ -403,7 +403,8 @@ var acties = {
 								.getElementById("crm-pagina-nav")
 								.classList.remove("crm-pagina-nav--open");
 						}
-					}, 5000);
+						console.warn("timeout nav anim");
+					}, 5000000);
 				}
 			});
 	},
