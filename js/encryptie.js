@@ -1,5 +1,6 @@
 /* eslint-disable */
 /**
+ * Creeert de basis data tbv van de crypto.
  * @returns Promise<CryptoKey>
  * @param {*} wachtwoordString
  */
@@ -22,46 +23,50 @@ function convertPassphraseToKey(wachtwoordString) {
 }
 
 /**
+ *
  * @returns Promise<CryptoKey>
  * @param {*} cryptoBasisRes {revoluties, zoutStreng, passphrasBytes}
  */
-async function importKeyAsync(cryptoBasisRes) {
-	return window.crypto.subtle
-		.importKey(
-			"raw",
-			cryptoBasisRes.wachtwoordBytes,
-			{ name: "PBKDF2" },
-			false,
-			["deriveKey"]
-		)
-		.then((baseKey) => {
-			return new Promise((deriveResolve, deriveReject) => {
-				window.crypto.subtle
-					.deriveKey(
-						{
-							name: "PBKDF2",
-							salt: cryptoBasisRes.zoutBytes,
-							iterations: cryptoBasisRes.revoluties,
-							hash: "SHA-1",
-						},
-						baseKey,
-						{ name: "AES-CBC", length: 256 },
-						false,
-						["encrypt", "decrypt"]
-					)
-					.then((diriveRes) => {
-						deriveResolve(diriveRes);
-					})
-					.catch((deriveErr) => {
-						deriveReject(deriveErr);
-					});
+function importKeyAsync(cryptoBasisRes) {
+	return new Promise((importKeyAsyncResolve, importKeyAsyncReject) => {
+		window.crypto.subtle
+			.importKey(
+				"raw",
+				cryptoBasisRes.wachtwoordBytes,
+				{ name: "PBKDF2" },
+				false,
+				["deriveKey"]
+			)
+			.then((baseKey) => {
+				return new Promise((deriveResolve, deriveReject) => {
+					window.crypto.subtle
+						.deriveKey(
+							{
+								name: "PBKDF2",
+								salt: cryptoBasisRes.zoutBytes,
+								iterations: cryptoBasisRes.revoluties,
+								hash: "SHA-1",
+							},
+							baseKey,
+							{ name: "AES-CBC", length: 256 },
+							false,
+							["encrypt", "decrypt"]
+						)
+						.then((diriveRes) => {
+							deriveResolve(diriveRes);
+						})
+						.catch((deriveErr) => {
+							deriveReject(deriveErr);
+						});
+				});
+			})
+			.then((dirivedKeyRes) => {
+				importKeyAsyncResolve(dirivedKeyRes);
+			})
+			.catch((deriveKeyOrImportKeyError) => {
+				importKeyAsyncReject(deriveKeyOrImportKeyError);
 			});
-		});
-
-	// 	.catch((deriveKeyOrImportKeyError) => {
-
-	// 	})
-	// );
+	});
 }
 
 function maakSleutelEnVersleutel(sleutelBasis) {
