@@ -37,7 +37,7 @@ class CRM extends CI_Model
 		// 		}
 		// 	}
 		// }
-		return ['leden', 'bondgenoten', 'contacten'];
+		return $this->toegestane_tabel_namen = ['leden', 'bondgenoten', 'contacten'];
 	}
 
 	public function zet_tabel_naam($tabelnaam)
@@ -46,6 +46,7 @@ class CRM extends CI_Model
 		if (!in_array($tabelnaam, $this->toegestane_tabel_namen)) {
 			throw new Error("de tabel $tabelnaam bestaat nog niet in de db.");
 		}
+
 		$this->tabel = $tabelnaam;
 	}
 
