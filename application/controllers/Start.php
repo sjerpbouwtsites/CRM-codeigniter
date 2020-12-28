@@ -39,6 +39,7 @@ class Start extends CI_Controller
 		return "$a-$b";
 	}
 
+
 	/**
 	 * DIRTY
 	 */

@@ -1,7 +1,30 @@
 const staat = {
 	ontsleuteld: false,
 	wachtwoord: null,
+	dev: location.href.includes("localhost"),
 };
+
+function alsOpLocalHostOnthoudDecrypieEnVoerIn() {
+	if (!staat.dev) return;
+	try {
+		const decryptieVeld = document.querySelector("#ontsleutel");
+		const opgeslagenWW = localStorage.getItem("crm-decryptie");
+
+		if (!opgeslagenWW) {
+			decryptieVeld.addEventListener("change", function () {
+				localStorage.setItem("crm-decryptie", decryptieVeld.value);
+			});
+			return;
+		} else {
+			decryptieVeld.value = opgeslagenWW;
+			document.getElementById("ontsleutel-knop").click();
+		}
+	} catch (err) {
+		communiceer("Iets gaat mis bij auto-decrypt.");
+		console.error(err);
+	}
+	communiceer("auto-decrypt", 200);
+}
 
 function toonWaarschuwingIndienNietEerderBezocht() {
 	const heeftEerderBezocht =
@@ -614,6 +637,9 @@ $(function () {
 
 	//de voornaamste reden dat zit is opgeschreven is dat het onleesbaar is.
 	for (i = 0; i < fol; i++) for (fn in fo[i]) fo[i][fn]();
+
+	// auto decrypt op dev
+	alsOpLocalHostOnthoudDecrypieEnVoerIn();
 });
 
 function communiceer(tekst, tijd) {

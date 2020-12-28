@@ -13,7 +13,7 @@
 					<input id='ontsleutel' type='text' placeholder='wachtwoord' autocapitalize="off">
 				</label>
 				</label>
-				<button class='ontsleutel'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
+				<button id='ontsleutel-knop' class='ontsleutel'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
 			</div>
 		</div>
 	</div>
