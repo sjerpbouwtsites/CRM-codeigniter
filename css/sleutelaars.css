@@ -26,6 +26,15 @@
 	font-size: 30px;
 	padding: 0 20px;
 }
+.versleutelde-titel--kleiner {
+	font-size: 24px;
+	max-width: 310px;
+	margin: 0 auto;
+	line-height: 1;
+}
+.versleutelde-titel--kleiner small {
+	font-size: 0.6em;
+}
 
 .sleutelaars div + div {
 	background-color: white;
