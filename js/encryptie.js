@@ -1,35 +1,67 @@
 /* eslint-disable */
-function convertPassphraseToKey(passphraseString) {
-	var iterations = 1000000; // Longer is slower... hence stronger
-	var saltString =
-		"You need to know the salt later to decrypt. It's not a secret, though.";
-	var saltBytes = stringToByteArray(saltString);
-	var passphraseBytes = stringToByteArray(passphraseString);
+/**
+ * @returns Promise<CryptoKey>
+ * @param {*} wachtwoordString
+ */
+function convertPassphraseToKey(wachtwoordString) {
+	// het zijn hieronder twee promises dus hier ook promise
+	// voor consistente foutafhandeling.
+	const cryptoBasis = new Promise((resolve, reject) => {
+		try {
+			const revoluties = 1000000; // meer is beter
+			const zoutStreng =
+				"You need to know the salt later to decrypt. It's not a secret, though.";
+			const zoutBytes = stringToByteArray(zoutStreng);
+			const wachtwoordBytes = stringToByteArray(wachtwoordString);
+			resolve({ zoutBytes, wachtwoordBytes, revoluties });
+		} catch (error) {
+			reject(error);
+		}
+	});
+	return cryptoBasis.then(importKeyAsync);
+}
 
+/**
+ * @returns Promise<CryptoKey>
+ * @param {*} cryptoBasisRes {revoluties, zoutStreng, passphrasBytes}
+ */
+async function importKeyAsync(cryptoBasisRes) {
 	return window.crypto.subtle
-		.importKey("raw", passphraseBytes, { name: "PBKDF2" }, false, ["deriveKey"])
-		.then(function (baseKey) {
-			return window.crypto.subtle.deriveKey(
-				{
-					name: "PBKDF2",
-					salt: saltBytes,
-					iterations: iterations,
-					hash: "SHA-1",
-				},
-				baseKey,
-				{ name: "AES-CBC", length: 256 },
-				false,
-				["encrypt", "decrypt"]
-			);
-		})
-		.catch(function (err) {
-			alert(
-				"Could not generate a key from passphrase '" +
-					passphrase +
-					"': " +
-					err.message
-			);
+		.importKey(
+			"raw",
+			cryptoBasisRes.wachtwoordBytes,
+			{ name: "PBKDF2" },
+			false,
+			["deriveKey"]
+		)
+		.then((baseKey) => {
+			return new Promise((deriveResolve, deriveReject) => {
+				window.crypto.subtle
+					.deriveKey(
+						{
+							name: "PBKDF2",
+							salt: cryptoBasisRes.zoutBytes,
+							iterations: cryptoBasisRes.revoluties,
+							hash: "SHA-1",
+						},
+						baseKey,
+						{ name: "AES-CBC", length: 256 },
+						false,
+						["encrypt", "decrypt"]
+					)
+					.then((diriveRes) => {
+						deriveResolve(diriveRes);
+					})
+					.catch((deriveErr) => {
+						deriveReject(deriveErr);
+					});
+			});
 		});
+
+	// 	.catch((deriveKeyOrImportKeyError) => {
+
+	// 	})
+	// );
 }
 
 function maakSleutelEnVersleutel(sleutelBasis) {
