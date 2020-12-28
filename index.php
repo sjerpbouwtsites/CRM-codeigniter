@@ -1,7 +1,5 @@
 <?php
 
-echo " JSDSD";
-die();
 /**
  * CodeIgniter
  *
