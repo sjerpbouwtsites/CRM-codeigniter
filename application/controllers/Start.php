@@ -9,6 +9,7 @@ class Start extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('CRM');
+		$this->url_delen = explode('/', $_SERVER['REQUEST_URI']);
 	}
 
 	// dus vloerwerk.org/CRM
@@ -39,16 +40,30 @@ class Start extends CI_Controller
 		return "$a-$b";
 	}
 
-
 	/**
-	 * DIRTY
+	 * haalt adhv toegestane tabellen nav aan.
 	 */
-	public function get_controls()
+	public function make_nav()
+	{
+		$pages = array_map(function ($tabel) {
+
+			return [
+				'naam' 		=> $tabel,
+				'url'  		=> base_url() . "tabel/$tabel",
+				'actief'	=> in_array($tabel, $this->url_delen),
+			];
+		}, $this->CRM->toegestane_tabel_namen);
+
+		return $pages;
+	}
+
+	public function dirty_get_view($link, $data)
 	{
 		ob_start();
-		$this->load->view('controls');
+		$this->load->view($link, $data);
 		return ob_get_clean();
 	}
+
 
 	public function leden()
 	{
@@ -87,9 +102,9 @@ class Start extends CI_Controller
 		$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
 		$data['oude_iv'] = $this->CRM->pak_iv();
 		$data['csrf_form'] = $csrf;
-		$data['controls'] = $this->get_controls();
-
-
+		$data['paginalinks'] = $this->make_nav();
+		$data['navigatie'] = $this->dirty_get_view('nav.php', $data);
+		$data['controls'] = $this->dirty_get_view('controls.php', $data);
 		$this->load->view('start.php', $data);
 	}
 }

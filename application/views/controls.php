@@ -2,6 +2,8 @@
 
   <a id='sluit-form-acties' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a>
 
+  <?= $navigatie ?>
+
   <article>
     <h2>Sjerp's end-to-end encrypted CRM - v3.1 <br>tabel: <?= $tabel_naam ?> </h2>
 
