@@ -12,7 +12,10 @@ function alsOpLocalHostOnthoudDecrypieEnVoerIn() {
 			document
 				.getElementById("ontsleutel")
 				.addEventListener("change", function () {
-					localStorage.setItem("crm-decryptie", decryptieVeld.value);
+					localStorage.setItem(
+						"crm-decryptie",
+						document.getElementById("ontsleutel").value
+					);
 				});
 			return;
 		} else {
