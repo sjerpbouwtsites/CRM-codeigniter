@@ -25,5 +25,5 @@ jobs:
       - name: Webhook
         uses: joelwmale/webhook-action@master
         env:
-          WEBHOOK_URL: https://vps-284144-5452.hosted.at.hostnet.nl:8443/modules/git/public/web-hook.php?uuid=0c58bb39-6ea7-1004-81ca-dc648692ddb4
-          data: "Hello from github actions!"
+          WEBHOOK_URL: http://vps-284144-5452.hosted.at.hostnet.nl:8443/modules/git/public/web-hook.php?uuid=0c58bb39-6ea7-1004-81ca-dc648692ddb4
+          data: "GH action CRM commit"
