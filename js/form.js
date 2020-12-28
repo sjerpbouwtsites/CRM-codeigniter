@@ -36,7 +36,6 @@ function toonWaarschuwingIndienNietEerderBezocht() {
 		alert(
 			"Je bezoekt nu het NIEUWE crm. Hier werkt Sjerp. Ga voor het huidige CRM naar https://vloerwerk.org/CRM-oud"
 		);
-		localStorage.setItem("vw-crm-eerder-bezocht", "ja");
 	}
 }
 toonWaarschuwingIndienNietEerderBezocht();
@@ -371,6 +370,43 @@ var acties = {
 		o.value = "";
 		o.focus();
 	},
+	navigatieAnimatie() {
+		// eerst regelen dat het uit het scherm animeert, langzamer voor de eerste bezoek.
+		const tijdTotVerdwijnenNav =
+			localStorage.getItem("vw-crm-eerder-bezocht") === "ja" ? 50 : 1500;
+		setTimeout(() => {
+			const navEl = document.getElementById("crm-pagina-nav");
+			if (navEl.classList.contains("crm-pagina-nav--open")) {
+				navEl.classList.remove("crm-pagina-nav--open");
+			}
+		}, tijdTotVerdwijnenNav);
+
+		document
+			.getElementById("schakel-navigatie")
+			.addEventListener("click", (navEvent) => {
+				navEvent.preventDefault();
+				const isOpen = !document
+					.getElementById("crm-pagina-nav")
+					.classList.contains("crm-pagina-nav--open"); // want wordt open.
+				document
+					.getElementById("crm-pagina-nav")
+					.classList.toggle("crm-pagina-nav--open");
+				// na een tijdje weer uitzetten als die nog aanstaat.
+				if (isOpen) {
+					setTimeout(() => {
+						if (
+							document
+								.getElementById("crm-pagina-nav")
+								.classList.contains("crm-pagina-nav--open")
+						) {
+							document
+								.getElementById("crm-pagina-nav")
+								.classList.remove("crm-pagina-nav--open");
+						}
+					}, 5000);
+				}
+			});
+	},
 };
 
 function stapelFilters() {
@@ -664,6 +700,9 @@ $(function () {
 
 	// auto decrypt op dev
 	alsOpLocalHostOnthoudDecrypieEnVoerIn();
+
+	// vastleggen bezoek
+	localStorage.setItem("vw-crm-eerder-bezocht", "ja");
 });
 
 function communiceer(tekst, tijd) {

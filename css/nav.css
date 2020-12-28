@@ -1,0 +1,106 @@
+.crm-pagina-nav {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 420px;
+	max-width: calc(100% - 40px);
+	box-shadow: 6px 2px 6px #222;
+	padding: 20px;
+	background-color: #f2f2f2;
+	font-size: 30px;
+	transition: 0.1s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.6s;
+	transform: translate(100%);
+}
+.crm-pagina-nav--open {
+	transform: translateX(0);
+}
+.crm-pagina-nav__inner {
+	position: relative;
+}
+.crm-pagina-nav__lijst {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+.crm-pagina-nav__icon {
+	min-width: 45px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.crm-pagina-nav__stuk {
+	padding: 7.5px 0;
+}
+.crm-pagina-nav__angled-knop {
+	position: absolute;
+	transform: rotate(90deg) translateX(-50px) translateY(138px);
+	left: 0;
+	bottom: 0;
+	margin: 0;
+	margin-top: 0px;
+	margin-top: 0px;
+	margin-top: 0px;
+	padding: 0.75em;
+	padding-top: 0.75em;
+	padding-top: 0.5em;
+	background-color: #c02424;
+	color: white;
+	letter-spacing: 2.5px;
+	z-index: 1;
+	padding-top: 0.5em;
+	line-height: 1;
+	font-weight: bold;
+	text-transform: uppercase;
+	transition: 0.1s ease-in-out 0.4s;
+}
+
+.crm-pagina-nav__link {
+	font-weight: bold;
+	text-transform: uppercase;
+	vertical-align: middle;
+	text-decoration: none;
+	color: #353535;
+}
+.crm-pagina-nav__link:hover {
+	color: #d73f3f;
+}
+.crm-pagina-nav__link--actief {
+	filter: blur(0.25px);
+	opacity: 0.65;
+}
+.crm-pagina-nav__link--actief:hover {
+	color: #353535;
+	cursor: none;
+}
+.crm-pagina-nav__actief-icon {
+	font-size: 0.5em;
+	vertical-align: middle;
+	position: relative;
+	top: -4px;
+}
+
+.crm-pagina-nav__knop-icon {
+	display: inline-block;
+}
+.crm-pagina-nav__knop-icon--gesloten {
+	transform: rotate(-90deg);
+}
+.crm-pagina-nav__knop-icon--open {
+	transform: rotate(270deg);
+}
+.crm-pagina-nav--open .crm-pagina-nav__knop-icon--open {
+	display: inline-block;
+}
+.crm-pagina-nav__knop-icon--gesloten {
+	display: none;
+}
+.crm-pagina-nav--open .crm-pagina-nav__knop-icon--gesloten {
+	display: none;
+}

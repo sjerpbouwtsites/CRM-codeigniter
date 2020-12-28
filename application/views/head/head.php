@@ -12,6 +12,7 @@
 		<link rel='stylesheet' href="<?= base_url('css/printer.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/form.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/style.css') ?>">
+		<link rel='stylesheet' href="<?= base_url('css/nav.css') ?>">
 		<meta http-equiv="Cache-control" content="no-cache">
 		<meta name="viewport" content="width=device-width">
 		<link rel="shortcut icon" href="/afb/app-icons/favicon.ico" />

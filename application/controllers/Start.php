@@ -40,11 +40,36 @@ class Start extends CI_Controller
 		return "$a-$b";
 	}
 
+	function nav_icons($icon)
+	{
+		switch ($icon) {
+			case 'leden':
+				return '🦹‍♂️';
+				break;
+			case  'bondgenoten':
+				return '👩‍🔧';
+				break;
+			case 'contacten':
+				return '📱';
+				break;
+			case 'Bel Sjerp':
+				return '🙉';
+				break;
+			case 'Mail Sjerp':
+				return '🙈';
+				break;
+			default:
+				return '⚒';
+		}
+	}
+
 	/**
+	 * @returns array met naam, url, actief bool, icon.
 	 * haalt adhv toegestane tabellen nav aan.
 	 */
 	public function make_nav()
 	{
+
 		$pages = array_map(function ($tabel) {
 
 			return [
@@ -54,7 +79,25 @@ class Start extends CI_Controller
 			];
 		}, $this->CRM->toegestane_tabel_namen);
 
-		return $pages;
+		$pages[] = [
+			'naam'	=> 'Bel Sjerp',
+			'url'		=> "tel:+31616541143",
+			'actief' => false,
+		];
+		$pages[] = [
+			'naam'	=> 'Mail Sjerp',
+			'url'		=> "mailto:dev@sjerpbouwtsites.nl",
+			'actief' => false,
+		];
+
+		$pages_with_icons = array_map(function ($nav_part) {
+			$icon_a = [
+				'icon'	=> $this->nav_icons($nav_part['naam'])
+			];
+			return array_merge($icon_a, $nav_part);
+		}, $pages);
+
+		return $pages_with_icons;
 	}
 
 	public function dirty_get_view($link, $data)
