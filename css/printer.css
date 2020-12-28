@@ -10,7 +10,7 @@
 	background-color: #d73f3f;
 	border-radius: 0;
 	display: none;
-	z-index: 1000;
+	z-index: 10000;
 	padding: 40px;
 }
 
