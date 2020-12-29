@@ -145,8 +145,22 @@ class Start extends CI_Controller
 		$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
 		$data['oude_iv'] = $this->CRM->pak_iv();
 		$data['csrf_form'] = $csrf;
-		$data['paginalinks'] = $this->make_nav();
-		$data['navigatie'] = $this->dirty_get_view('nav.php', $data);
+
+		$data['navigatie'] = $this->dirty_get_view('nav/nav.php', [
+			'nav_title'		=> 'menu',
+			'nav_inhoud'	=> $this->dirty_get_view('nav/menu.php', [
+				'nav_title'	=> 'menu',
+				'paginalinks' => $this->make_nav(),
+			])
+		]);
+		$data['filters'] = $this->dirty_get_view('nav/nav.php', [
+			'nav_title'		=> 'filters',
+			'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
+		]);
+		$data['acties'] = $this->dirty_get_view('nav/nav.php', [
+			'nav_title'		=> 'acties',
+			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [])
+		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
 		$this->load->view('start.php', $data);
 	}

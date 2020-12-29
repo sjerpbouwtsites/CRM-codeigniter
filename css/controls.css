@@ -1,3 +1,5 @@
+/* dit bestand is een verwarring in samenspan met nav.css vanwege... dingen die eerst hier dan daar etc. gebouwd worden en nu staat het over al. */
+
 button[class|="lijst"] {
 	background-color: #0069ff;
 }
@@ -56,6 +58,10 @@ input[type="submit"] {
 }
 .actieform-rij * + * {
 	margin-left: 10px;
+}
+
+.selectie-filter {
+	background-color: #877;
 }
 
 @media (max-width: 600px) {

@@ -371,44 +371,91 @@ var acties = {
 		o.focus();
 	},
 	navigatieAnimatie() {
-		// eerst regelen dat het uit het scherm animeert, langzamer voor de eerste bezoek.
+		// ten tweede regelen dat het uit het scherm animeert, langzamer voor de eerste bezoek.
+		const willekeurElement = Math.floor((Math.random() - 0.5) * 500);
 		const tijdTotVerdwijnenNav =
-			localStorage.getItem("vw-crm-eerder-bezocht") === "ja" ? 50 : 1500;
+			localStorage.getItem("vw-crm-eerder-bezocht") === "ja"
+				? 50 + willekeurElement / 10
+				: 1500 + willekeurElement;
 		setTimeout(() => {
-			const navEl = document.getElementById("crm-pagina-nav");
-			if (navEl.classList.contains("crm-pagina-nav--open")) {
-				navEl.classList.remove("crm-pagina-nav--open");
-			}
+			const navEls = document.querySelectorAll(
+				"#crm-nav-menu, #crm-nav-filters"
+			);
+			navEls.forEach((navEl) => {
+				navEl.hasAttribute("data-nav-open") &&
+					navEl.removeAttribute("data-nav-open");
+			});
 		}, tijdTotVerdwijnenNav);
 
-		document
-			.getElementById("schakel-navigatie")
-			.addEventListener("click", (navEvent) => {
-				navEvent.preventDefault();
-				const isOpen = !document
-					.getElementById("crm-pagina-nav")
-					.classList.contains("crm-pagina-nav--open"); // want wordt open.
-				document
-					.getElementById("crm-pagina-nav")
-					.classList.toggle("crm-pagina-nav--open");
-				// na een tijdje weer uitzetten als die nog aanstaat.
-				if (isOpen) {
-					setTimeout(() => {
-						if (
-							document
-								.getElementById("crm-pagina-nav")
-								.classList.contains("crm-pagina-nav--open")
-						) {
-							document
-								.getElementById("crm-pagina-nav")
-								.classList.remove("crm-pagina-nav--open");
-						}
-						console.warn("timeout nav anim");
-					}, 5000000);
-				}
+		const navKnoppen = document.querySelectorAll(
+			"#schakel-navigatie-menu, #schakel-navigatie-filters"
+		);
+
+		// nu nog muisover status zetten die tegenhoud dat menu's inklappen.
+		// muisover staat dus in data ttr muis over.
+		const navs = document.querySelectorAll("#crm-nav-filters, #crm-nav-menu");
+		navs.forEach((navEl) => {
+			navEl.addEventListener("mouseenter", () => {
+				!navEl.hasAttribute("data-muis-over") &&
+					navEl.setAttribute("data-muis-over", true);
 			});
+			navEl.addEventListener("mouseleave", () => {
+				navEl.hasAttribute("data-muis-over") &&
+					navEl.removeAttribute("data-muis-over");
+			});
+		});
+
+		navKnoppen.forEach((navKnopEl) => {
+			navKnopEl.addEventListener("click", (navEvent) => {
+				navEvent.preventDefault();
+				// button ref naar nav via data attr.
+				const eigenNav = document.getElementById(
+					navKnopEl.getAttribute("data-eigen-nav")
+				);
+
+				// open en dicht schakel
+				if (eigenNav.hasAttribute("data-nav-open")) {
+					eigenNav.removeAttribute("data-nav-open");
+				} else {
+					eigenNav.setAttribute("data-nav-open", true);
+				}
+
+				// na een tijdje weer uitzetten als die nog aanstaat.
+				// mits muis niet op dat moment boven element is.
+				if (!eigenNav.hasAttribute("data-nav-open")) {
+					return;
+				}
+
+				blijfProberenNavTeSluiten(eigenNav);
+			});
+		});
 	},
 };
+
+/**
+ * recursieve functie die grofweg iedere 3 seconden kijkt of de muis boven de nav is.
+ *
+ * @param {*} navElement
+ */
+function blijfProberenNavTeSluiten(navElement, teller = 0) {
+	// 10 keer opnieuw was wel genoeg.
+	if (teller > 10) {
+		return;
+	}
+
+	// lichtelijke verschillen hebben tussen menu, filter, evt. anderen.
+	const wachtTijd = Math.floor((Math.random() - 0.5) * 500) + 300000000;
+	setTimeout(() => {
+		if (navElement.hasAttribute("data-muis-over")) {
+			const nweTeller = teller + 1;
+			blijfProberenNavTeSluiten(navElement, nweTeller);
+			return; // mogelijk ingebruik.
+		}
+		if (navElement.hasAttribute("data-nav-open")) {
+			navElement.removeAttribute("data-nav-open");
+		}
+	}, wachtTijd);
+}
 
 function stapelFilters() {
 	return !!$("#stapel-filters:checked").length;
@@ -469,8 +516,10 @@ var naDecryptie = {
 					}
 				});
 
+				const icon = Math.random() > 0.5 ? "🔎" : "🔍";
+
 				selectElement.innerHTML = `
-						<option value=''>${filtert}</option>
+						<option value=''>${filtert} <span class='select-icon'>${icon}</span></option>
 						${uniekeWaarden
 							.map((optie) => {
 								return `<option value='${optie}'>${optie}</option>`;

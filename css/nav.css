@@ -1,29 +1,46 @@
-.crm-pagina-nav__wrapper {
+/* de 'navigatie' modules zijn klonen van menu nav, en dan wat aangepast. 
+de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorheen*/
+
+/* dit bestand is een verwarring in samenspan met controls.css vanwege... dingen die eerst hier dan daar etc. gebouwd worden en nu staat het over al. */
+
+/* #region menu */
+/* lomp de uitsteek eraf hakken*/
+.crm-nav__wrapper {
 	padding-left: 60px;
 	overflow-x: hidden;
 }
 
-.crm-pagina-nav {
+.crm-nav {
 	position: absolute;
-	top: 0;
-	right: 0;
-	width: 420px;
+	top: 20px;
+	right: 39px;
+	width: 570px;
 	max-width: calc(100% - 40px);
-
 	font-size: 30px;
 	transition: 0.1s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.6s;
+	padding: 20px;
 	transform: translate(421px);
 }
-.crm-pagina-nav--open {
-	transform: translateX(0);
+
+.crm-nav--filters {
+	top: 350px;
+	transition: 0.075s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.66s;
 }
-.crm-pagina-nav__inner {
+.crm-nav--acties {
+	top: 650px;
+	transition: 0.087s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.73s;
+}
+.crm-nav[data-nav-open] {
+	transform: translateX(59px);
+}
+.crm-nav__inner {
 	position: relative;
-	padding: 20px;
 	box-shadow: 6px 2px 6px #222;
 	background-color: #f2f2f2;
+	display: flex;
+	flex-direction: row;
 }
-.crm-pagina-nav__lijst {
+.crm-nav__lijst {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
@@ -32,87 +49,111 @@
 	align-items: center;
 	flex-wrap: wrap;
 	justify-content: flex-end;
+	padding: 20px;
 }
 
-.crm-pagina-nav__icon {
+.crm-nav__icon {
 	min-width: 45px;
 	display: inline-block;
 	text-align: center;
 	vertical-align: middle;
 }
 
-.crm-pagina-nav__stuk {
+.crm-nav__stuk {
 	padding: 7.5px 0;
 }
-.crm-pagina-nav__angled-knop {
-	position: absolute;
-	transform: rotate(90deg) translateX(-75px) translateY(132px);
-	left: 0;
-	bottom: 0;
-	margin: 0;
-	margin-top: 0px;
-	margin-top: 0px;
-	margin-top: 0px;
-	margin-top: 0px;
-	padding: 0.75em;
-	padding-top: 0.75em;
-	padding-right: 0.75em;
-	padding-left: 0.75em;
-	padding-top: 0.75em;
-	padding-top: 0.5em;
+
+.crm-nav__inhoud--filters {
+	padding: 20px;
+}
+
+.crm-nav__angled-knop {
 	background-color: #c02424;
 	color: white;
 	letter-spacing: 2.5px;
 	z-index: 1;
-	padding-top: 0.5em;
 	line-height: 1;
 	font-weight: bold;
 	text-transform: uppercase;
 	transition: 0.1s ease-in-out 0.4s;
-	padding-left: 1.25em;
-	padding-right: 1.25em;
+	width: 90px;
+	min-width: 90px;
+	flex-grow: 0;
+	padding: 20px 0;
 }
 
-.crm-pagina-nav__link {
+.crm-nav__button-turned-letters {
+	display: block;
+}
+.crm-nav__button-letter {
+	display: block;
+	transform: rotate(90deg);
+}
+.crm-nav__button-letter ~ .crm-nav__button-letter {
+	margin-top: -8px;
+}
+.crm-nav__button-letter:last-child {
+	margin-bottom: 15px;
+}
+.crm-nav__angled-knop--filters .crm-nav__button-letter--i {
+	margin-top: -15px;
+}
+.crm-nav__angled-knop--filters .crm-nav__button-letter--l {
+	margin-top: -15px;
+}
+.crm-nav__angled-knop--filters .crm-nav__button-letter--t {
+	margin-top: -12px;
+}
+
+.crm-nav__link {
 	font-weight: bold;
 	text-transform: uppercase;
 	vertical-align: middle;
 	text-decoration: none;
 	color: #353535;
+	font-size: 0.8em;
 }
-.crm-pagina-nav__link:hover {
+
+.crm-nav__link:hover {
 	color: #d73f3f;
 }
-.crm-pagina-nav__link--actief {
+.crm-nav__link--actief {
 	filter: blur(0.25px);
 	opacity: 0.65;
 }
-.crm-pagina-nav__link--actief:hover {
+.crm-nav__link--actief:hover {
 	color: #353535;
 	cursor: none;
 }
-.crm-pagina-nav__actief-icon {
+.crm-nav__actief-icon {
 	font-size: 0.5em;
 	vertical-align: middle;
 	position: relative;
 	top: -4px;
 }
-
-.crm-pagina-nav__knop-icon {
+.filter-nav-input {
+	font-size: 0.66em;
+	text-align: center;
+}
+.selectie-ongedaan {
+	min-height: 50px;
+}
+.crm-nav__knop-icon {
 	display: inline-block;
 }
-.crm-pagina-nav__knop-icon--gesloten {
-	transform: rotate(-90deg);
+.crm-nav__knop-icon--gesloten {
+	transform: rotate(-9deg);
 }
-.crm-pagina-nav__knop-icon--open {
-	transform: rotate(270deg);
+.crm-nav__knop-icon--open {
+	transform: rotate(10deg);
 }
-.crm-pagina-nav--open .crm-pagina-nav__knop-icon--open {
+.crm-nav[data-nav-open] .crm-nav__knop-icon--open {
 	display: inline-block;
 }
-.crm-pagina-nav__knop-icon--gesloten {
+.crm-nav__knop-icon--gesloten {
 	display: none;
 }
-.crm-pagina-nav--open .crm-pagina-nav__knop-icon--gesloten {
+.crm-nav[data-nav-open] .crm-nav__knop-icon--gesloten {
 	display: none;
 }
+/* #endregion menu */
