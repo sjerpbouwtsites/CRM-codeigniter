@@ -12,18 +12,20 @@ input[type="submit"] {
 [for="stapel-filters"] {
 	display: block;
 }
-.opgepast.verzenden {
-	background-color: #22ce41;
+.opgepast.verzenden,
+.actieknoppen.toevoegen {
+	background-color: #5dccbc;
 }
-.opgepast.verzenden:hover {
-	background-color: #57cc6c;
+.opgepast.verzenden:hover,
+.actieknoppen.toevoegen:hover {
+	background-color: #4decd5;
 }
 
 .form-knoppen {
 	margin-bottom: 0;
 }
-.form-knoppen > * {
-	margin-bottom: 10px;
+.form-knoppen > * ~ * {
+	margin-top: 10px;
 }
 
 .actievelden {
@@ -56,14 +58,26 @@ input[type="submit"] {
 .actieform-rij > * {
 	flex-grow: 1;
 }
-.actieform-rij * + * {
+.actieform-rij > * + * {
 	margin-left: 10px;
 }
 
 .selectie-filter {
 	background-color: #877;
 }
+.selectie-filter:hover {
+	background-color: rgb(110, 96, 96);
+}
 
+.sorteer-knoppen {
+	background-color: #d1abab;
+}
+.sorteer-knoppen:hover {
+	background-color: #947070;
+}
+.selectie-ongedaan {
+	background: linear-gradient(35deg, #947070, #f0e4e4cc);
+}
 @media (max-width: 600px) {
 	.actievelden {
 		bottom: 0;

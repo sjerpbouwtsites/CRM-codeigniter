@@ -13,5 +13,11 @@
   </div>
   <div class='actieform-rij filter-nav-input'>
     <button class='selectie-ongedaan'>deselecteren 💇‍♀️</button>
+    <span class='labels-als-button'>
+      <input type='checkbox' id='stapel-filters' name='stapel-filters'>
+      <label class='filters-samen-label' for='stapel-filters'>
+        <!-- html via css -->
+      </label>
+    </span>
   </div>
 </div>

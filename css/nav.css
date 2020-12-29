@@ -13,13 +13,94 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 .crm-nav {
 	position: absolute;
 	top: 20px;
-	right: 39px;
+	left: calc(100% - 110px);
 	width: 570px;
 	max-width: calc(100% - 40px);
 	font-size: 30px;
 	transition: 0.1s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.6s;
 	padding: 20px;
-	transform: translate(421px);
+	transform: translate(0);
+	/* transform: translate(421px); */
+	/* opacity: 0; */
+}
+.crm-nav select,
+.crm-nav button,
+.crm-nav option {
+	text-transform: uppercase;
+	font-weight: 800;
+}
+.crm-nav .labels-als-button {
+	text-transform: uppercase;
+	font-weight: 800;
+}
+
+.labels-als-button,
+.actieknoppen {
+	position: relative;
+	background-color: #877;
+}
+.labels-als-button:hover,
+.actieknoppen:hover {
+	background-color: rgb(98, 86, 86);
+}
+
+/* in filters */
+.labels-als-button label {
+	display: block;
+	width: calc(100% + 20px);
+	height: calc(100% + 20px);
+	margin: -10px;
+}
+/* in acties */
+.labels-als-button label.lijst-namen-label {
+	width: calc(100% + 20px);
+	height: calc(100% + 20px);
+	margin: -10px;
+	margin-top: -10px;
+	margin-right: -10px;
+	margin-left: -10px;
+	margin-top: -10px;
+	margin-right: -10px;
+	margin-left: -10px;
+	margin-top: -10px;
+	padding-bottom: 10px;
+	font-size: 0.5em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	letter-spacing: -1px;
+	margin-left: -9px;
+}
+.labels-als-button input {
+	display: none;
+}
+
+.labels-als-button label::after {
+	display: block;
+	margin-top: 18px;
+	font-weight: 800;
+}
+
+.labels-als-button input:checked + label::after {
+	display: block;
+}
+.labels-als-button label.filters-samen-label::after {
+	content: "filters apart";
+}
+
+.labels-als-button input:checked + label.filters-samen-label::after {
+	content: "filters samen";
+}
+.labels-als-button label.lijst-namen-label::after {
+	content: "lijst z. namen";
+}
+
+.labels-als-button input:checked + label.lijst-namen-label::after {
+	content: "lijst met namen";
+}
+
+.crm-nav--klaar {
+	/* opacity: 1; na berekeningen */
 }
 
 .crm-nav--filters {
@@ -27,11 +108,11 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	transition: 0.075s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.66s;
 }
 .crm-nav--acties {
-	top: 650px;
+	top: 630px;
 	transition: 0.087s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.73s;
 }
 .crm-nav[data-nav-open] {
-	transform: translateX(59px);
+	transform: translate(calc(-100% + 130px));
 }
 .crm-nav__inner {
 	position: relative;
@@ -63,8 +144,14 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	padding: 7.5px 0;
 }
 
-.crm-nav__inhoud--filters {
+.crm-nav__inhoud--filters,
+.crm-nav__inhoud--acties {
 	padding: 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: flex-end;
+	flex-grow: 1;
 }
 
 .crm-nav__angled-knop {
@@ -105,6 +192,13 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	margin-top: -12px;
 }
 
+.crm-nav__angled-knop--acties .crm-nav__button-letter--i {
+	margin-top: -14px;
+}
+.crm-nav__angled-knop--acties .crm-nav__button-letter--e {
+	margin-top: -14px;
+}
+
 .crm-nav__link {
 	font-weight: bold;
 	text-transform: uppercase;
@@ -132,7 +226,7 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	top: -4px;
 }
 .filter-nav-input {
-	font-size: 0.66em;
+	font-size: 0.5em;
 	text-align: center;
 }
 .selectie-ongedaan {
@@ -157,3 +251,7 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	display: none;
 }
 /* #endregion menu */
+
+.actieknoppen {
+	font-size: 0.5em;
+}

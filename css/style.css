@@ -42,7 +42,8 @@ h6:first-child {
 button,
 input[type="submit"],
 select,
-.rij-verwijderen {
+.rij-verwijderen,
+.labels-als-button {
 	background-color: #d73f3f;
 	color: white;
 	font-weight: bold;
