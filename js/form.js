@@ -431,6 +431,12 @@ var acties = {
 			});
 		});
 	},
+	willekeurigeGradientHoekrijen() {
+		document.querySelectorAll(".form-rij + .form-rij").forEach((rij) => {
+			const hoek = Math.floor(Math.random() * 360);
+			rij.style.background = `linear-gradient(${hoek}deg, rgba(213, 189, 180, 0.44), rgba(180, 147, 147, 0.47))`;
+		});
+	},
 };
 
 /**

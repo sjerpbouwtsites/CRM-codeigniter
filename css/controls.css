@@ -28,20 +28,6 @@ input[type="submit"] {
 	margin-top: 10px;
 }
 
-.actievelden {
-	flex-direction: column;
-	flex-basis: 300px;
-	padding: 20px;
-	background-color: #eee;
-	border-left: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
-	height: 100%;
-}
-
-.actievelden {
-	/*margin-top: 20px;*/
-}
-
 .actieveld {
 	padding: 20px;
 	background-color: white;

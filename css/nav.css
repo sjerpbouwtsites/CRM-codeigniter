@@ -3,11 +3,17 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 
 /* dit bestand is een verwarring in samenspan met controls.css vanwege... dingen die eerst hier dan daar etc. gebouwd worden en nu staat het over al. */
 
+.crm-nav__samen-wrapper {
+	/* position: sticky;
+	top: 10px; */
+}
+
 /* #region menu */
 /* lomp de uitsteek eraf hakken*/
 .crm-nav__wrapper {
 	padding-left: 60px;
 	overflow-x: hidden;
+	/* position: relative; */
 }
 
 .crm-nav {
