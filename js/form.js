@@ -4,42 +4,6 @@ const staat = {
 	dev: location.href.includes("localhost"),
 };
 
-function alsOpLocalHostOnthoudDecrypieEnVoerIn() {
-	if (!staat.dev) return;
-	try {
-		const opgeslagenWW = localStorage.getItem("crm-decryptie");
-		if (!opgeslagenWW) {
-			document
-				.getElementById("ontsleutel")
-				.addEventListener("change", function () {
-					localStorage.setItem(
-						"crm-decryptie",
-						document.getElementById("ontsleutel").value
-					);
-				});
-			return;
-		} else {
-			document.getElementById("ontsleutel").value = opgeslagenWW;
-			document.getElementById("ontsleutel-knop").click();
-		}
-	} catch (err) {
-		communiceer("Iets gaat mis bij auto-decrypt.");
-		console.error(err);
-	}
-	communiceer("auto-decrypt", 200);
-}
-
-function toonWaarschuwingIndienNietEerderBezocht() {
-	const heeftEerderBezocht =
-		localStorage.getItem("vw-crm-eerder-bezocht") === "ja";
-	if (!heeftEerderBezocht) {
-		alert(
-			"Je bezoekt nu het NIEUWE crm. Hier werkt Sjerp. Ga voor het huidige CRM naar https://vloerwerk.org/CRM-oud"
-		);
-	}
-}
-toonWaarschuwingIndienNietEerderBezocht();
-
 var acties = {
 	resetForm() {
 		document.getElementById("grote-tabel-formulier").reset();
