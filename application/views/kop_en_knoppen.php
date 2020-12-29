@@ -11,7 +11,7 @@
 			<h2 class='versleutelde-titel'>Ontsleutel om verder te gaan. </h2>
 			<div class='sleutelaars-inner-2'>
 				<label for='ontsleutel'>
-					<input id='ontsleutel' type='text' placeholder='wachtwoord' autocapitalize="off">
+					<input id='ontsleutel' type='password' placeholder='wachtwoord' autocapitalize="off">
 				</label>
 				</label>
 				<button id='ontsleutel-knop' class='ontsleutel'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
