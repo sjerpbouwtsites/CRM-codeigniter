@@ -12,7 +12,7 @@
     <button id='sorteer-op-laatst-gezien' class='sorteer-knoppen filter-nav-input sorteer-op-laatst-gezien'>sorteer op laatst-gezien ⏱</button>
   </div>
   <div class='actieform-rij filter-nav-input'>
-    <button class='selectie-ongedaan'>deselecteren 💇‍♀️</button>
+    <button id='reset-navs-en-toon-alles' type='reset' class='selectie-ongedaan'>deselecteren 💇‍♀️</button>
     <span class='labels-als-button'>
       <input type='checkbox' id='stapel-filters' name='stapel-filters'>
       <label class='filters-samen-label' for='stapel-filters'>

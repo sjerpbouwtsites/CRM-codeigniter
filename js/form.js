@@ -134,68 +134,102 @@ var acties = {
 	},
 	selectieFilterChange: function () {
 		$(".selectie-filter").on("change", function () {
-			if (!this.value) return;
-			const stapelFiltersB = stapelFilters();
-			const dezeSelect = this.parentNode;
-			const filterOp = this.value.toLowerCase();
-			const rijenTeFilterenH = Array.from(
-				document.querySelectorAll(".form-rij + .form-rij")
-			);
-
-			// als niet stapelen als display none eraf
-			if (!stapelFiltersB) {
-				rijenTeFilterenH.forEach((rij) => rij.removeAttribute("style"));
+			if (this.nodeName !== "SELECT") {
+				throw new Error("geen idee wat hier nu weer gaande is pfff");
 			}
 
-			// als wel stapelen alleen verder met zichtbare
-			const rijenTeFilteren = !stapelFiltersB
-				? rijenTeFilterenH
-				: rijenTeFilterenH.filter((rij) => {
-						return rij.hasAttribute("style")
-							? rij.getAttribute("style").includes("none")
-							: true;
-				  });
-			const splitsZoekVeld = dezeSelect.hasAttribute("data-split");
-			rijenTeFilteren.forEach((rij) => {
-				const relevanteValue = rij
-					.querySelector(`[data-naam='${this.getAttribute("data-filter")}']`)
-					.value.toLowerCase();
+			const laatstGekozenSelect = this;
 
-				const gevonden = splitsZoekVeld
-					? relevanteValue.split(" ").includes(filterOp)
-					: relevanteValue.includes(filterOp);
+			if (!laatstGekozenSelect.value) return;
 
-				if (!gevonden) {
-					rij.style.display = "none";
+			const stapelFiltersB = stapelFilters();
+
+			let filterData = [];
+
+			if (stapelFiltersB) {
+				// we moeten de data van alle selects hebben.
+				filterData = Array.from(laatstGekozenSelect.form)
+					.filter((formElement) => {
+						return formElement.classList.contains("selectie-filter");
+					})
+					.filter((selectElement) => {
+						// nu diegeen er uit halen die geen keuze hebben, oftewel selectedIndex 0.
+						return selectElement.selectedIndex !== 0;
+					})
+					.map((selectElement) => {
+						// nu array maken met filter waardes voor controle
+						// plus welke het laatst gewijzigd is.
+						return {
+							filterOp: selectElement.getAttribute("data-filter"), // de sleutel waarop gefilterd moet worden
+							filterMet: selectElement.options[
+								selectElement.selectedIndex
+							].value.toLowerCase(),
+							splitRijWaarden: selectElement.hasAttribute("data-split"),
+						};
+					});
+			} else {
+				// alleen laatste select pakken.
+				if (laatstGekozenSelect.selectedIndex === 0) {
+					return; // hier gaat niets mee gebeuren.
+				} else {
+					const fm =
+						laatstGekozenSelect.options[laatstGekozenSelect.selectedIndex]
+							.value;
+					filterData.push({
+						filterOp: laatstGekozenSelect.getAttribute("data-filter"),
+						filterMet:
+							!!fm && typeof fm !== "undefined" ? fm.toLowerCase() : null,
+						splitRijWaarden: laatstGekozenSelect.hasAttribute("data-split"),
+					});
 				}
+			}
+			// nu per rij, per filterDataset, controleren.
+			const rijenRes = Array.from(
+				document.querySelectorAll(".form-rij + .form-rij")
+			).map((rij) => {
+				// array met bools en rij refs.
+				const verzamelingBoolsofFiltersSucces = filterData.map(
+					({ filterOp, filterMet, splitRijWaarden }) => {
+						if (!splitRijWaarden) {
+							// eenvoudige vergelijking
+							return (
+								rij
+									.querySelector(`[data-naam=${filterOp}]`)
+									.value.toLowerCase() === filterMet
+							);
+						} else {
+							// een van de waarden in de rij-input moet overeen komen.
+							return rij
+								.querySelector(`[data-naam=${filterOp}]`)
+								.value.toLowerCase()
+								.split(" ")
+								.includes(filterMet);
+						}
+					}
+				);
+				// als alles in de verzameling true is zijn alle filters succesvol.
+				return {
+					rij,
+					succes: !verzamelingBoolsofFiltersSucces.includes(false),
+				};
+			});
+			rijenRes.forEach(({ rij, succes }) => {
+				rij.style.display = succes ? "flex" : "none";
 			});
 		});
 	},
+
 	selectieOngedaan: function () {
-		$(".selectie-ongedaan").on("click", function (e) {
-			e.preventDefault();
-			Array.from(
-				document.querySelectorAll(".form-rij + .form-rij")
-			).forEach((rij) => rij.removeAttribute("style"));
-		});
+		// form native reset zorgt voor reset van filters e.d. hier alleen hide show
+		document
+			.getElementById("reset-navs-en-toon-alles")
+			.addEventListener("click", (e) => {
+				document.querySelectorAll(".form-rij + .form-rij").forEach((rij) => {
+					rij.style.display = "flex";
+				});
+			});
 	},
-	toonKolommen: function () {
-		$("form .toon").on("change", function () {
-			var id = this.id.replace("check-", "");
-			var isChecked = $("#" + this.id + ":checked").length;
-			if (isChecked) {
-				$(this)
-					.closest("form")
-					.find(".cel-" + id)
-					.show();
-			} else {
-				$(this)
-					.closest("form")
-					.find(".cel-" + id)
-					.hide();
-			}
-		});
-	},
+
 	alertMailLijst: function () {
 		this.alertGeneriek("email", ",");
 	},
