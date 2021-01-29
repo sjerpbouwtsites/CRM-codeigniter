@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Start extends CI_Controller
+class Personslist extends CI_Controller
 {
 
 	function __construct()
@@ -162,6 +162,6 @@ class Start extends CI_Controller
 			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [])
 		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
-		$this->load->view('start.php', $data);
+		$this->load->view('layout.php', $data);
 	}
 }

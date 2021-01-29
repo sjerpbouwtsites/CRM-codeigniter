@@ -386,7 +386,7 @@ class CRM extends CI_Model
 	}
 
 	/**
-	 * Aangeroepen in controller Start bij maken voorkant
+	 * Aangeroepen in controller Personslist bij maken voorkant
 	 * csrf dubbel dienst als auth token
 	 */
 	public function registreer_csrf_token($csrf)
