@@ -21,10 +21,10 @@ $nav_title_spanned =
             crm-nav__knop-icon--gesloten 
             crm-nav__knop-icon--<?= $nav_title ?> crm-nav__knop-icon--gesloten--<?= $nav_title ?>
             '>
-          🖱
+
         </span>
         <span class='crm-nav__knop-icon crm-nav__knop-icon--open crm-nav__knop-icon--<?= $nav_title ?> crm-nav__knop-icon--open--<?= $nav_title ?>'>
-          👆
+
         </span>
       </button>
       <div class='crm-nav__inhoud crm-nav__inhoud--<?= $nav_title ?>'>

@@ -40,28 +40,8 @@ class Personslist extends CI_Controller
 		return "$a-$b";
 	}
 
-	function nav_icons($icon)
-	{
-		switch ($icon) {
-			case 'leden':
-				return '🦹‍♂️';
-				break;
-			case  'bondgenoten':
-				return '👩‍🔧';
-				break;
-			case 'contacten':
-				return '📱';
-				break;
-			case 'Mail Sjerp':
-				return '🙈';
-				break;
-			default:
-				return '⚒';
-		}
-	}
-
 	/**
-	 * @returns array met naam, url, actief bool, icon.
+	 * @returns array met naam, url, actief bool
 	 * haalt adhv toegestane tabellen nav aan.
 	 */
 	public function make_nav()
@@ -82,14 +62,7 @@ class Personslist extends CI_Controller
 			'actief' => false,
 		];
 
-		$pages_with_icons = array_map(function ($nav_part) {
-			$icon_a = [
-				'icon'	=> $this->nav_icons($nav_part['naam'])
-			];
-			return array_merge($icon_a, $nav_part);
-		}, $pages);
-
-		return $pages_with_icons;
+		return $pages;
 	}
 
 	public function dirty_get_view($link, $data)
@@ -145,13 +118,17 @@ class Personslist extends CI_Controller
 				'paginalinks' => $this->make_nav(),
 			])
 		]);
+		// $data['filters'] = $this->dirty_get_view('nav/nav.php', [
+		// 	'nav_title'		=> 'filters',
+		// 	'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
+		// ]);
+		// $data['acties'] = $this->dirty_get_view('nav/nav.php', [
+		// 	'nav_title'		=> 'acties',
+		// 	'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [])
+		// ]);
 		$data['filters'] = $this->dirty_get_view('nav/nav.php', [
 			'nav_title'		=> 'filters',
 			'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
-		]);
-		$data['acties'] = $this->dirty_get_view('nav/nav.php', [
-			'nav_title'		=> 'acties',
-			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [])
 		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
 		$this->load->view('layout.php', $data);

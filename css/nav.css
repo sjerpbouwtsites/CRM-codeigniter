@@ -3,6 +3,10 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 
 /* dit bestand is een verwarring in samenspan met controls.css vanwege... dingen die eerst hier dan daar etc. gebouwd worden en nu staat het over al. */
 
+.crm-nav {
+	transform: translate(calc(-100% + 130px)) !important;
+}
+
 .crm-nav__samen-wrapper {
 	/* position: sticky;
 	top: 10px; */
@@ -18,7 +22,7 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 
 .crm-nav {
 	position: fixed;
-	top: 20px;
+	top: 0;
 	left: calc(100% - 110px);
 	width: 570px;
 	max-width: calc(100% - 40px);
@@ -28,6 +32,9 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	transform: translate(0);
 	/* transform: translate(421px); */
 	/* opacity: 0; */
+}
+.crm-nav:hover {
+	z-index: 10;
 }
 .crm-nav select,
 .crm-nav button,
@@ -110,11 +117,11 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 }
 
 .crm-nav--filters {
-	top: 300px;
+	top: 150px;
 	transition: 0.075s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.066s;
 }
 .crm-nav--acties {
-	top: 580px;
+	top: 220px;
 	transition: 0.087s cubic-bezier(0.95, 0.42, 0.61, 1.57) 0.073s;
 }
 .crm-nav[data-nav-open] {
@@ -136,20 +143,25 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	align-items: center;
 	flex-wrap: wrap;
 	justify-content: flex-end;
-	padding: 20px;
+	height: 100%;
+	/* padding: 20px; */
 }
-
+/* 
 .crm-nav__icon {
 	min-width: 45px;
 	display: inline-block;
 	text-align: center;
 	vertical-align: middle;
-}
+} */
 
 .crm-nav__stuk {
-	padding: 7.5px 0;
+	/* padding: 7.5px 0; */
+	flex-basis: 50%;
+	text-align: center;
 }
-
+.crm-nav__inhoud--menu {
+	width: 100%;
+}
 .crm-nav__inhoud--filters,
 .crm-nav__inhoud--acties {
 	padding: 20px;
@@ -158,6 +170,7 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	justify-content: flex-end;
 	align-items: flex-end;
 	flex-grow: 1;
+	flex-wrap: wrap;
 }
 
 .crm-nav__angled-knop {
@@ -172,11 +185,16 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	width: 90px;
 	min-width: 90px;
 	flex-grow: 0;
-	padding: 20px 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	padding: 20px 10px;
 }
 
 .crm-nav__button-turned-letters {
 	display: block;
+	padding: 0 10px;
 }
 .crm-nav__button-letter {
 	display: block;
@@ -205,13 +223,25 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 	margin-top: -14px;
 }
 
+.crm-nav__angled-knop--menu .crm-nav__button-turned-letters {
+	margin-bottom: -18px;
+}
+
+.crm-nav__angled-knop--filters .crm-nav__button-turned-letters {
+	margin-bottom: -122px;
+}
+.crm-nav__angled-knop--acties .crm-nav__button-turned-letters {
+	margin-bottom: -120px;
+}
+
 .crm-nav__link {
 	font-weight: bold;
 	text-transform: uppercase;
 	vertical-align: middle;
 	text-decoration: none;
 	color: #353535;
-	font-size: 0.8em;
+	font-size: 0.5em;
+	line-height: 0.5em;
 }
 
 .crm-nav__link:hover {

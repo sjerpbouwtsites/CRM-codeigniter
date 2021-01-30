@@ -20,6 +20,14 @@ export default function navigatieAnimatie() {
 		navKnopEl.addEventListener("click", (navEvent) => {
 			navEvent.preventDefault();
 			const eigenNav = new NavElement(navKnopEl.getAttribute("data-eigen-nav"));
+			// diegene die niet deze zijn sluiten
+			navs
+				.filter((nav) => {
+					return nav.id !== eigenNav.id;
+				})
+				.forEach((nav) => {
+					nav.sluit();
+				});
 			if (!eigenNav.toggleOpenDicht()) {
 				return; // is nu dus dicht.
 			}
@@ -74,6 +82,7 @@ function blijfProberenNavTeSluiten(navElement, teller = 0) {
 }
 
 class NavElement {
+	id = null;
 	/**
 	 * @memberof navElement
 	 */
@@ -84,6 +93,7 @@ class NavElement {
 		} else {
 			this._nav = nav;
 		}
+		this.id = this._nav.id;
 	}
 	get element() {
 		return this._nav;

@@ -23,7 +23,12 @@ input[type="submit"] {
 
 .form-knoppen {
 	margin-bottom: 0;
+	width: 100%;
 }
+.form-knoppen + .form-knoppen {
+	margin-top: 20px;
+}
+
 .form-knoppen > * ~ * {
 	margin-top: 10px;
 }

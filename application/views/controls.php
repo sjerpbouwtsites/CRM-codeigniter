@@ -4,5 +4,4 @@
 
   <?= $navigatie ?>
   <?= $filters ?>
-  <?= $acties ?>
 </form>
