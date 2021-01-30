@@ -31,7 +31,7 @@ textarea.pers-input {
 
 form.crm-formulier {
 	padding: 20px;
-	padding-right: 60px;
+	padding-right: 20px;
 }
 
 form.crm-formulier {
@@ -46,7 +46,7 @@ form.crm-formulier {
 }
 
 .form-rij {
-	flex-basis: 250px;
+	width: 270px;
 	padding: 5px;
 	box-shadow: -1px 2px 2px #999;
 	background-color: rgba(255, 255, 230, 0.04);
@@ -63,6 +63,7 @@ form.crm-formulier {
 		#d1947c70,
 		#c0242477
 	); /* wordt gecorrigeerd naar random in js*/
+	font-size: 1rem;
 }
 .form-rijen-lijst {
 	margin-bottom: -20px; /* correctie voor rijen */
