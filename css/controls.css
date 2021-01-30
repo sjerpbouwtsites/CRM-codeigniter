@@ -66,6 +66,10 @@ input[type="submit"] {
 .sorteer-knoppen:hover {
 	background-color: #230102;
 }
+.sorteer-knoppen::after {
+	content: attr(data-postfix);
+	margin-left: 5px;
+}
 .selectie-ongedaan {
 	background: linear-gradient(35deg, #947070, #f0e4e4cc);
 }

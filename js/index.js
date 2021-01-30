@@ -26,7 +26,7 @@ function zetEscapeKlikVoorAlles() {
 				navElement.sluit();
 			});
 		// printer / communiceer
-		document.getElementsById("printer").style.display = "none";
+		document.getElementById("printer").style.display = "none";
 	});
 }
 

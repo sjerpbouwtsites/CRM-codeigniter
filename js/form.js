@@ -96,103 +96,6 @@ var acties = {
 				document.getElementById("voeg-rij-toe").removeAttribute("disabled");
 			});
 	},
-	selectieFilterChange: function () {
-		$(".selectie-filter").on("change", function () {
-			if (this.nodeName !== "SELECT") {
-				throw new Error("geen idee wat hier nu weer gaande is pfff");
-			}
-
-			const laatstGekozenSelect = this;
-
-			if (!laatstGekozenSelect.value) return;
-
-			const stapelFiltersB = stapelFilters();
-
-			let filterData = [];
-
-			if (stapelFiltersB) {
-				// we moeten de data van alle selects hebben.
-				filterData = Array.from(laatstGekozenSelect.form)
-					.filter((formElement) => {
-						return formElement.classList.contains("selectie-filter");
-					})
-					.filter((selectElement) => {
-						// nu diegeen er uit halen die geen keuze hebben, oftewel selectedIndex 0.
-						return selectElement.selectedIndex !== 0;
-					})
-					.map((selectElement) => {
-						// nu array maken met filter waardes voor controle
-						// plus welke het laatst gewijzigd is.
-						return {
-							filterOp: selectElement.getAttribute("data-filter"), // de sleutel waarop gefilterd moet worden
-							filterMet: selectElement.options[
-								selectElement.selectedIndex
-							].value.toLowerCase(),
-							splitRijWaarden: selectElement.hasAttribute("data-split"),
-						};
-					});
-			} else {
-				// alleen laatste select pakken.
-				if (laatstGekozenSelect.selectedIndex === 0) {
-					return; // hier gaat niets mee gebeuren.
-				} else {
-					const fm =
-						laatstGekozenSelect.options[laatstGekozenSelect.selectedIndex]
-							.value;
-					filterData.push({
-						filterOp: laatstGekozenSelect.getAttribute("data-filter"),
-						filterMet:
-							!!fm && typeof fm !== "undefined" ? fm.toLowerCase() : null,
-						splitRijWaarden: laatstGekozenSelect.hasAttribute("data-split"),
-					});
-				}
-			}
-			// nu per rij, per filterDataset, controleren.
-			const rijenRes = Array.from(
-				document.querySelectorAll(".form-rij + .form-rij")
-			).map((rij) => {
-				// array met bools en rij refs.
-				const verzamelingBoolsofFiltersSucces = filterData.map(
-					({ filterOp, filterMet, splitRijWaarden }) => {
-						if (!splitRijWaarden) {
-							// eenvoudige vergelijking
-							return (
-								rij
-									.querySelector(`[data-naam=${filterOp}]`)
-									.value.toLowerCase() === filterMet
-							);
-						} else {
-							// een van de waarden in de rij-input moet overeen komen.
-							return rij
-								.querySelector(`[data-naam=${filterOp}]`)
-								.value.toLowerCase()
-								.split(" ")
-								.includes(filterMet);
-						}
-					}
-				);
-				// als alles in de verzameling true is zijn alle filters succesvol.
-				return {
-					rij,
-					succes: !verzamelingBoolsofFiltersSucces.includes(false),
-				};
-			});
-			rijenRes.forEach(({ rij, succes }) => {
-				rij.style.display = succes ? "flex" : "none";
-			});
-		});
-	},
-
-	selectieOngedaan: function () {
-		// form native reset zorgt voor reset van filters e.d. hier alleen hide show
-		document
-			.getElementById("reset-navs-en-toon-alles")
-			.addEventListener("click", (e) => {
-				document.querySelectorAll(".form-rij + .form-rij").forEach((rij) => {
-					rij.style.display = "flex";
-				});
-			});
-	},
 
 	ongedaanMaken: function () {
 		$(".ongedaan").on("click", function (e) {
@@ -225,115 +128,11 @@ var acties = {
 			$(".actieveld.form-acties").hide(200);
 		});
 	},
-	sorteerOpLaatsGezien() {
-		document
-			.querySelector(".sorteer-op-laatst-gezien")
-			.addEventListener("click", function (e) {
-				e.preventDefault();
 
-				var origineleFormTabel = document.querySelector(".form-tabel");
-
-				// Add all lis to an array
-				var rijen = Array.from(
-					document.querySelectorAll(".form-tabel .form-rij.kop ~ .form-rij")
-				).map((rij) => {
-					Array.from(rij).forEach((cel) =>
-						cel.classList.add("tering form-cel")
-					);
-					return rij;
-				});
-
-				// Sort the rijen in descending order
-				rijen.sort(function (a, b) {
-					const naamA = a
-						.querySelector(".cel-laatst_gezien input")
-						.value.split("-")
-						.reverse();
-					naamB = b
-						.querySelector(".cel-laatst_gezien input")
-						.value.split("-")
-						.reverse();
-
-					if (naamA > naamB) {
-						return -1;
-					}
-					if (naamA < naamB) {
-						return 1;
-					}
-
-					return 0;
-				});
-
-				origineleFormTabel.innerHTML = `
-		    	<div class='kop form-rij'>${
-						document.querySelector(".form-rij.kop").innerHTML
-					}</div>
-		    	${rijen
-						.map((rij) => {
-							return `<div class='form-rij'>${rij.innerHTML}</div>`;
-						})
-						.join("")}
-		    `;
-			});
-	},
-	sorteerOpNaam() {
-		document
-			.querySelector(".sorteer-op-naam")
-			.addEventListener("click", function (e) {
-				e.preventDefault();
-
-				var origineleFormTabel = document.getElementById("form-rijen-lijst");
-
-				// Add all lis to an array
-				var rijen = Array.from(
-					document.querySelectorAll(".form-tabel .form-rij.kop ~ .form-rij")
-				).map((rij) => {
-					Array.from(rij).forEach((cel) =>
-						cel.classList.add("tering form-cel")
-					);
-					return rij;
-				});
-
-				// Sort the rijen in descending order
-				rijen.sort(function (a, b) {
-					const naamA = a.querySelector(".cel-naam input").value;
-					naamB = b.querySelector(".cel-naam input").value;
-
-					console.log(naamA, naamB);
-
-					if (naamA < naamB) {
-						return -1;
-					}
-					if (naamA > naamB) {
-						return 1;
-					}
-
-					return 0;
-				});
-
-				origineleFormTabel.innerHTML = `
-		    	<div class='kop form-rij'>${
-						document.querySelector(".form-rij.kop").innerHTML
-					}</div>
-		    	${rijen
-						.map((rij) => {
-							return `<div class='form-rij'>${rij.innerHTML}</div>`;
-						})
-						.join("")}
-		    `;
-			});
-	},
 	wachtwoordVeldNawerk: function () {
 		const o = document.getElementById("ontsleutel");
 		o.value = "";
 		o.focus();
-	},
-
-	willekeurigeGradientHoekrijen() {
-		document.querySelectorAll(".form-rij + .form-rij").forEach((rij) => {
-			const hoek = Math.floor(Math.random() * 360);
-			rij.style.background = `linear-gradient(${hoek}deg, rgba(213, 189, 180, 0.44), rgba(180, 147, 147, 0.47))`;
-		});
 	},
 };
 
@@ -408,20 +207,6 @@ var naDecryptie = {
 					`;
 			}
 		);
-	},
-	toonActievelden: function () {
-		if (window.innerWidth > 600) {
-			var actieVelden = document.getElementsByClassName("actieveld");
-
-			for (var i = actieVelden.length - 1; i >= 0; i--) {
-				actieVelden[i].style.display = "block";
-			}
-		} else {
-			var mobKnoppen = document.getElementsByClassName("mob-toon");
-			for (var i = mobKnoppen.length - 1; i >= 0; i--) {
-				mobKnoppen[i].style.display = "inline";
-			}
-		}
 	},
 };
 

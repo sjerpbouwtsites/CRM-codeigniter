@@ -50,6 +50,16 @@ export default class PersoonRij {
 	}
 
 	/**
+	 * neemt laatst gezien uit data, maakt het amerikaans, dan unix.
+	 *
+	 * @readonly
+	 * @memberof PersoonRij
+	 */
+	get laatstGezienInUnix() {
+		return new Date(this.laatst_gezien.split("-").reverse()).getTime();
+	}
+
+	/**
 	 * vult (voor maken zelf proxy) de private stores.
 	 *
 	 * @param {HTMLElement} rij
@@ -78,12 +88,16 @@ export default class PersoonRij {
 				"id",
 				"naamIdMap",
 				"schrijfDataNaarLeesVelden",
+				"laatstGezienInMicroseconden",
 			].includes(sleutelNaam)
 		) {
 			return false;
 		}
+
 		if (!this.namen.includes(sleutelNaam)) {
-			throw new Error(`${sleutelNaam} geen bestaande input.`);
+			throw new Error(
+				`dit is helemaal fout om een of andere reden mss wel een symbol geen bestaande input.`
+			);
 		}
 		return true;
 	}
