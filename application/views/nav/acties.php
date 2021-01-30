@@ -1,8 +1,8 @@
 <div class='form-knoppen'>
 
   <div class='actieform-rij'>
-    <button class='actieknoppen lijst-email'>lijst emails</button>
-    <button class='actieknoppen lijst-telefoon'>lijst tel nrs</button>
+    <button id='lijst-mail-button' class='actieknoppen lijst-email'>lijst emails</button>
+    <button id='lijst-telefoon-button' class='actieknoppen lijst-telefoon'>lijst tel nrs</button>
   </div>
   <div class='actieform-rij'>
     <span class='labels-als-button'>

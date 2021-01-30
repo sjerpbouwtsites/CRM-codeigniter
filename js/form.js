@@ -194,46 +194,6 @@ var acties = {
 			});
 	},
 
-	alertMailLijst: function () {
-		this.alertGeneriek("email", ",");
-	},
-	alertTelLijst: function () {
-		this.alertGeneriek("telefoon", ",");
-	},
-	alertGeneriek: function (type, lijm) {
-		lijm = (lijm || ";") + "\t";
-
-		$(".lijst-" + type).on("click", function (e) {
-			var ookNamen = lijstOokNamen();
-			var blokTel;
-			//if (ookNamen) lijm = "<br>";
-			e.preventDefault();
-			var res = $(".form-rij")
-				.filter(":visible")
-				.find("[data-naam='" + type + "']")
-				.map(function () {
-					console.log(this.value);
-
-					if (this.value && this.value !== "NEP@HEBBENWENIET.NL") {
-						if (ookNamen) {
-							if (type === "telefoon") {
-								return dezeRijNaam(this) + ": " + this.value + "<br>";
-							} else {
-								return dezeRijNaam(this) + " &lt;" + this.value + "&gt; ";
-							}
-						} else {
-							return this.value;
-						}
-					} else {
-						communiceer("Niets gevonden?");
-					}
-				})
-				.get();
-
-			communiceer(res.join(lijm));
-		});
-	},
-
 	ongedaanMaken: function () {
 		$(".ongedaan").on("click", function (e) {
 			e.preventDefault();

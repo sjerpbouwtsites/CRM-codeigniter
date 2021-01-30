@@ -56,6 +56,7 @@ function cel($html = "", $class = '')
 
 				cel("<input
 							class='pers-id'
+							id='pers-{$pers['id']}-id'
 							type='hidden'
 							name='form[{$pers['id']}][id]'
 							data-naam='id'
@@ -71,6 +72,7 @@ function cel($html = "", $class = '')
 
 						$cel_html = "<textarea
 									class='pers-input'
+									id='pers-{$pers['id']}-{$k}'
 									name='form[{$pers['id']}][$k]'
 									placeholder='" . str_replace("_", " ", $k) . "'
 									data-naam='$k'
@@ -79,6 +81,7 @@ function cel($html = "", $class = '')
 
 						$cel_html = "<input
 									class='pers-input'
+									id='pers-{$pers['id']}-{$k}'
 									name='form[{$pers['id']}][$k]'
 									value='${v[0]}'
 									type='{$v[1]}'
@@ -119,7 +122,7 @@ function cel($html = "", $class = '')
 			<a id='sluit-printer' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a>
 		</div>
 	</div>
-
+	<script type='module' src="<?= base_url('js/index.js') ?>"></script>
 </body>
 
 </html>

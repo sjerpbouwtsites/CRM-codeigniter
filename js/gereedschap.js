@@ -12,50 +12,6 @@ Array.prototype.getUnique = function () {
 	return a;
 };
 
-// function makeAJAXCall(url, methodType = "POST") {
-// 	return new Promise((resolveAjax, rejectAjax) => {
-// 		var xhr = new XMLHttpRequest();
-// 		xhr.open(methodType, url, true);
-// 		xhr.onreadystatechange = function () {
-// 			// ready State 4 is verbinding is klaar.
-// 			if (xhr.readyState === 4 && xhr.state === 200) {
-// 				resolveAjax(xhr.response);
-// 			}
-// 			const klasseStaat = xhr.state.toString()[0];
-// 			if (klasseStaat === "5" || klasseStaat === "4") {
-// 				// 403, 502 etc
-// 				rejectAjax(xhr);
-// 			}
-// 		};
-// 		xhr.send();
-// 	});
-// }
-
-function byteArrayToHexString(byteArray) {
-	var hexString = "";
-	var nextHexByte;
-	for (var i = 0; i < byteArray.byteLength; i++) {
-		nextHexByte = byteArray[i].toString(16); // Integer to base 16
-		if (nextHexByte.length < 2) {
-			nextHexByte = "0" + nextHexByte; // Otherwise 10 becomes just a instead of 0a
-		}
-		hexString += nextHexByte;
-	}
-	return hexString;
-}
-
-function hexStringToByteArray(hexString) {
-	if (hexString.length % 2 !== 0) {
-		throw "Must have an even number of hex digits to convert to bytes";
-	}
-	var numBytes = hexString.length / 2;
-	var byteArray = new Uint8Array(numBytes);
-	for (var i = 0; i < numBytes; i++) {
-		byteArray[i] = parseInt(hexString.substr(i * 2, 2), 16);
-	}
-	return byteArray;
-}
-
 function byteArrayToBase64(byteArray) {
 	var binaryString = "";
 	for (var i = 0; i < byteArray.byteLength; i++) {
