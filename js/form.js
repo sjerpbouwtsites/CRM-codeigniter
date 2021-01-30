@@ -368,7 +368,6 @@ var naDecryptie = {
 				const invoerVeldenValues = Array.from(gerelateerdeInvoerVelden)
 					.map((veld) => veld.value)
 					.map((veldValue) => {
-						console.log(veldValue);
 						if (moetGesplit) {
 							return veldValue.split(" ");
 						} else {

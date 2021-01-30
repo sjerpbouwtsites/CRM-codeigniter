@@ -162,3 +162,25 @@ form.crm-formulier {
 .form-cel.cel-groep .pers-input {
 	height: 100%;
 }
+
+/** VIEW STIJLEN **/
+.crm-formulier[data-form-stijl="lijst"] .cel-sector,
+.crm-formulier[data-form-stijl="lijst"] .cel-contact,
+.crm-formulier[data-form-stijl="lijst"] .cel-email,
+.crm-formulier[data-form-stijl="lijst"] .cel-telefoon,
+.crm-formulier[data-form-stijl="lijst"] .cel-laatst_gezien,
+.crm-formulier[data-form-stijl="lijst"] .cel-aantekening {
+	display: none;
+}
+
+.crm-formulier[data-form-stijl="blokken"] .cel-sector,
+.crm-formulier[data-form-stijl="blokken"] .cel-contact,
+.crm-formulier[data-form-stijl="blokken"] .cel-woonplaats,
+.crm-formulier[data-form-stijl="blokken"] .cel-aantekening {
+	display: none;
+}
+
+/** wel altijd in bewerken  en ook in 'uitgebreid'*/
+.crm-formulier .bewerk-modus .form-cel {
+	display: block;
+}
