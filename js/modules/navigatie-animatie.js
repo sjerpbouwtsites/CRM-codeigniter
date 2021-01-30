@@ -1,7 +1,8 @@
 export default function navigatieAnimatie() {
-	const navElsCSSSelector = "#crm-nav-menu, #crm-nav-filters, #crm-nav-acties";
+	const navElsCSSSelector =
+		"#crm-nav-menu, #crm-nav-filters, #crm-nav-acties, #crm-nav-config";
 	const navKnopElsCSSSelector =
-		"#schakel-navigatie-menu, #schakel-navigatie-filters, #schakel-navigatie-acties";
+		"#schakel-navigatie-menu, #schakel-navigatie-filters, #schakel-navigatie-acties, #schakel-navigatie-config";
 
 	const navKnoppen = document.querySelectorAll(navKnopElsCSSSelector);
 

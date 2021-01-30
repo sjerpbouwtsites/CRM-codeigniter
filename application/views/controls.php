@@ -33,11 +33,23 @@
         👆
       </span>
     </button>
+    <button data-eigen-nav="crm-nav-config" id="schakel-navigatie-config" class="crm-nav__angled-knop crm-nav__angled-knop--config">
+      <span class="crm-nav__button-turned-letters"><span class="crm-nav__button-letter crm-nav__button-letter--c">c</span><span class="crm-nav__button-letter crm-nav__button-letter--o">o</span><span class="crm-nav__button-letter crm-nav__button-letter--n">n</span><span class="crm-nav__button-letter crm-nav__button-letter--f">f</span><span class="crm-nav__button-letter crm-nav__button-letter--i">i</span><span class="crm-nav__button-letter crm-nav__button-letter--g">g</span></span> <span class="
+            crm-nav__knop-icon 
+            crm-nav__knop-icon--gesloten 
+            crm-nav__knop-icon--acties crm-nav__knop-icon--gesloten--acties            ">
+        🖱
+      </span>
+      <span class="crm-nav__knop-icon crm-nav__knop-icon--open crm-nav__knop-icon--acties crm-nav__knop-icon--open--acties">
+        👆
+      </span>
+    </button>
   </div>
   <?php
   echo $navigatie;
   echo $filters;
   echo $acties;
+  echo $config;
   ?>
 
 </form>

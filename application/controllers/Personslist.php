@@ -154,6 +154,10 @@ class Personslist extends CI_Controller
 			'nav_title'		=> 'acties',
 			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [])
 		]);
+		$data['config'] = $this->dirty_get_view('nav/nav.php', [
+			'nav_title'		=> 'config',
+			'nav_inhoud'  => $this->dirty_get_view('nav/config.php', [])
+		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
 		$this->load->view('layout.php', $data);
 	}
