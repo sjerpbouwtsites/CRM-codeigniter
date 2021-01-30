@@ -157,6 +157,7 @@ export class PersoonRij {
 		this._data = {};
 		this._namen = [];
 		this._naamIdMap = {};
+		this.id = rij.id;
 		this.inputsNaarData(rij);
 		return this.maakVanZelfProxy();
 	}
@@ -171,20 +172,41 @@ export class PersoonRij {
 		});
 	}
 
+	/**
+	 * true als uit data halen, false als uit obj zelf halen.
+	 *
+	 * @param {*} sleutelNaam
+	 * @memberof PersoonRij
+	 */
 	sleutelCheck(sleutelNaam) {
+		if (["inSelectie", "id"].includes(sleutelNaam)) {
+			return false;
+		}
 		if (sleutelNaam.startsWith("_")) {
 			throw new Error(`${sleutelNaam} is prive.`);
 		}
 		if (!this._namen.includes(sleutelNaam)) {
 			throw new Error(`${sleutelNaam} geen bestaande input.`);
 		}
+		return true;
+	}
+
+	inSelectie() {
+		const s = document.getElementById(this.id).getAttribute("style") || "";
+		if (s.replace(/\W/g, "").includes("displaynone")) {
+			return false;
+		}
+		return true;
 	}
 
 	maakVanZelfProxy() {
 		return new Proxy(this, {
 			get(geproxiedObject, sleutel) {
-				geproxiedObject.sleutelCheck(sleutel);
-				return geproxiedObject._data[sleutel];
+				if (geproxiedObject.sleutelCheck(sleutel)) {
+					return geproxiedObject._data[sleutel];
+				} else {
+					return geproxiedObject[sleutel];
+				}
 			},
 			set(geproxiedObject, sleutel, waarde) {
 				geproxiedObject.sleutelCheck(sleutel);

@@ -52,7 +52,7 @@ function cel($html = "", $class = '')
 
 			foreach ($form_data as $pers) :
 
-				echo "<div class='form-rij'>";
+				echo "<div id='form-rij-{$pers['id']}' class='form-rij'>";
 
 				cel("<input
 							class='pers-id'
@@ -117,8 +117,8 @@ function cel($html = "", $class = '')
 		<?= $controls ?>
 	</div>
 	<div id='printer'>
-		<div>
-			<p>tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst </p>
+		<div class='printer-inner'>
+			<p class='print-p'>tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst </p>
 			<a id='sluit-printer' href='#'><img src='<?= base_url() ?>afb/close.png' alt='sluit' title='sluit de notificatie' height='40' width='40' /></a>
 		</div>
 	</div>

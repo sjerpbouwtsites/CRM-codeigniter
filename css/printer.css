@@ -12,9 +12,10 @@
 	display: none;
 	z-index: 10000;
 	padding: 40px;
+	width: 580px;
 }
 
-#printer div {
+.printer-inner {
 	position: relative;
 	padding-right: 40px;
 }
@@ -24,8 +25,12 @@
 	color: white;
 	font-weight: bold;
 }
+#printer p small {
+	font-size: 0.66em;
+	line-height: 0.66em;
+}
 
-#printer a {
+#sluit-printer {
 	text-decoration: none;
 	color: white;
 	padding: 10px;
@@ -34,4 +39,47 @@
 	position: absolute;
 	right: -40px;
 	top: -40px;
+}
+
+#printer hr {
+	margin: 0.75em 0;
+}
+
+#copyboard-succes {
+	display: block;
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 0.33em;
+}
+
+.print-buttons-text {
+	display: block;
+	margin-bottom: 0.33em;
+}
+
+.printer-buttons {
+	margin-top: 20px;
+}
+@media (min-width: 1024px) {
+	.print-button.tel-sms {
+		opacity: 0.5;
+	}
+	.print-button.tel-sms:hover {
+		cursor: not-allowed;
+	}
+}
+.print-button {
+	font-size: 1.5em;
+	padding: 0.4em 0.6em;
+	background-color: #877;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	color: white;
+}
+.print-button + .print-button {
+	margin-left: 0.5em;
+}
+.print-button:hover {
+	cursor: pointer;
 }
