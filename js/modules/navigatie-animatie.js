@@ -3,8 +3,6 @@ export default function navigatieAnimatie() {
 	const navKnopElsCSSSelector =
 		"#schakel-navigatie-menu, #schakel-navigatie-filters, #schakel-navigatie-acties";
 
-	alsEersteKeerInCRMToonNavigatie(navElsCSSSelector);
-
 	const navKnoppen = document.querySelectorAll(navKnopElsCSSSelector);
 
 	// nu nog muisover status zetten die tegenhoud dat menu's inklappen.
@@ -46,18 +44,6 @@ function zetMuisOverEventHandlers(navs) {
 	});
 }
 
-function alsEersteKeerInCRMToonNavigatie(navElsCSSSelector) {
-	if (localStorage.getItem("vw-crm-eerder-bezocht") === "ja") return;
-	console.log(" toon nav eerste keer CRM");
-	const NavEls = Array.from(document.querySelectorAll(navElsCSSSelector)).map(
-		(navEl) => new NavElement(navEl)
-	);
-	NavEls.forEach((nav) => nav.open());
-	setTimeout(() => {
-		NavEls.forEach((nav) => nav.sluit());
-	}, Math.floor((Math.random() - 0.5) * 750) + 5000);
-}
-
 /**
  * recursieve functie die grofweg iedere 3 seconden kijkt of de muis boven de nav is.
  *
@@ -70,7 +56,7 @@ function blijfProberenNavTeSluiten(navElement, teller = 0) {
 	}
 
 	// lichtelijke verschillen hebben tussen menu, filter, evt. anderen.
-	const wachtTijd = Math.floor((Math.random() - 0.5) * 500) + 3000;
+	const wachtTijd = Math.floor((Math.random() - 0.5) * 500) + 300000;
 	setTimeout(() => {
 		if (navElement.heeftMuis()) {
 			const nweTeller = teller + 1;
@@ -112,11 +98,7 @@ class NavElement {
 	 * @memberof NavElement
 	 */
 	toggleOpenDicht() {
-		if (this._nav.hasAttribute("data-nav-open")) {
-			this._nav.removeAttribute("data-nav-open");
-		} else {
-			this._nav.setAttribute("data-nav-open", true);
-		}
+		this.isOpen() ? this.sluit() : this.open();
 		return this.isOpen();
 	}
 	heeftMuis() {
