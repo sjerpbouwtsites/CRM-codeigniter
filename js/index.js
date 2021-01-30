@@ -1,5 +1,5 @@
 import acties from "./modules/acties.js";
-import navigatieAnimatie from "./modules/navigatie-animatie.js";
+import navigatieAnimatie, { NavElement } from "./modules/navigatie-animatie.js";
 import formulierInit from "./modules/formulier.js";
 import configPaneelInit from "./modules/config-paneel.js";
 
@@ -13,6 +13,20 @@ function DITMOETEENECHTELINKMETENCRYPTIEWORDEN() {
 				resolve();
 			}
 		}, 50);
+	});
+}
+
+function zetEscapeKlikVoorAlles() {
+	document.addEventListener("keydown", (event) => {
+		// verstopt navs
+		if (event.key !== "Escape") return;
+		Array.from(document.querySelectorAll(".crm-nav"))
+			.map((nav) => new NavElement(nav))
+			.forEach((navElement) => {
+				navElement.sluit();
+			});
+		// printer / communiceer
+		document.getElementsById("printer").style.display = "none";
 	});
 }
 
@@ -31,6 +45,7 @@ function naEncryptie() {
 }
 
 function indexInit() {
+	zetEscapeKlikVoorAlles();
 	acties();
 	DITMOETEENECHTELINKMETENCRYPTIEWORDEN()
 		.then(naEncryptie)

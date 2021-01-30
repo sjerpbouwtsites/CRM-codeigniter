@@ -54,17 +54,17 @@ input[type="submit"] {
 }
 
 .selectie-filter {
-	background-color: #877;
+	background-color: #c5afaf;
 }
 .selectie-filter:hover {
-	background-color: rgb(110, 96, 96);
+	background-color: #b59faf;
 }
 
 .sorteer-knoppen {
-	background-color: #d1abab;
+	background-color: #280202;
 }
 .sorteer-knoppen:hover {
-	background-color: #947070;
+	background-color: #230102;
 }
 .selectie-ongedaan {
 	background: linear-gradient(35deg, #947070, #f0e4e4cc);
