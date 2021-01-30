@@ -142,3 +142,37 @@ export var communiceer = ESMMigratieGlobalCheck(
 		}
 	}
 );
+
+/**
+ * doorzoekt ouders voor element.
+ * @param {HTMLElement} startElement
+ * @param {function<boolean>} conditionFunc controleert huidige element aan conditie
+ * @param {number} [maxRecursion=5] max aantal stappen omhoog.
+ * @returns {HTMLElement|null} html element by success or null.
+ */
+export function vindInOuders(startElement, conditionFunc, maxRecursion = 5) {
+	if (conditionFunc(startElement)) {
+		return startElement;
+	}
+	let werkEl = startElement.parentNode;
+	let teller = 0;
+	while (teller < maxRecursion) {
+		// console.log("teller", teller);
+		// gevonden? return.
+		if (conditionFunc(werkEl)) {
+			// console.log("gevonden!");
+			return werkEl;
+		}
+		const tParent = werkEl.parentNode;
+		// zijn we al op body?
+
+		if (!tParent || tParent.id === "app-body") {
+			//   console.log("mis!");
+			return null;
+		}
+		// nog een cirkel.
+		werkEl = tParent;
+		teller = teller + 1;
+	}
+	return null;
+}

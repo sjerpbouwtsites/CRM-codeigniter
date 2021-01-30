@@ -2,9 +2,13 @@
 	display: none;
 }
 
+.bewerk-modus .update-laatst-gezien {
+	display: block;
+}
 .update-laatst-gezien {
 	font-size: 10px;
 	height: 29px;
+	display: none;
 }
 
 /* wrap om input en button heen indien beide in form-vel cq bij laatst gezien */
@@ -22,8 +26,52 @@ textarea {
 
 input.pers-input,
 textarea.pers-input {
+	display: none;
+}
+.pers-lezen {
+	display: block;
+}
+.pers-lezen:hover {
+	position: relative;
+}
+.pers-lezen::after {
+	transition: 0.1s linear 0.05s;
+	opacity: 0;
+	content: attr(data-naam);
+	font-size: 0.66em;
+	margin-left: 0.33em;
+	display: inline-block;
+	position: relative;
+	top: -1px;
+	left: 5px;
+	text-transform: lowercase;
+}
+.pers-lezen:hover::after {
+	transition: 0.2s linear 2s;
+	opacity: 0.7;
+}
+
+.bewerk-modus input.pers-input,
+.bewerk-modus textarea.pers-input {
+	display: block;
+}
+.bewerk-modus .pers-lezen {
+	display: none;
+}
+
+.form-rij.bewerk-modus {
+	border-left: 15px solid #4ebcde;
+}
+
+input.pers-input,
+textarea.pers-input {
 	border: none;
 	background-color: transparent;
+	font-family: "Segoe UI";
+	font-variant: small-caps;
+	font-weight: 600;
+}
+.pers-lezen {
 	font-family: "Segoe UI";
 	font-variant: small-caps;
 	font-weight: 600;
@@ -68,13 +116,9 @@ form.crm-formulier {
 .form-rijen-lijst {
 	margin-bottom: -20px; /* correctie voor rijen */
 }
-.form-tabel input,
-textarea {
-	display: block;
-}
-.form-tabel textarea {
+/* .form-tabel textarea {
 	min-width: 330px;
-}
+} */
 .form-tabel textarea[style]:focus {
 	max-height: none;
 }

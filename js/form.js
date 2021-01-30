@@ -363,11 +363,12 @@ var naDecryptie = {
 				const filtert = selectElement.getAttribute("data-filter");
 				const moetGesplit = selectElement.getAttribute("data-split");
 				const gerelateerdeInvoerVelden = document.querySelectorAll(
-					`[data-naam='${filtert}']`
+					`.pers-input[data-naam='${filtert}']`
 				);
 				const invoerVeldenValues = Array.from(gerelateerdeInvoerVelden)
 					.map((veld) => veld.value)
 					.map((veldValue) => {
+						console.log(veldValue);
 						if (moetGesplit) {
 							return veldValue.split(" ");
 						} else {

@@ -8,7 +8,7 @@
 
 function cel($html = "", $class = '')
 {
-	echo "<div title='$class' class='$class form-cel' >$html</div>";
+	echo "<div class='$class form-cel' >$html</div>";
 }
 
 
@@ -18,14 +18,14 @@ function cel($html = "", $class = '')
 <html>
 <?= $head_el ?>
 
-<body data-base-url='<?= base_url() ?>'>
+<body id='app-body' data-base-url='<?= base_url() ?>'>
 
 	<?= $kop_en_knoppen ?>
 
 
 	<div class='formulier-en-controls'>
 
-		<form id='grote-tabel-formulier' class='crm-formulier' action='<?= base_url() ?>post-batch'>
+		<form id='grote-tabel-formulier' data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 			<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
@@ -70,17 +70,23 @@ function cel($html = "", $class = '')
 
 					if ($v[1] === "textarea") {
 
-						$cel_html = "<textarea
-									class='pers-input'
+						$cel_html = "
+
+								<textarea
+									class='pers-input verborgen '
+							
 									id='pers-{$pers['id']}-{$k}'
 									name='form[{$pers['id']}][$k]'
 									placeholder='" . str_replace("_", " ", $k) . "'
 									data-naam='$k'
-								>{$v[0]}</textarea>";
+								>{$v[0]}</textarea>
+								<span data-naam='$k' id='lees-{$pers['id']}-{$k}' class='pers-lezen verborgen pers-lezen__$k'></span>
+								";
 					} else {
 
 						$cel_html = "<input
-									class='pers-input'
+					
+									class='pers-input verborgen '
 									id='pers-{$pers['id']}-{$k}'
 									name='form[{$pers['id']}][$k]'
 									value='${v[0]}'
@@ -88,14 +94,17 @@ function cel($html = "", $class = '')
 									" . (array_key_exists(2, $v) ? ($v[2] !== "" ? $v[2] : "") : "") . "
 									placeholder='$k'
 									data-naam='$k'
-                                >";
+								>
+								<span data-naam='$k' id='lees-{$pers['id']}-{$k}' class='pers-lezen verborgen pers-lezen__$k'></span>
+																
+																";
 
 						if ($k === 'laatst_gezien') {
 							$cel_html = "<span class='cel-vervanger'>
-                                        $cel_html
-                                        <button class='update-laatst-gezien'>NU</button>
-                                    </span>
-                                    ";
+															$cel_html
+															<button class='update-laatst-gezien'>NU</button>
+													</span>
+													";
 						}
 					}
 

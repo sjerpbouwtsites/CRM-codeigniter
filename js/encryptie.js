@@ -94,6 +94,7 @@ function maakSleutelEnVersleutel(sleutelBasis) {
 							var ciphertextBytes = new Uint8Array(ciphertextBuf);
 							var base64Ciphertext = byteArrayToBase64(ciphertextBytes);
 							veld.value = base64Ciphertext;
+							veld.classList.add("verborgen");
 							resolveVeld();
 						})
 						.catch(function (err) {
@@ -204,6 +205,12 @@ function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 			) {
 				versleuteldVeld.textContent = nweTekst;
 			}
+			versleuteldVeld.classList.remove("verborgen");
+			const leesVeld = document.getElementById(
+				versleuteldVeld.id.replace("pers-", "lees-")
+			);
+			leesVeld.innerHTML = nweTekst;
+			leesVeld.classList.remove("verborgen");
 			zetVeldResolve(true);
 		} catch (error) {
 			zetVeldReject(addErrorOrigin("zetVeldWaarde", error));

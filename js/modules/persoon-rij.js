@@ -15,20 +15,20 @@ export default class PersoonRij {
 
 	/**
 	 * zal alle namen van inputs bevatten
-	 * @private
 	 */
-	_namen = [];
+	namen = [];
 
 	/**
-	 * input-name input-id mapping.
-	 * @private
+	 * input-name input-id (zonder voorvoeging) mapping.
 	 */
-	_naamIdMap = {};
+	naamIdMap = {};
 
 	/**
 	 * de id van de form-rij zelf.
 	 */
 	id = null;
+
+	proxySet = false;
 
 	/**
 	 * @param {HTMLElement} rij
@@ -44,7 +44,9 @@ export default class PersoonRij {
 
 		this.id = rij.id;
 		this.inputsNaarData(rij);
-		return this.maakVanZelfProxy();
+		const proxy = this.maakVanZelfProxy();
+		this.proxySet = true;
+		return proxy;
 	}
 
 	/**
@@ -57,8 +59,8 @@ export default class PersoonRij {
 			const naam = invoerVeld.getAttribute("data-naam");
 			const waarde = invoerVeld.value;
 			this._data[naam] = waarde;
-			this._namen.push(naam);
-			this._naamIdMap[naam] = invoerVeld.id;
+			this.namen.push(naam);
+			this.naamIdMap[naam] = invoerVeld.id.replace("pers-", "");
 		});
 	}
 
@@ -69,13 +71,18 @@ export default class PersoonRij {
 	 * @throws als je probeer een private property te lezen of, na de toegestane sleutels check, is het geen bestaande input-name sleutel (ofzo k)
 	 */
 	sleutelCheck(sleutelNaam) {
-		if (["inSelectie", "id"].includes(sleutelNaam)) {
+		if (
+			[
+				"inSelectie",
+				"_data",
+				"id",
+				"naamIdMap",
+				"schrijfDataNaarLeesVelden",
+			].includes(sleutelNaam)
+		) {
 			return false;
 		}
-		if (sleutelNaam.startsWith("_")) {
-			throw new Error(`${sleutelNaam} is prive.`);
-		}
-		if (!this._namen.includes(sleutelNaam)) {
+		if (!this.namen.includes(sleutelNaam)) {
 			throw new Error(`${sleutelNaam} geen bestaande input.`);
 		}
 		return true;
@@ -92,6 +99,16 @@ export default class PersoonRij {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Aanroepen om vanuit de data de tekst elementen opnieuw te vullen.
+	 */
+	schrijfDataNaarLeesVelden() {
+		Object.entries(this.naamIdMap).forEach(([naam, idBasis]) => {
+			const leesId = `lees-${idBasis}`;
+			document.getElementById(leesId).innerHTML = this._data[naam];
+		});
 	}
 
 	/**
@@ -112,9 +129,8 @@ export default class PersoonRij {
 			// zet de bijpassen de input.
 			set(geproxiedObject, sleutel, waarde) {
 				geproxiedObject.sleutelCheck(sleutel); // zie boven
-				console.log(geproxiedObject);
 				geproxiedObject._data[sleutel] = waarde;
-				const inputId = geproxiedObject._naamIdMap[sleutel];
+				const inputId = geproxiedObject.naamIdMap[sleutel];
 				document.getElementById(inputId).value = waarde;
 				return true;
 			},

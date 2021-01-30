@@ -86,3 +86,7 @@ select:hover,
 	flex-direction: row;
 	background-color: #f4f2f2;
 }
+
+.verborgen {
+	display: none !important;
+}
