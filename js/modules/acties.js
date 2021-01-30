@@ -1,13 +1,14 @@
 /**
  * @file de handelingen afkomstig vanuit het actie-paneel aan de rechterkant.
  */
-import { PersoonRij, formInvoerRijenArray } from "./gereedschap.js";
+import { formInvoerRijenArray } from "./gereedschap.js";
+import PersoonRij from "./persoon-rij.js";
 
 export default function () {
-	zetLijstKnopClicks();
+	zetLijstKnoppenClicks();
 }
 
-function zetLijstKnopClicks() {
+function zetLijstKnoppenClicks() {
 	const lijstMail = document.getElementById("lijst-mail-button");
 	const lijstTelefoon = document.getElementById("lijst-telefoon-button");
 	lijstMail.addEventListener("click", (e) => {
@@ -16,23 +17,45 @@ function zetLijstKnopClicks() {
 	lijstTelefoon.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("telefoon", e);
 	});
+	setTimeout(() => {
+		lijstTelefoonOfMail("mail", null);
+	}, 2000);
 }
 
-function lijstTelefoonOfMail(lijstWat, event) {
-	event.preventDefault();
-	const isMail = lijstWat === "mail";
-	const printMetNamen = document.getElementById("lijst-ook-naam").checked;
-	let printTekst = "";
-	let linkHref = "";
-	let ankerHTML = "";
+/**
+ * PersoonRijen die zichtbaar zijn (bv ivm selectie)
+ * @returns {array<PersoonRij>} array met persoonRijen
+ */
+function zichtbarePersRijen() {
 	const persRijenArr = formInvoerRijenArray();
-	const persRijen = persRijenArr
+	return persRijenArr
 		.map((rij) => {
 			return new PersoonRij(rij);
 		})
 		.filter((P) => {
 			return P.inSelectie();
 		});
+}
+
+/**
+ * mapt over rijen en haalt van getoonde rijen data op,
+ * schrijft die naar de printer, stuurt clipboard aan.
+ * creeert handige buttons om andere programma's mee te openen zoals mail/sms
+ *
+ * @param {string} lijstWat mail|telefoon
+ * @param {event} event click event
+ */
+function lijstTelefoonOfMail(lijstWat, event = null) {
+	event && event.preventDefault();
+	const isMail = lijstWat === "mail";
+	const printMetNamen = document.getElementById("lijst-ook-naam").checked;
+	let printTekst = "";
+	let linkHref = "";
+	let ankerHTML = "";
+
+	const persRijen = zichtbarePersRijen();
+
+	// MAIL
 	if (isMail) {
 		persRijen.forEach((P, index) => {
 			if (printMetNamen) {
@@ -50,8 +73,9 @@ function lijstTelefoonOfMail(lijstWat, event) {
       <a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a>
       
       <a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>      
-    `;
+		`;
 	} else {
+		// TELEFOON
 		persRijen.forEach((P) => {
 			printTekst += `${P.telefoon}, `;
 			linkHref += `${P.telefoon}, `;
@@ -62,23 +86,32 @@ function lijstTelefoonOfMail(lijstWat, event) {
 		});
 	}
 
-	// laatste , enzo eraf, en tussen small.
-	printTekst = `<small>${printTekst.substring(
-		0,
-		printTekst.length - 2
-	)}</small>`;
 	const printHTML = `
-  <span id='copyboard-succes'></span>
-  ${printTekst}
-	<div class='printer-buttons'>
-
-  ${ankerHTML}
-  </div>
-  `;
+	  <span id='copyboard-succes'></span>
+		<small>${printTekst.substring(0, printTekst.length - 2)}</small>
+		<div class='printer-buttons'>
+			${ankerHTML}
+		</div>
+	`;
 
 	communiceer(printHTML);
+	schrijfNaarClipboard(linkHref, !!event);
+}
+
+/**
+ * helper van lijstTelefoonOfMail
+ *
+ * @param {string} tekst
+ * @param {bool} isVanEvent
+ */
+function schrijfNaarClipboard(tekst, isVanEvent) {
+	if (!isVanEvent) {
+		document.getElementById(
+			"copyboard-succes"
+		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
+	}
 	navigator.clipboard
-		.writeText(linkHref)
+		.writeText(tekst)
 		.then(() => {
 			document.getElementById(
 				"copyboard-succes"
