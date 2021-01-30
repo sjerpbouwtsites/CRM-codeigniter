@@ -45,7 +45,7 @@ function lijstTelefoonOfMail(lijstWat, event) {
 		});
 		const a = encodeURIComponent(linkHref);
 		ankerHTML = `
-      <span class='print-buttons-text'>Mail deze ${persRijenArr.length} adressen in 
+      <span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in 
       </span>
       <a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a>
       

@@ -26,8 +26,9 @@
 	font-weight: bold;
 }
 #printer p small {
-	font-size: 0.66em;
+	font-size: 0.8em;
 	line-height: 0.66em;
+	opacity: 0.75;
 }
 
 #sluit-printer {
@@ -54,7 +55,7 @@
 
 .print-buttons-text {
 	display: block;
-	margin-bottom: 0.33em;
+	margin-bottom: 0.66em;
 }
 
 .printer-buttons {
