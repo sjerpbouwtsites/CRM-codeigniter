@@ -4,6 +4,9 @@
 import { formInvoerRijenArray } from "./gereedschap.js";
 import PersoonRij from "./persoon-rij.js";
 
+/**
+ * initialisatie functie van alle acties die uit de navpanelen komen.
+ */
 export default function () {
 	zetLijstKnoppenClicks();
 }
@@ -17,9 +20,6 @@ function zetLijstKnoppenClicks() {
 	lijstTelefoon.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("telefoon", e);
 	});
-	setTimeout(() => {
-		lijstTelefoonOfMail("mail", null);
-	}, 2000);
 }
 
 /**

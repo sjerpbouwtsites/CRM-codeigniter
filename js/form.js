@@ -328,67 +328,7 @@ var acties = {
 		o.value = "";
 		o.focus();
 	},
-	navigatieAnimatie() {
-		const navElsCSSSelector =
-			"#crm-nav-menu, #crm-nav-filters, #crm-nav-acties";
-		const navKnopElsCSSSelector =
-			"#schakel-navigatie-menu, #schakel-navigatie-filters, #schakel-navigatie-acties";
 
-		// ten eerste regelen dat het uit het scherm animeert, langzamer voor de eerste bezoek.
-		const willekeurElement = Math.floor((Math.random() - 0.5) * 500);
-		const tijdTotVerdwijnenNav =
-			localStorage.getItem("vw-crm-eerder-bezocht") === "ja"
-				? 50 + willekeurElement / 10
-				: 1500 + willekeurElement;
-		setTimeout(() => {
-			const navEls = document.querySelectorAll(navElsCSSSelector);
-			navEls.forEach((navEl) => {
-				navEl.hasAttribute("data-nav-open") &&
-					navEl.removeAttribute("data-nav-open");
-			});
-		}, tijdTotVerdwijnenNav);
-
-		const navKnoppen = document.querySelectorAll(navKnopElsCSSSelector);
-
-		// nu nog muisover status zetten die tegenhoud dat menu's inklappen.
-		// muisover staat dus in data ttr muis over.
-		const navs = document.querySelectorAll(navElsCSSSelector);
-		navs.forEach((navEl) => {
-			navEl.addEventListener("mouseenter", () => {
-				!navEl.hasAttribute("data-muis-over") &&
-					navEl.setAttribute("data-muis-over", true);
-			});
-			navEl.addEventListener("mouseleave", () => {
-				navEl.hasAttribute("data-muis-over") &&
-					navEl.removeAttribute("data-muis-over");
-			});
-		});
-
-		navKnoppen.forEach((navKnopEl) => {
-			navKnopEl.addEventListener("click", (navEvent) => {
-				navEvent.preventDefault();
-				// button ref naar nav via data attr.
-				const eigenNav = document.getElementById(
-					navKnopEl.getAttribute("data-eigen-nav")
-				);
-
-				// open en dicht schakel
-				if (eigenNav.hasAttribute("data-nav-open")) {
-					eigenNav.removeAttribute("data-nav-open");
-				} else {
-					eigenNav.setAttribute("data-nav-open", true);
-				}
-
-				// na een tijdje weer uitzetten als die nog aanstaat.
-				// mits muis niet op dat moment boven element is.
-				if (!eigenNav.hasAttribute("data-nav-open")) {
-					return;
-				}
-
-				blijfProberenNavTeSluiten(eigenNav);
-			});
-		});
-	},
 	willekeurigeGradientHoekrijen() {
 		document.querySelectorAll(".form-rij + .form-rij").forEach((rij) => {
 			const hoek = Math.floor(Math.random() * 360);
@@ -396,31 +336,6 @@ var acties = {
 		});
 	},
 };
-
-/**
- * recursieve functie die grofweg iedere 3 seconden kijkt of de muis boven de nav is.
- *
- * @param {*} navElement
- */
-function blijfProberenNavTeSluiten(navElement, teller = 0) {
-	// 10 keer opnieuw was wel genoeg.
-	if (teller > 10) {
-		return;
-	}
-
-	// lichtelijke verschillen hebben tussen menu, filter, evt. anderen.
-	const wachtTijd = Math.floor((Math.random() - 0.5) * 500) + 3000;
-	setTimeout(() => {
-		if (navElement.hasAttribute("data-muis-over")) {
-			const nweTeller = teller + 1;
-			blijfProberenNavTeSluiten(navElement, nweTeller);
-			return; // mogelijk ingebruik.
-		}
-		if (navElement.hasAttribute("data-nav-open")) {
-			navElement.removeAttribute("data-nav-open");
-		}
-	}, wachtTijd);
-}
 
 function stapelFilters() {
 	return !!$("#stapel-filters:checked").length;
@@ -715,9 +630,6 @@ $(function () {
 
 	// auto decrypt op dev
 	alsOpLocalHostOnthoudDecrypieEnVoerIn();
-
-	// vastleggen bezoek
-	localStorage.setItem("vw-crm-eerder-bezocht", "ja");
 });
 
 function communiceer(tekst, tijd) {

@@ -52,9 +52,6 @@ class Personslist extends CI_Controller
 			case 'contacten':
 				return '📱';
 				break;
-			case 'Bel Sjerp':
-				return '🙉';
-				break;
 			case 'Mail Sjerp':
 				return '🙈';
 				break;
@@ -79,11 +76,6 @@ class Personslist extends CI_Controller
 			];
 		}, $this->CRM->toegestane_tabel_namen);
 
-		$pages[] = [
-			'naam'	=> 'Bel Sjerp',
-			'url'		=> "tel:+31616541143",
-			'actief' => false,
-		];
 		$pages[] = [
 			'naam'	=> 'Mail Sjerp',
 			'url'		=> "mailto:dev@sjerpbouwtsites.nl",
