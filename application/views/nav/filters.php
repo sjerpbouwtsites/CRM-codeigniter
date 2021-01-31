@@ -4,10 +4,10 @@
   <div class='actieform-rij'>
     <select id='groep-selectie-filter' class='crm-nav__tabbaar filter-nav-input groep-select selectie-filter' data-filter='groep'></select>
     <select id='sector-selectie-filter' class='crm-nav__tabbaar filter-nav-input sector-select selectie-filter' data-filter='sector'></select>
-    <select id='woonplaats-selectie-filter' class='crm-nav__tabbaar filter-nav-input woonplaats-select selectie-filter' data-filter='woonplaats'></select>
   </div>
 
   <div class='actieform-rij'>
+    <select id='woonplaats-selectie-filter' class='crm-nav__tabbaar filter-nav-input woonplaats-select selectie-filter' data-filter='woonplaats'></select>
     <select id='ik-wil-selectie-filter' data-filter='ik_wil' class='crm-nav__tabbaar filter-nav-input selectie-filter ik_wil-select' data-split='true'></select>
   </div>
 
