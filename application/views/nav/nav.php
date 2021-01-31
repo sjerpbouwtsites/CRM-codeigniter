@@ -1,5 +1,5 @@
 <!-- <div class='crm-nav__wrapper crm-nav__wrapper--<?= $nav_title ?>'> -->
-<nav data-nav-title='<?= $nav_title ?>' id='crm-nav-<?= $nav_title ?>' class='
+<nav draggable="true" data-nav-title='<?= $nav_title ?>' id='crm-nav-<?= $nav_title ?>' class='
     crm-nav 
     crm-nav--<?= $nav_title ?>'>
   <div class='crm-nav__inner crm-nav__inner--<?= $nav_title ?>'>

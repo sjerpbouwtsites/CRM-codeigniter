@@ -68,6 +68,80 @@ function blijfProberenNavTeSluiten(navElement, teller = 0) {
 	}, wachtTijd);
 }
 
+//#region drag en drop
+
+let elementDatWordtVersleept = null;
+let startpuntSlepen = {
+	screenX: null,
+	screenY: null,
+};
+let eindpuntSlepen = {
+	screenX: null,
+	screenY: null,
+};
+
+function handleDragStart(e) {
+	startpuntSlepen.screenX = e.screenX;
+	startpuntSlepen.screenY = e.screenY;
+	elementDatWordtVersleept = e.target;
+	elementDatWordtVersleept.classList.add("wordt-gesleept");
+	e.dataTransfer.effectAllowed = "move";
+}
+
+function handleDragEnd(e) {
+	e.target.classList.remove("wordt-gesleept");
+	!e.target.classList.contains("is-gesleept") &&
+		e.target.classList.add("is-gesleept");
+}
+function handleDragOver(e) {
+	if (e.preventDefault) {
+		e.preventDefault();
+	}
+
+	return false;
+}
+function handleDrop(e) {
+	e.stopPropagation();
+
+	eindpuntSlepen.screenX = e.screenX;
+	eindpuntSlepen.screenY = e.screenY;
+
+	const verschilNaarRechts = startpuntSlepen.screenX - eindpuntSlepen.screenX;
+	const verschilNaarBoven = eindpuntSlepen.screenY - startpuntSlepen.screenY;
+	console.log(
+		`naar rechts: ${verschilNaarRechts} komt van ${startpuntSlepen.screenX} en gaat naar ${eindpuntSlepen.screenX}`
+	);
+
+	const CSSWaarden = window.getComputedStyle(elementDatWordtVersleept);
+	const oudRechts = Number(CSSWaarden.right.replace("px", ""));
+	const oudTop = Number(CSSWaarden.top.replace("px", ""));
+
+	elementDatWordtVersleept.setAttribute(
+		"style",
+		`
+		right: ${oudRechts + verschilNaarRechts}px;
+		top: ${oudTop + verschilNaarBoven}px;
+		`
+	);
+
+	// nu nog de nav toggle knop verstoppen;
+	const id = elementDatWordtVersleept.id;
+	document.querySelector(`[data-eigen-nav="${id}"]`).classList.add("verborgen");
+
+	elementDatWordtVersleept.classList.add("op-zijn-plek-gezet");
+	return false;
+}
+
+document.addEventListener("dragover", handleDragOver, false);
+document.addEventListener("drop", handleDrop, false);
+
+document.querySelectorAll("[draggable='true']").forEach(function (sleepDing) {
+	sleepDing.addEventListener("dragstart", handleDragStart, false);
+	sleepDing.addEventListener("dragend", handleDragEnd, false);
+});
+
+//#endregion drag en drop
+
 export class NavElement {
 	id = null;
 	/**
