@@ -199,6 +199,11 @@ function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 			const nweTekst = byteArrayToString(plaintextBuffer);
 			versleuteldVeld.setAttribute("value", nweTekst);
 			versleuteldVeld.value = nweTekst;
+
+			if (!nweTekst.trim()) {
+				versleuteldVeld.classList.add("geen-data");
+			}
+
 			if (
 				versleuteldVeld.getAttribute("data-naam") === "ik_wil" ||
 				versleuteldVeld.getAttribute("data-naam") === "aantekening"

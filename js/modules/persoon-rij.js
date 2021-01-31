@@ -87,7 +87,7 @@ export default class PersoonRij {
 				"_data",
 				"id",
 				"naamIdMap",
-				"schrijfDataNaarLeesVelden",
+				"schrijfDataNaarLeesVeldenEnZetGeenDataClass",
 				"laatstGezienInMicroseconden",
 			].includes(sleutelNaam)
 		) {
@@ -118,10 +118,18 @@ export default class PersoonRij {
 	/**
 	 * Aanroepen om vanuit de data de tekst elementen opnieuw te vullen.
 	 */
-	schrijfDataNaarLeesVelden() {
+	schrijfDataNaarLeesVeldenEnZetGeenDataClass() {
 		Object.entries(this.naamIdMap).forEach(([naam, idBasis]) => {
 			const leesId = `lees-${idBasis}`;
-			document.getElementById(leesId).innerHTML = this._data[naam];
+			const inputId = `pers-${idBasis}`;
+			const print = this._data[naam];
+
+			document.getElementById(leesId).innerHTML = print;
+			if (print.trim().length === 0) {
+				document.getElementById(inputId).classList.add("geen-data");
+			} else {
+				document.getElementById(inputId).classList.remove("geen-data");
+			}
 		});
 	}
 
@@ -141,11 +149,13 @@ export default class PersoonRij {
 			},
 			// zet de private stores
 			// zet de bijpassen de input.
+			// zet geen-dataclass op input
 			set(geproxiedObject, sleutel, waarde) {
 				geproxiedObject.sleutelCheck(sleutel); // zie boven
 				geproxiedObject._data[sleutel] = waarde;
 				const inputId = geproxiedObject.naamIdMap[sleutel];
-				document.getElementById(inputId).value = waarde;
+				const input = document.getElementById(inputId);
+				input.value = waarde;
 				return true;
 			},
 		});

@@ -51,6 +51,11 @@ textarea.pers-input {
 	opacity: 0.7;
 }
 
+/*als input leeg, dan print naam in pers-lezen*/
+.pers-input.geen-data + .pers-lezen::before {
+	content: attr(data-naam);
+	opacity: 0.4;
+}
 .bewerk-modus input.pers-input,
 .bewerk-modus textarea.pers-input {
 	display: block;
@@ -61,6 +66,7 @@ textarea.pers-input {
 
 .form-rij.bewerk-modus {
 	border-left: 15px solid #4ebcde;
+	width: 540px;
 }
 
 input.pers-input,
@@ -75,6 +81,7 @@ textarea.pers-input {
 	font-family: "Segoe UI";
 	font-variant: small-caps;
 	font-weight: 600;
+	line-height: 0.8em;
 }
 
 form.crm-formulier {
@@ -179,6 +186,27 @@ form.crm-formulier {
 .crm-formulier[data-form-stijl="blokken"] .cel-woonplaats,
 .crm-formulier[data-form-stijl="blokken"] .cel-aantekening {
 	display: none;
+}
+
+/** nee zelfs nu willen we niet alle aantekeningen zien. */
+
+.crm-formulier[data-form-stijl="blokken"] .cel-aantekening {
+	overflow: hidden;
+	max-height: 200px;
+}
+.crm-formulier[data-form-stijl="blokken"] .pers-lezen__aantekening {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.crm-formulier [data-form-stijl="blokken"] .bewerk-modus .cel-aantekening {
+	overflow: initial;
+	max-height: initial;
+}
+.crm-formulier[data-form-stijl="blokken"]
+	.bewerk-modus
+	.pers-lezen__aantekening {
+	white-space: initial;
+	text-overflow: initial;
 }
 
 /** wel altijd in bewerken  en ook in 'uitgebreid'*/

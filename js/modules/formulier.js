@@ -21,13 +21,19 @@ function zetBewerkModusClick() {
 			return element.classList.contains("form-rij");
 		});
 		const bewerkend = document.querySelector(".bewerk-modus");
-		if (bewerkend && bewerkend.id !== rijIsGeklikt.id) {
+		if (bewerkend) {
 			// hij was bewerken en rijIsGeklikt is niet de bewerkende rij.
-			bewerkend.classList.remove("bewerk-modus");
-			verwijderTabsVanInputs(bewerkend);
-			(() => {
-				new PersoonRij(bewerkend).schrijfDataNaarLeesVelden();
-			})();
+			// of klikte buiten formulier. sluit alles.
+			if (!rijIsGeklikt || (rijIsGeklikt && rijIsGeklikt.id !== bewerkend.id)) {
+				bewerkend.classList.remove("bewerk-modus");
+				verwijderTabsVanInputs(bewerkend);
+				(() => {
+					new PersoonRij(
+						bewerkend
+					).schrijfDataNaarLeesVeldenEnZetGeenDataClass();
+				})();
+			}
+			return;
 		}
 		if (!rijIsGeklikt) {
 			return;

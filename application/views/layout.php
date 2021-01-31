@@ -59,8 +59,8 @@ function cel($html = "", $class = '')
 						$cel_html = "
 
 								<textarea
-									class='pers-input verborgen '
-							
+									class='pers-input verborgen'
+
 									id='pers-{$pers['id']}-{$k}'
 									name='form[{$pers['id']}][$k]'
 									placeholder='" . str_replace("_", " ", $k) . "'
@@ -72,7 +72,7 @@ function cel($html = "", $class = '')
 
 						$cel_html = "<input
 					
-									class='pers-input verborgen '
+									class='pers-input verborgen'
 									id='pers-{$pers['id']}-{$k}'
 									name='form[{$pers['id']}][$k]'
 									value='${v[0]}'

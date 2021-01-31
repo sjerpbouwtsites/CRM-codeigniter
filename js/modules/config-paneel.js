@@ -20,5 +20,5 @@ function alsInStorageGebruikBeeldStijl() {
 	const beeldStijl = localStorage.getItem("beeld-stijl");
 	document
 		.getElementById("grote-tabel-formulier")
-		.setAttribute("data-form-stijl", beeldStijl);
+		.setAttribute("data-form-stijl", beeldStijl || "lijst");
 }
