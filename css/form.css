@@ -80,6 +80,7 @@ textarea.pers-input {
 form.crm-formulier {
 	padding: 20px;
 	padding-right: 20px;
+	min-width: calc(100% - 65px);
 }
 
 form.crm-formulier {

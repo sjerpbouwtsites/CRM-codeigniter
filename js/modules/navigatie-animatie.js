@@ -57,7 +57,7 @@ function blijfProberenNavTeSluiten(navElement, teller = 0) {
 	}
 
 	// lichtelijke verschillen hebben tussen menu, filter, evt. anderen.
-	const wachtTijd = Math.floor((Math.random() - 0.5) * 500) + 3000;
+	const wachtTijd = Math.floor((Math.random() - 0.5) * 500) + 2000;
 	setTimeout(() => {
 		if (navElement.heeftMuis()) {
 			const nweTeller = teller + 1;
