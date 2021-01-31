@@ -9,6 +9,7 @@ import PersoonRij from "./persoon-rij.js";
  */
 export default function () {
 	zetLijstKnoppenClicks();
+	ZetClickVoegPersoonToe();
 }
 
 function zetLijstKnoppenClicks() {
@@ -122,4 +123,61 @@ function schrijfNaarClipboard(tekst, isVanEvent) {
 				"copyboard-succes"
 			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
 		});
+}
+setTimeout(() => {
+	voegPersoonToe(new Event("lol"));
+}, 500);
+
+function ZetClickVoegPersoonToe() {
+	//laatste rij kopieeren;
+	//vind hoogst aanwezige ID en geef die aan nieuwe rij.
+	document
+		.getElementById("voeg-rij-toe")
+		.addEventListener("click", voegPersoonToe);
+}
+
+function voegPersoonToe(e) {
+	e.preventDefault();
+	document.getElementById("voeg-rij-toe").setAttribute("disabled", true);
+
+	const formRijen = formInvoerRijenArray();
+
+	const nieuweId =
+		Math.max(
+			...formRijen.map((rij) => {
+				const id = rij.querySelector(".pers-id").value;
+				return Number(id) || 0;
+			})
+		) + 1;
+
+	const bijnaZuivereHTML = formRijen[0].outerHTML
+		.replace(/form\-rij\-\d+/, `form-rij-${nieuweId}`)
+		.replace(/pers\-\d+\-(\w+)/g, `pers-${nieuweId}-$1`)
+		.replace(/lees\-\d+\-(\w+)/g, `lees-${nieuweId}-$1`)
+		.replace(/form\[\d+\]\[(\w+)\]/g, `form[${nieuweId}][$1]`);
+
+	const legeHouderDiv = document.createElement("div");
+	legeHouderDiv.innerHTML = bijnaZuivereHTML;
+	legeHouderDiv.querySelectorAll("input").forEach((i) => (i.value = ""));
+	legeHouderDiv.querySelectorAll("textarea").forEach((t) => {
+		t.value = "";
+		t.innerHTML = "";
+	});
+	legeHouderDiv.querySelectorAll(".pers-lees").forEach((p) => {
+		p.innerHTML = "";
+	});
+	legeHouderDiv.querySelector(".pers-id").value = nieuweId;
+
+	console.log(legeHouderDiv);
+	const clone = legeHouderDiv.querySelector(".form-rij");
+	document.getElementById("form-rijen-lijst").appendChild(clone);
+
+	// nav naar element.
+	window.location.hash = clone.id;
+	document.getElementById("voeg-rij-toe").removeAttribute("disabled");
+
+	// datum update.
+	document.querySelector(`#form-rij-${nieuweId} .update-laatst-gezien`).click();
+
+	document.getElementById(`pers-${nieuweId}-naam`).focus();
 }

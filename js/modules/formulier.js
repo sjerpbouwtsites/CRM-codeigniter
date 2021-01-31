@@ -42,6 +42,9 @@ function zetBewerkModusClick() {
 		!rijIsGeklikt.classList.contains("bewerk-modus") &&
 			rijIsGeklikt.classList.add("bewerk-modus") &&
 			maakInputsTabBaarEnFocus(rijIsGeklikt);
+
+		//scroll naar element
+		window.location.hash = rijIsGeklikt.id;
 	});
 }
 
