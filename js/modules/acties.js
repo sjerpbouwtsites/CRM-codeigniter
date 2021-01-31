@@ -124,9 +124,6 @@ function schrijfNaarClipboard(tekst, isVanEvent) {
 			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
 		});
 }
-setTimeout(() => {
-	voegPersoonToe(new Event("lol"));
-}, 500);
 
 function ZetClickVoegPersoonToe() {
 	//laatste rij kopieeren;
