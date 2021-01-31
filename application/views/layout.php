@@ -36,20 +36,6 @@ function cel($html = "", $class = '')
 
 			echo "<div id='form-rijen-lijst' class='form-tabel'>";
 
-			echo "<div class='kop form-rij'>";
-
-			cel();
-
-			if ($een_naam_klein !== '') {
-				foreach ($form_data[$een_naam_klein] as $k => $v) {
-
-					if ($k === 'id') continue;
-					cel(str_replace("_", " ", $k), "cel-$k");
-				}
-			}
-
-			echo "</div>";
-
 			foreach ($form_data as $pers) :
 
 				echo "<div id='form-rij-{$pers['id']}' class='form-rij'>";

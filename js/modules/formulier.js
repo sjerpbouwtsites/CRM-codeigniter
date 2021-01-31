@@ -99,7 +99,6 @@ function generiekeSorteerOpHandler(event) {
 		return document.getElementById(persoonRij.id).outerHTML;
 	});
 	document.getElementById("form-rijen-lijst").innerHTML = `
-	<div class="kop form-rij"></div>
 	${nieuweRijenHTML.join("")}
 	`;
 

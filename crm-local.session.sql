@@ -1,2 +1,7 @@
-INSERT INTO meta (meta_id, sleutel, waarde)
-VALUES (6, 'bondgenoten-iv', 'r9cDptXhQy4m3glOuh6wew==');
+CREATE TABLE aantekeningen (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user` INT NOT NULL,
+  `tekst` TEXT,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+)

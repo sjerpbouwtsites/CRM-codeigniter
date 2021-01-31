@@ -318,7 +318,7 @@ function verzendInStukkenCallback(e) {
 			// kolommen bepalen
 			const eersteId = SQLVriendelijkePostData.ids[0];
 			const eersteRijInputs = document
-				.querySelector(".form-rij + .form-rij")
+				.querySelector(".form-rij")
 				.querySelectorAll(".pers-input");
 			SQLVriendelijkePostData.kolommen = Array.from(eersteRijInputs)
 				.map((veld) => {

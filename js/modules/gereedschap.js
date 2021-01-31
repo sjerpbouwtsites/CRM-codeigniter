@@ -54,7 +54,7 @@ export var formInvoerRijenArray = ESMMigratieGlobalCheck(
 	"formInvoerRijenArray",
 	function () {
 		try {
-			return Array.from(document.querySelectorAll(".form-rij + .form-rij"));
+			return Array.from(document.querySelectorAll(".form-rij"));
 		} catch (error) {
 			console.error("gezocht naar .form-rij maar niets te vinden!");
 			throw error;
