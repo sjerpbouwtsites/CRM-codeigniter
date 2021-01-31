@@ -10,36 +10,71 @@ export default function formulierInit() {
 	zetClickGeneriekeSorteerOp();
 }
 
+//#region bewerkModus
 /**
  * toggled de bewerk modus op de form-rij elememen
  */
 function zetBewerkModusClick() {
 	// zoek voor clicks op of in form-rij
 	document.getElementById("form-rijen-lijst").addEventListener("click", (e) => {
-		const formRij = vindInOuders(e.target, (element) => {
+		const rijIsGeklikt = vindInOuders(e.target, (element) => {
 			return element.classList.contains("form-rij");
 		});
 		const bewerkend = document.querySelector(".bewerk-modus");
-		if (bewerkend && bewerkend.id !== formRij.id) {
+		if (bewerkend && bewerkend.id !== rijIsGeklikt.id) {
+			// hij was bewerken en rijIsGeklikt is niet de bewerkende rij.
 			bewerkend.classList.remove("bewerk-modus");
+			verwijderTabsVanInputs(bewerkend);
 			(() => {
 				new PersoonRij(bewerkend).schrijfDataNaarLeesVelden();
 			})();
 		}
-		if (!formRij) {
+		if (!rijIsGeklikt) {
 			return;
 		}
 
-		!formRij.classList.contains("bewerk-modus") &&
-			formRij.classList.add("bewerk-modus");
+		!rijIsGeklikt.classList.contains("bewerk-modus") &&
+			rijIsGeklikt.classList.add("bewerk-modus") &&
+			maakInputsTabBaarEnFocus(rijIsGeklikt);
 	});
 }
 
+/**
+ * helper van zetBewerkModusClick
+ * focus na 150 ms
+ *
+ * @param {HTMLElement} formRij
+ */
+function maakInputsTabBaarEnFocus(formRij) {
+	formRij.querySelectorAll(".pers-input").forEach((persInput, index) => {
+		persInput.setAttribute("tabindex", index + 1);
+	});
+	setTimeout(() => {
+		formRij.querySelector(".pers-input").focus();
+	}, 150);
+}
+
+/**
+ * helper van zetbewerkModusClick
+ *
+ * @param {HTMLElement} formRij
+ */
+function verwijderTabsVanInputs(formRij) {
+	formRij.querySelectorAll(".pers-input").forEach((persInput) => {
+		persInput.removeAttribute("tabindex");
+	});
+}
+//#endregion bewerkModus
+
+//#region sorteren
+/**
+ * Zet generiekeSorteerOpHandler op de click van de sorteerknoppen.
+ */
 function zetClickGeneriekeSorteerOp() {
-	const sorteerKnopper = Array.from(
+	const sorteerKnoppen = Array.from(
 		document.querySelectorAll("button[data-sorteert]")
 	);
-	sorteerKnopper.forEach((knop) => {
+	sorteerKnoppen.forEach((knop) => {
 		knop.addEventListener("click", generiekeSorteerOpHandler);
 	});
 }
@@ -86,18 +121,23 @@ function formRijenSorteerder(persoonA, persoonB, sorteerVeldNaam, richting) {
 	let veldWaardeBijA = persoonA[sorteerVeldNaam];
 	let veldWaardeBijB = persoonB[sorteerVeldNaam];
 	if (sorteerVeldNaam === "naam") {
-		// nummers maken van eerste 3 letters
+		// nummers maken van eerste 5 letters
 		veldWaardeBijA = veldWaardeBijA.toLowerCase();
 		veldWaardeBijA = Number(
-			`${veldWaardeBijA.charCodeAt(0).toString()}${veldWaardeBijA
-				.charCodeAt(1)
-				.toString()}${veldWaardeBijA.charCodeAt(2).toString()}`
+			veldWaardeBijA
+				.substring(0, 5)
+				.padEnd(5, "a")
+				.split("")
+				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
+				.join("")
 		);
-		veldWaardeBijB = veldWaardeBijB.toLowerCase();
 		veldWaardeBijB = Number(
-			`${veldWaardeBijB.charCodeAt(0).toString()}${veldWaardeBijB
-				.charCodeAt(1)
-				.toString()}${veldWaardeBijB.charCodeAt(2).toString()}`
+			veldWaardeBijB
+				.substring(0, 5)
+				.padEnd(5, "a")
+				.split("")
+				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
+				.join("")
 		);
 	}
 
@@ -119,6 +159,7 @@ function formRijenSorteerder(persoonA, persoonB, sorteerVeldNaam, richting) {
 
 	return 0;
 }
+//#endregion sorteren
 
 function zetSelectieFilterChange() {
 	$(".selectie-filter").on("change", function () {
