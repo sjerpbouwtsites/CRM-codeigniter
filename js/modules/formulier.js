@@ -8,6 +8,7 @@ export default function formulierInit() {
 	zetSelectieFilterChange();
 	zetClickSelectieOngedaan();
 	zetClickGeneriekeSorteerOp();
+	zetClicksKeysSluitBewerkModus();
 }
 
 //#region bewerkModus
@@ -25,13 +26,7 @@ function zetBewerkModusClick() {
 			// hij was bewerken en rijIsGeklikt is niet de bewerkende rij.
 			// of klikte buiten formulier. sluit alles.
 			if (!rijIsGeklikt || (rijIsGeklikt && rijIsGeklikt.id !== bewerkend.id)) {
-				bewerkend.classList.remove("bewerk-modus");
-				verwijderTabsVanInputs(bewerkend);
-				(() => {
-					new PersoonRij(
-						bewerkend
-					).schrijfDataNaarLeesVeldenEnZetGeenDataClass();
-				})();
+				verwijderBewerkModus()
 			}
 			return;
 		}
@@ -46,6 +41,35 @@ function zetBewerkModusClick() {
 		//scroll naar element
 		window.location.hash = rijIsGeklikt.id;
 	});
+}
+
+function verwijderBewerkModus(){
+	const bewerkend = document.querySelector(".bewerk-modus");
+	if (!bewerkend) {
+		throw new Error('sluit bewerken... maar niets wordt bewerkt')
+		return;
+	}
+	bewerkend.classList.remove("bewerk-modus");
+	verwijderTabsVanInputs(bewerkend);
+	(() => {
+		new PersoonRij(
+			bewerkend
+		).schrijfDataNaarLeesVeldenEnZetGeenDataClass();
+	})();	
+}
+
+function zetClicksKeysSluitBewerkModus(){
+	document.addEventListener('click', clickEvent =>{
+		if (clickEvent.target.classList.contains('beeindig-bewerken-cel')){
+			clickEvent.preventDefault();
+			verwijderBewerkModus()
+		}
+	});
+	document.addEventListener('keyup', keyEvent =>{
+		if (keyEvent.key ==='Escape'){
+			verwijderBewerkModus()
+		}
+	});	
 }
 
 /**
