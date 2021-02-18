@@ -60,6 +60,12 @@ textarea.pers-input {
 .bewerk-modus textarea.pers-input {
 	display: block;
 }
+.bewerk-modus .cel-aantekening textarea {
+	font-size: .75em;
+	font-variant: normal;	
+	height: 200px;
+	max-height: 50vh;
+}
 .bewerk-modus .pers-lezen {
 	display: none;
 }
@@ -92,6 +98,16 @@ textarea.pers-input {
 	font-variant: small-caps;
 	font-weight: 600;
 	line-height: 0.8em;
+}
+.pers-lezen__aantekening {
+	font-variant: normal;
+	font-weight: 400;
+	margin-top: 5px;
+	font-size: .75em;
+	line-height: .9em;
+	max-height: 3.7em;
+	overflow-y: hidden;
+}
 }
 
 form.crm-formulier {
@@ -153,6 +169,10 @@ form.crm-formulier {
 	background-position: center center;
 	background-repeat: no-repeat;
 }
+.beeindig-bewerken-cel:hover {
+	background-color: #60c360;
+	filter: brightness(110%)
+}
 .bewerk-modus .beeindig-bewerken-cel {
 	display: block;
 }
@@ -196,6 +216,11 @@ form.crm-formulier {
 .form-cel.cel-groep .pers-input {
 	height: 100%;
 }
+.form-cel.cel-aantekening {
+	flex-basis: 100%;
+}
+font-weight: normal;
+font-variant: normal;
 
 /** VIEW STIJLEN **/
 .crm-formulier[data-form-stijl="lijst"] .cel-sector,
