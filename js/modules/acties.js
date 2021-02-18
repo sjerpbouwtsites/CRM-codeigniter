@@ -99,6 +99,9 @@ function riseupCheck(e){
 		
 		VWinitRiseupScript()`;
 
+		console.log(riseupScript)
+		debugger
+
 		communiceer(`Er is zojuist een script naar je klikbord gekopie&euml;rd. Er wordt over 3 seconden een tabblad geopend met de pagina van riseup waar je dient te zijn: Vloerwerk ledenlijst, 500 resultaten per pagina. <a target='_blank' href='https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500#missende-leden'>Zo niet klik dan hier</a><br><br><strong>☣☣☣</strong><br>Nu ga je dit script uitvoeren op die pagina. Klik op die pagina op f12, klik op het tabblad console in de developer tools en druk daar op control c.<br><br><span id='copyboard-succes'></span>`);
 		schrijfNaarClipboard(riseupScript, !!e);
 		setTimeout(()=>{
