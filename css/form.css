@@ -66,7 +66,17 @@ textarea.pers-input {
 
 .form-rij.bewerk-modus {
 	border-left: 15px solid #4ebcde;
-	width: 540px;
+	min-width: 540px;
+	max-width: 90vw;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white !important;
+	background: none !important;
+			background-color: rgba(0, 0, 0, 0);
+	background-color: white !important;
+	z-index: 10;
 }
 
 input.pers-input,
