@@ -139,6 +139,7 @@ form.crm-formulier {
 	background-color: #f7f7f7;
 	justify-content: space-between;
 	border-left: 5px solid #353535;
+	order: 1;
 	flex-grow: 1;
 	background: linear-gradient(
 		65deg,
@@ -175,6 +176,10 @@ form.crm-formulier {
 }
 .bewerk-modus .beeindig-bewerken-cel {
 	display: block;
+}
+.was-in-bewerk-modus {
+	order: 0;
+	border-left: 20px solid #60c360;
 }
 .rij-verwijderen {
 	width: 28px;

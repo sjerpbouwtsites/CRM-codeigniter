@@ -34,13 +34,27 @@ function zetBewerkModusClick() {
 			return;
 		}
 
-		!rijIsGeklikt.classList.contains("bewerk-modus") &&
-			rijIsGeklikt.classList.add("bewerk-modus") &&
+		// bewerk-modus is staat voor bewerken
+		// was in bewerk modus is om na sluiten bewerken te tonen dat dingen zijn bewerkt.
+		if (!rijIsGeklikt.classList.contains("bewerk-modus")) {
+			rijIsGeklikt.classList.add("bewerk-modus")
 			maakInputsTabBaarEnFocus(rijIsGeklikt);
+			rijIsGeklikt.addEventListener('change', zetOnChangeRijWasBewerkt)
+		} 
+			
 
 		//scroll naar element
 		window.location.hash = rijIsGeklikt.id;
 	});
+}
+
+function zetOnChangeRijWasBewerkt(changeEvent){
+	const rij = vindInOuders(changeEvent.target, (element) => {return element.classList.contains('form-rij')}, 5)
+	if (rij) {
+
+		rij.classList.add('was-in-bewerk-modus');
+		rij.removeEventListener('change', zetOnChangeRijWasBewerkt)
+	}
 }
 
 function verwijderBewerkModus(){
