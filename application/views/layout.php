@@ -18,12 +18,12 @@ function cel($html = "", $class = '')
 <html>
 <?= $head_el ?>
 
-<body id='app-body' data-base-url='<?= base_url() ?>'>
+<body id='app-body'  data-base-url='<?= base_url() ?>'>
 
 	<?= $kop_en_knoppen ?>
 
 
-	<div class='formulier-en-controls'>
+	<div class='formulier-en-controls tabel-<?=$tabel_naam?>'>
 
 		<form id='grote-tabel-formulier' data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 

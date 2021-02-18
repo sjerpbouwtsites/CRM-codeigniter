@@ -85,8 +85,19 @@ select:hover,
 	display: flex;
 	flex-direction: row;
 	background-color: #f4f2f2;
+	min-height: 100vh;
+	background-repeat: no-repeat;
+	background-position: bottom right;
 }
-
+.formulier-en-controls.tabel-leden{
+	background-image: url('/afb/leden-tabel-achtergrond.png');
+}
+.formulier-en-controls.tabel-contacten{
+	background-image: url('/afb/contacten-tabel-achtergrond.png');
+}
+.formulier-en-controls.tabel-bondgenoten{
+	background-image: url('/afb/bondgenoten-tabel-achtergrond.png');
+}
 .verborgen {
 	display: none !important;
 }
