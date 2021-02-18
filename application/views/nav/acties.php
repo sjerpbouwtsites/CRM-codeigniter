@@ -3,6 +3,7 @@
   <div class='actieform-rij'>
     <button id='lijst-mail-button' class='crm-nav__tabbaar actieknoppen lijst-email'>lijst emails</button>
     <button id='lijst-telefoon-button' class='crm-nav__tabbaar actieknoppen lijst-telefoon'>lijst tel nrs</button>
+    <?php if ($is_op_leden) : ?><button id='riseup-check' class='crm-nav__tabbaar actieknoppen riseup-check'>Riseup check</button>    <?php endif; ?>
   </div>
   <div class='actieform-rij'>
     <span class='labels-als-button'>

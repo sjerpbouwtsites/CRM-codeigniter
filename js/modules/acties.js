@@ -12,16 +12,102 @@ export default function () {
 	ZetClickVoegPersoonToe();
 }
 
+/**
+ * lijst èn riseup check
+ */
 function zetLijstKnoppenClicks() {
 	const lijstMail = document.getElementById("lijst-mail-button");
 	const lijstTelefoon = document.getElementById("lijst-telefoon-button");
+	const riseupCheckButton = document.getElementById("riseup-check");
 	lijstMail.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("mail", e);
 	});
 	lijstTelefoon.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("telefoon", e);
 	});
+	if(riseupCheckButton) {
+
+		riseupCheckButton.addEventListener("click", (e) => {
+			riseupCheck(e);
+		});
+	}
 }
+
+/**
+ * knalt emails in script dat valt te gebruiken in de console van riseup.
+ */
+function riseupCheck(e){
+	const mailsVanLedenUitCRM = Array.from(document.querySelectorAll('.pers-input[type="email"]')).map(emailVeld => {
+		return emailVeld.value.toLowerCase().trim()
+	})
+	const mailsVanLedenUitCRMJSON = JSON.stringify(mailsVanLedenUitCRM);
+	
+	const riseupScript = `
+
+		const mailsVanLedenUitCRM = ${mailsVanLedenUitCRMJSON};
+		
+		function VWRequirementsMet(){
+			return location.href.includes('lists.riseup.net') && location.search.includes('size=500')
+		}
+		
+		function makeRiseupInsertHTML(welInCRMNietInRiseup){
+			const lis = (welInCRMNietInRiseup.map(missendLid =>{
+					return "<li>"+missendLid+"</li>";
+			}).join(''));
+			return "<div id='missende-leden' style='background-color: rgb(228, 133, 133); padding: 20px'><h2>De volgende mensen zitten wel in het CRM maar niet in Riseup.</h2><ol>"+lis+"</ol></div>";
+			}
+
+		function runVWFilters(){
+			const riseupMailAdressen = Array.from(document.querySelectorAll('a[href*="@"][href^="/www/editsubscriber"]'));
+		
+			// check welke mails wel in riseup zitten, maar niet in het CRM.
+			riseupMailAdressen.forEach(riseupAnker => {
+				const mailAdres = riseupAnker.textContent;
+				if (mailsVanLedenUitCRM.includes(mailAdres)) {
+					riseupAnker.parentNode.parentNode.style = "background-color: #85e485;"
+					riseupAnker.parentNode.parentNode.title = "Ik zit in het CRM èn in Riseup"
+				} else {
+					riseupAnker.parentNode.parentNode.style = "background-color: #85b3e4;"
+					riseupAnker.parentNode.parentNode.title = "Ik zit wel in Riseup, maar niet in de CRM ledentabel."    
+				}
+			})
+			
+			const riseupMailAdressenTekst = riseupMailAdressen.map(adres => adres.textContent)
+			
+			const welInCRMNietInRiseup = mailsVanLedenUitCRM.filter(lidUitCRM =>{
+				return !riseupMailAdressenTekst.includes(lidUitCRM);
+			})
+		
+			if (welInCRMNietInRiseup.length) {
+				const insertHTML = makeRiseupInsertHTML(welInCRMNietInRiseup);
+		
+				// damn dirty
+				document.querySelector('.search_form').innerHTML = insertHTML;
+				location.hash = 'missende-leden';
+			}
+			
+			alert('muis over de mailregistraties om de tooltip te lezen.')
+		}
+		
+		function VWinitRiseupScript (){
+			if (!VWRequirementsMet()) {
+				alert('je bent niet op de goede pagina gek')
+				location.href = "https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500"
+			}
+			runVWFilters()
+		}
+		
+		VWinitRiseupScript()`;
+
+		communiceer(`Er is zojuist een script naar je klikbord gekopie&euml;rd. Er wordt over 3 seconden een tabblad geopend met de pagina van riseup waar je dient te zijn: Vloerwerk ledenlijst, 500 resultaten per pagina. <a target='_blank' href='https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500#missende-leden'>Zo niet klik dan hier</a><br><br><strong>☣☣☣</strong><br>Nu ga je dit script uitvoeren op die pagina. Klik op die pagina op f12, klik op het tabblad console in de developer tools en druk daar op control c.<br><br><span id='copyboard-succes'></span>`);
+		schrijfNaarClipboard(riseupScript, !!e);
+		setTimeout(()=>{
+			window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
+		}, 3000)
+		
+}
+
+
 
 /**
  * PersoonRijen die zichtbaar zijn (bv ivm selectie)
@@ -100,7 +186,7 @@ function lijstTelefoonOfMail(lijstWat, event = null) {
 }
 
 /**
- * helper van lijstTelefoonOfMail
+ * helper van lijstTelefoonOfMail & riseupcheck
  *
  * @param {string} tekst
  * @param {bool} isVanEvent
@@ -116,7 +202,7 @@ function schrijfNaarClipboard(tekst, isVanEvent) {
 		.then(() => {
 			document.getElementById(
 				"copyboard-succes"
-			).innerHTML = `Addressen naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
+			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
 		})
 		.catch(() => {
 			document.getElementById(

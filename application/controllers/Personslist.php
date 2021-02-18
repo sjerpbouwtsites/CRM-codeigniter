@@ -149,10 +149,12 @@ class Personslist extends CI_Controller
 		$data['filters'] = $this->dirty_get_view('nav/nav.php', [
 			'nav_title'		=> 'filters',
 			'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
-		]);
-		$data['acties'] = $this->dirty_get_view('nav/nav.php', [
-			'nav_title'		=> 'acties',
-			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [])
+			]);
+			$data['acties'] = $this->dirty_get_view('nav/nav.php', [
+				'nav_title'		=> 'acties',
+			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [
+				'is_op_leden' => $this->CRM->tabel === 'leden',
+			])
 		]);
 		$data['config'] = $this->dirty_get_view('nav/nav.php', [
 			'nav_title'		=> 'config',
