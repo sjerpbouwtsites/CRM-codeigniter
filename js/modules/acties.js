@@ -28,6 +28,7 @@ function zetLijstKnoppenClicks() {
 	if(riseupCheckButton) {
 
 		riseupCheckButton.addEventListener("click", (e) => {
+			e.preventDefault();
 			riseupCheck(e);
 		});
 	}
