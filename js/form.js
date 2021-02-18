@@ -338,7 +338,12 @@ function initActies() {
 	//filters e.d. vullen met nieuwe info
 	for (var f in naDecryptie) naDecryptie[f]();
 
-	communiceer("CRM geinitialiseerd");
+	const locationSplit = location.pathname.split('/');
+	const tabel = locationSplit.length > 1 ? locationSplit[locationSplit.length-1] : 'leden'
+
+	setTimeout(()=>{
+		communiceer(`CRM geinitialiseerd. Je bent op ${tabel}`, 2500);
+	}, 500)	
 }
 
 $(function () {
