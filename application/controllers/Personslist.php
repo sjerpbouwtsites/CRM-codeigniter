@@ -78,8 +78,8 @@ class Personslist extends CI_Controller
 
 
 		$pages[] = [
-			'naam'	=> 'Mail Sjerp',
-			'url'		=> "mailto:dev@sjerpbouwtsites.nl",
+			'naam'	=> 'Suggesties&problemen',
+			'url'		=> "https://github.com/sjerpbouwtsites/CRM-codeigniter/issues",
 			'actief' => false,
 		];
 

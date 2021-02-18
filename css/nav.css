@@ -22,7 +22,7 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 }
 
 .crm-nav {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	right: -570px;
 	width: 570px;

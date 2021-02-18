@@ -6,7 +6,7 @@
     $icon = $pagina['icon'];
     $actief_icon = $pagina['actief'] ? '<span class="crm-nav__actief-icon">🚩</span>' : '';
     echo "<li class='crm-nav__stuk' $actief_titel>
-              <a class='crm-nav__tabbaar crm-nav__link $actief_CSS' href='$url'>
+              <a target='_blank' class='crm-nav__tabbaar crm-nav__link $actief_CSS' href='$url'>
               " . $actief_icon . ' '  .
       "<span class='crm-nav__link-naam'>" . $pagina['naam'] . "</span>
               </a>
