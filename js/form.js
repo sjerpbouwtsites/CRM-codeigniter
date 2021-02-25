@@ -53,14 +53,7 @@ var acties = {
 			}
 		})
 	},
-	mobielActieveldenTonen: function () {
-		$("#mobiel").on("click", ".mob-toon", function (e) {
-			e.preventDefault();
-			var sel = "." + this.getAttribute("data-toon");
-			console.log(sel);
-			$(sel).toggle();
-		});
-	},
+
 	sluitPrinter: function () {
 		var p = document.getElementById("printer");
 		var s = document.getElementById("sluit-printer");
