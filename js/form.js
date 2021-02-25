@@ -29,7 +29,7 @@ var acties = {
 		// //verwijder functionaliteit
 		document.getElementById('grote-tabel-formulier').addEventListener('click', (e)=>{
 			if (!e.target.classList.contains('rij-verwijderen')) {
-				return 
+				return 	
 			}
 			e.preventDefault();
 			const gebruikerId = e.target.querySelector('.pers-id').value;
@@ -45,12 +45,13 @@ var acties = {
 	},
 
 	ongedaanMaken: function () {
-		$(".ongedaan").on("click", function (e) {
+
+		document.getElementById('wijzigingen-ongedaan-maken').addEventListener('click', e=>{
 			e.preventDefault();
-			if (confirm("Alle wijzigingen in dit scherm wissen?")) {
-				location.reload(true);
+			if (confirm("Alle wijzigingen in dit scherm wissen? Het scherm herlaadt dan.")) {
+				location.reload();
 			}
-		});
+		})
 	},
 	mobielActieveldenTonen: function () {
 		$("#mobiel").on("click", ".mob-toon", function (e) {

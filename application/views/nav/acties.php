@@ -12,7 +12,7 @@
         <!-- html via css -->
       </label>
     </span>
-    <button class='crm-nav__tabbaar actieknoppen opgepast ongedaan'>🏳 herstel </button>
+    <button id='wijzigingen-ongedaan-maken' class='crm-nav__tabbaar actieknoppen opgepast ongedaan'>🏳 herstel </button>
   </div>
 
   <div class='actieform-rij'>
