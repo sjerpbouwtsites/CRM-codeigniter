@@ -28,7 +28,9 @@ var acties = {
 	verwijderen: function () {
 		// //verwijder functionaliteit
 		document.getElementById('grote-tabel-formulier').addEventListener('click', (e)=>{
-			if (e.target.classList.contains('rij-verwijderen'))
+			if (!e.target.classList.contains('rij-verwijderen')) {
+				return 
+			}
 			e.preventDefault();
 			const gebruikerId = e.target.querySelector('.pers-id').value;
 			const gebruikerNaam = document.getElementById(`lees-${gebruikerId}-naam`).textContent;
