@@ -26,25 +26,20 @@ var acties = {
 			});
 	},
 	verwijderen: function () {
-		//verwijder functionaliteit
-		$("form").on("click", ".rij-verwijderen", function (e) {
+		// //verwijder functionaliteit
+		document.getElementById('grote-tabel-formulier').addEventListener('click', (e)=>{
+			if (e.target.classList.contains('rij-verwijderen'))
 			e.preventDefault();
+			const gebruikerId = e.target.querySelector('.pers-id').value;
+			const gebruikerNaam = document.getElementById(`lees-${gebruikerId}-naam`).textContent;
 
-			//als meer dan één aanwezig, verwijderen, anders legen.
-
-			if ($(".form-rij:not(.kop)").length > 1) {
-				$(e.target).closest(".form-rij:not(.kop)").remove();
-			} else {
-				$(e.target)
-					.closest(".form-rij:not(.kop)")
-					.find("input, textarea")
-					.each(function () {
-						if (this.getAttribute("data-naam") !== "id") {
-							this.value = "";
-						}
-					});
+			if (confirm(`${gebruikerNaam} verwijderen?` )){
+				const gebruikerRij = document.getElementById(`form-rij-${gebruikerId}`);
+				gebruikerRij.parentNode.removeChild(gebruikerRij)
 			}
-		});
+						
+		})
+
 	},
 
 	ongedaanMaken: function () {
