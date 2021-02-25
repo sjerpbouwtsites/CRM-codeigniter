@@ -11,6 +11,8 @@
 	display: none;
 }
 
+
+
 /* wrap om input en button heen indien beide in form-vel cq bij laatst gezien */
 .cel-vervanger {
 	display: flex;
@@ -193,6 +195,16 @@ form.crm-formulier {
 	background-position: center center;
 	background-repeat: no-repeat;
 	height: 35px;
+}
+
+/** alleen verwijderen in bewerk modus */
+/* behalve dan in lijst modus */
+div.rij-verwijderen {
+	display: none;
+}
+[data-form-stijl="lijst"] div.rij-verwijderen,
+.bewerk-modus div.rij-verwijderen {
+	display: inline-block;
 }
 
 .pers-input {
