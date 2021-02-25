@@ -3,6 +3,8 @@ import navigatieAnimatie, { NavElement } from "./modules/navigatie-animatie.js";
 import formulierInit from "./modules/formulier.js";
 import configPaneelInit from "./modules/config-paneel.js";
 
+import {maakSleutelEnVersleutel, maakSleutelEnOntsleutel} from "./modules/encryptie.js";
+
 function DITMOETEENECHTELINKMETENCRYPTIEWORDEN() {
 	return new Promise((resolve, reject) => {
 		const checkSleutelTeZienInterval = setInterval(() => {
@@ -14,6 +16,15 @@ function DITMOETEENECHTELINKMETENCRYPTIEWORDEN() {
 			}
 		}, 50);
 	});
+}
+
+/**
+ * Omdat form.js nog een global script is en encryptie reeds een module vereist 
+ * form global funcs.
+ */
+function enscyptieModulesFuncsNaarGlobal(){
+	window['maakSleutelEnVersleutel'] = maakSleutelEnVersleutel;
+	window['maakSleutelEnOntsleutel']	= maakSleutelEnOntsleutel;
 }
 
 function zetEscapeKlikVoorAlles() {
@@ -45,6 +56,7 @@ function naEncryptie() {
 }
 
 function indexInit() {
+	enscyptieModulesFuncsNaarGlobal();
 	zetEscapeKlikVoorAlles();
 	acties();
 	DITMOETEENECHTELINKMETENCRYPTIEWORDEN()

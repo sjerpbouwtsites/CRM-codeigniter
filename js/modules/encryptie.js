@@ -1,78 +1,12 @@
-/* eslint-disable */
-/**
- * Creeert de basis data tbv van de crypto.
- * @returns Promise<CryptoKey>
- * @param {*} wachtwoordString
- */
-function convertPassphraseToKey(wachtwoordString) {
-	// het zijn hieronder twee promises dus hier ook promise
-	// voor consistente foutafhandeling.
-	const cryptoBasis = new Promise((resolve, reject) => {
-		try {
-			const revoluties = 1000000; // meer is beter
-			const zoutStreng =
-				"You need to know the salt later to decrypt. It's not a secret, though.";
-			const zoutBytes = stringToByteArray(zoutStreng);
-			const wachtwoordBytes = stringToByteArray(wachtwoordString);
-			resolve({ zoutBytes, wachtwoordBytes, revoluties });
-		} catch (error) {
-			reject(error);
-		}
-	});
-	return cryptoBasis.then(importKeyAsync);
-}
+/** 'frontend' van enscryptie */
 
-/**
- *
- * @returns Promise<CryptoKey>
- * @param {*} cryptoBasisRes {revoluties, zoutStreng, passphrasBytes}
- */
-function importKeyAsync(cryptoBasisRes) {
-	return new Promise((importKeyAsyncResolve, importKeyAsyncReject) => {
-		window.crypto.subtle
-			.importKey(
-				"raw",
-				cryptoBasisRes.wachtwoordBytes,
-				{ name: "PBKDF2" },
-				false,
-				["deriveKey"]
-			)
-			.then((baseKey) => {
-				return new Promise((deriveResolve, deriveReject) => {
-					window.crypto.subtle
-						.deriveKey(
-							{
-								name: "PBKDF2",
-								salt: cryptoBasisRes.zoutBytes,
-								iterations: cryptoBasisRes.revoluties,
-								hash: "SHA-1",
-							},
-							baseKey,
-							{ name: "AES-CBC", length: 256 },
-							false,
-							["encrypt", "decrypt"]
-						)
-						.then((diriveRes) => {
-							deriveResolve(diriveRes);
-						})
-						.catch((deriveErr) => {
-							deriveReject(deriveErr);
-						});
-				});
-			})
-			.then((dirivedKeyRes) => {
-				importKeyAsyncResolve(dirivedKeyRes);
-			})
-			.catch((deriveKeyOrImportKeyError) => {
-				importKeyAsyncReject(deriveKeyOrImportKeyError);
-			});
-	});
-}
+import  * as encryptieGereedschap from "./encryptie-gereedschap.js";
 
-function maakSleutelEnVersleutel(sleutelBasis) {
+
+export function maakSleutelEnVersleutel(sleutelBasis) {
 	return new Promise((resolveVersleutel, rejectVersleutel) => {
 		communiceer("versleutelen begonnen");
-		convertPassphraseToKey(sleutelBasis).then(function (key) {
+		encryptieGereedschap.convertPassphraseToKey(sleutelBasis).then(function (key) {
 			var iv = window.crypto.getRandomValues(new Uint8Array(16));
 			printIV.value = byteArrayToBase64(iv);
 
@@ -127,11 +61,11 @@ function maakSleutelEnVersleutel(sleutelBasis) {
  * @returns Promise<Bool|Error>
  * @param {wachtwoord} sleutel
  */
-function maakSleutelEnOntsleutel(sleutel) {
+export function maakSleutelEnOntsleutel(sleutel) {
 	return new Promise((resolveOntsleutel, rejectOntsleutel) => {
 		const ivBytes = base64ToByteArray(printIV.value.trim());
 
-		convertPassphraseToKey(sleutel)
+		encryptieGereedschap.convertPassphraseToKey(sleutel)
 			.then(function (aesKey) {
 				const veldDecryptiePromises = formInvoerVeldenArray().map(
 					(versleuteldVeld) => {
@@ -163,7 +97,7 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 			let ciphertextBytes;
 
 			ciphertextBytes = base64ToByteArray(versleuteldVeld.value);
-			decryptPromise = window.crypto.subtle
+			const decryptPromise = window.crypto.subtle
 				.decrypt({ name: "AES-CBC", iv: ivBytes }, aesKey, ciphertextBytes)
 				.then(cipherResolve)
 				.catch((aargh) => {

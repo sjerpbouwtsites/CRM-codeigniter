@@ -62,3 +62,73 @@ export var stringToByteArray = ESMMigratieGlobalCheck(
 		return result;
 	}
 );
+
+/**
+ * Creeert de basis data tbv van de crypto.
+ * @returns Promise<CryptoKey>
+ * @param {*} wachtwoordString
+ */
+export function convertPassphraseToKey(wachtwoordString) {
+	// het zijn hieronder twee promises dus hier ook promise
+	// voor consistente foutafhandeling.
+	const cryptoBasis = new Promise((resolve, reject) => {
+		try {
+			const revoluties = 1000000; // meer is beter
+			const zoutStreng =
+				"You need to know the salt later to decrypt. It's not a secret, though.";
+			const zoutBytes = stringToByteArray(zoutStreng);
+			const wachtwoordBytes = stringToByteArray(wachtwoordString);
+			resolve({ zoutBytes, wachtwoordBytes, revoluties });
+		} catch (error) {
+			reject(error);
+		}
+	});
+	return cryptoBasis.then(importKeyAsync);
+}
+
+/**
+ *
+ * @returns Promise<CryptoKey>
+ * @param {*} cryptoBasisRes {revoluties, zoutStreng, passphrasBytes}
+ */
+export function importKeyAsync(cryptoBasisRes) {
+	return new Promise((importKeyAsyncResolve, importKeyAsyncReject) => {
+		window.crypto.subtle
+			.importKey(
+				"raw",
+				cryptoBasisRes.wachtwoordBytes,
+				{ name: "PBKDF2" },
+				false,
+				["deriveKey"]
+			)
+			.then((baseKey) => {
+				return new Promise((deriveResolve, deriveReject) => {
+					window.crypto.subtle
+						.deriveKey(
+							{
+								name: "PBKDF2",
+								salt: cryptoBasisRes.zoutBytes,
+								iterations: cryptoBasisRes.revoluties,
+								hash: "SHA-1",
+							},
+							baseKey,
+							{ name: "AES-CBC", length: 256 },
+							false,
+							["encrypt", "decrypt"]
+						)
+						.then((diriveRes) => {
+							deriveResolve(diriveRes);
+						})
+						.catch((deriveErr) => {
+							deriveReject(deriveErr);
+						});
+				});
+			})
+			.then((dirivedKeyRes) => {
+				importKeyAsyncResolve(dirivedKeyRes);
+			})
+			.catch((deriveKeyOrImportKeyError) => {
+				importKeyAsyncReject(deriveKeyOrImportKeyError);
+			});
+	});
+}

@@ -4,7 +4,6 @@
 		<script src="<?= base_url('js/axios.js') ?>"></script>
 		<script src="<?= base_url('js/jquery.js') ?>"></script>
 		<script src="<?= base_url('js/gereedschap.js') ?>"></script>
-		<script src="<?= base_url('js/encryptie.js') ?>"></script>
 		<script src="<?= base_url('js/form.js') ?>"></script>
 		<link rel='stylesheet' href="<?= base_url('css/normaliseer.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/sleutelaars.css') ?>">

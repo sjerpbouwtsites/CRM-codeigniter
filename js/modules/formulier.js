@@ -194,8 +194,6 @@ function formRijenSorteerder(persoonA, persoonB, sorteerVeldNaam, richting) {
 	veldWaardeBijA = Number(veldWaardeBijA)
 	veldWaardeBijB = Number(veldWaardeBijB)
 
-	console.log(veldWaardeBijA, veldWaardeBijB)
-
 	if (richting === "hoog") {
 		if (veldWaardeBijA > veldWaardeBijB) {
 			return -1;
