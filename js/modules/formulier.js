@@ -155,8 +155,8 @@ function generiekeSorteerOpHandler(event) {
 	const postFix =
 		sorteerOp === "laatst_gezien"
 			? nieuweRichting === "laag"
-				? "Oud naar nieuw"
-				: "Nieuw naar oud"
+			?  "Nieuw naar oud"
+				: "Oud naar nieuw"
 			: nieuweRichting === "laag"
 			? "A - Z"
 			: "Z - A";
@@ -185,7 +185,16 @@ function formRijenSorteerder(persoonA, persoonB, sorteerVeldNaam, richting) {
 				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
 				.join("")
 		);
+	} else if (sorteerVeldNaam === "laatst_gezien") {
+		console.log(veldWaardeBijA)
+		veldWaardeBijA = veldWaardeBijA.split('-').reverse().join('')
+		veldWaardeBijB = veldWaardeBijB.split('-').reverse().join('')
 	}
+
+	veldWaardeBijA = Number(veldWaardeBijA)
+	veldWaardeBijB = Number(veldWaardeBijB)
+
+	console.log(veldWaardeBijA, veldWaardeBijB)
 
 	if (richting === "hoog") {
 		if (veldWaardeBijA > veldWaardeBijB) {
