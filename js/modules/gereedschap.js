@@ -100,14 +100,14 @@ export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
 
 
 export function communiceer(tekst, tijd) {
-	$("#printer p").empty().append(tekst);
-	$("#printer").fadeIn(200);
-	/*	printer.getElementsByTagName('p')[0].textContent = tekst;
-	printer.style.display = "block";*/
+	const printerParagraph = document.querySelector('#printer p');
+	const printer = document.querySelector('#printer');
+	printerParagraph.innerHTML = tekst;
+	printer.style.display = "block";
 
 	if (tijd) {
 		setTimeout(function () {
-			$("#printer").fadeOut(200);
+			printer.style.display = "none";
 		}, tijd);
 	}
 }

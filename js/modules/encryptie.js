@@ -45,7 +45,7 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 			Promise.all(veldEncryptiePromises)
 				.then(() => {
 					communiceer("versleutelen klaar", 1000);
-					$("form").addClass("versleuteld");
+					document.getElementById('grote-tabel-formulier').classList.add("versleuteld");
 					resolveVersleutel(true);
 				})
 				.catch((err) => {

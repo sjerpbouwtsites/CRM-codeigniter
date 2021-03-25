@@ -322,7 +322,7 @@ function 	zetSluitPrinter () {
 	s.addEventListener("click", function (e) {
 		e.preventDefault();
 		p.getElementsByTagName("p")[0].innerHTML = "";
-		$("#printer").hide(200);
+		document.querySelector('#printer').style.display = "none";
 	});
 }
 
