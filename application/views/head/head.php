@@ -3,8 +3,6 @@
 		<title><?=($_SERVER['REMOTE_ADDR']==='127.0.0.1'? 'DEV 🧨! ':'')?><?= $tabel_naam ?> - Sjerps CRM</title>
 		<script src="<?= base_url('js/axios.js') ?>"></script>
 		<script src="<?= base_url('js/jquery.js') ?>"></script>
-		<script src="<?= base_url('js/gereedschap.js') ?>"></script>
-		<script src="<?= base_url('js/form.js') ?>"></script>
 		<link rel='stylesheet' href="<?= base_url('css/normaliseer.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/sleutelaars.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/controls.css') ?>">

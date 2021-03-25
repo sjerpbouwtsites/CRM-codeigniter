@@ -1,9 +1,5 @@
-import { ESMMigratieGlobalCheck } from "./gereedschap.js";
-import {communiceer} from "./gereedschap.js";
 
-export var byteArrayToBase64 = ESMMigratieGlobalCheck(
-	"byteArrayToBase64",
-	function (byteArray) {
+export function byteArrayToBase64 (byteArray) {
 		var binaryString = "";
 		for (var i = 0; i < byteArray.byteLength; i++) {
 			binaryString += String.fromCharCode(byteArray[i]);
@@ -11,30 +7,26 @@ export var byteArrayToBase64 = ESMMigratieGlobalCheck(
 		var base64String = window.btoa(binaryString);
 		return base64String;
 	}
-);
 
-export var base64ToByteArray = ESMMigratieGlobalCheck(
-	"base64ToByteArray",
-	function (base64String) {
-		try {
-			var binaryString = window.atob(base64String);
-			var byteArray = new Uint8Array(binaryString.length);
-			for (var i = 0; i < binaryString.length; i++) {
-				byteArray[i] += binaryString.charCodeAt(i);
-			}
-		} catch (error) {
-			return error;
+
+export function base64ToByteArray(base64String) {
+	try {
+		var binaryString = window.atob(base64String);
+		var byteArray = new Uint8Array(binaryString.length);
+		for (var i = 0; i < binaryString.length; i++) {
+			byteArray[i] += binaryString.charCodeAt(i);
 		}
-
-		return byteArray;
+	} catch (error) {
+		return error;
 	}
-);
 
-export var byteArrayToString = ESMMigratieGlobalCheck(
-	"byteArrayToString",
-	function (byteArray) {
+	return byteArray;
+}
+
+
+export  function byteArrayToString(byteArray) {
 		if ("TextDecoder" in window) {
-			decoder = new window.TextDecoder();
+			const decoder = new window.TextDecoder();
 			return decoder.decode(byteArray);
 		}
 
@@ -45,13 +37,11 @@ export var byteArrayToString = ESMMigratieGlobalCheck(
 		}
 		return result;
 	}
-);
 
-export var stringToByteArray = ESMMigratieGlobalCheck(
-	"stringToByteArray",
-	function stringToByteArray(s) {
+
+export function stringToByteArray (s) {
 		if ("TextEncoder" in window) {
-			encoder = new window.TextEncoder();
+			const encoder = new window.TextEncoder();
 			return encoder.encode(s);
 		}
 
@@ -62,7 +52,7 @@ export var stringToByteArray = ESMMigratieGlobalCheck(
 		}
 		return result;
 	}
-);
+
 
 /**
  * Creeert de basis data tbv van de crypto.

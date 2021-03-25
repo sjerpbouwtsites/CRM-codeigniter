@@ -13,47 +13,41 @@ Array.prototype.getUnique = function () {
 	return a;
 };
 
-export var verwerkFout = ESMMigratieGlobalCheck(
-	"verwerkFout",
-	function verwerkFout(err, voorvoeging) {
-		var vv =
-			typeof voorvoeging !== undefined && voorvoeging
-				? "Het is mislukt want "
-				: "";
+export function verwerkFout(err, voorvoeging) {
+	var vv =
+		typeof voorvoeging !== undefined && voorvoeging
+			? "Het is mislukt want "
+			: "";
 
-		return (
-			vv +
-			err.message.replace("not defined", "ongedefinieerd") +
-			" op regel " +
-			err.lineNumber +
-			"."
-		);
-	}
-);
+	return (
+		vv +
+		err.message.replace("not defined", "ongedefinieerd") +
+		" op regel " +
+		err.lineNumber +
+		"."
+	);
+}
 
 /**
  * @returns Array<NodeList> lijst van alle invoervelden in crm form.
  * @throws
  */
-export var formInvoerVeldenArray = ESMMigratieGlobalCheck(
-	"formInvoerVeldenArray",
-	function () {
-		try {
-			return Array.from(document.querySelectorAll(".pers-input"));
-		} catch (error) {
-			console.error("gezocht naar .pers-input maar niets te vinden!");
-			throw error;
-		}
+export function formInvoerVeldenArray() {
+	try {
+		return Array.from(document.querySelectorAll(".pers-input"));
+	} catch (error) {
+		console.error("gezocht naar .pers-input maar niets te vinden!");
+		throw error;
 	}
-);
+}
+
+
 
 /**
  * @returns Array<NodeList> lijst van alle rijen na de kop. invoervelden in crm form.
  * @throws
  */
-export var formInvoerRijenArray = ESMMigratieGlobalCheck(
-	"formInvoerRijenArray",
-	function () {
+export function formInvoerRijenArray () {
 		try {
 			return Array.from(document.querySelectorAll(".form-rij"));
 		} catch (error) {
@@ -61,24 +55,22 @@ export var formInvoerRijenArray = ESMMigratieGlobalCheck(
 			throw error;
 		}
 	}
-);
+
 
 /**
  * maakt origin key/string; zet nieuwe waarde.
  * @param {string} origin
  * @param {Error} error
  */
-export var addErrorOrigin = ESMMigratieGlobalCheck(
-	"addErrorOrigin",
-	function (origin, error) {
-		if (!origin || !error) {
-			throw new Error("add Error Origin faal");
-		}
-		if (!error.origin) error.origin = "";
-		error.origin = `${origin}\n${error.origin}`;
-		return error;
+export  function addErrorOrigin(origin, error) {
+	if (!origin || !error) {
+		throw new Error("add Error Origin faal");
 	}
-);
+	if (!error.origin) error.origin = "";
+	error.origin = `${origin}\n${error.origin}`;
+	return error;
+}
+
 
 export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
 		if (!location.href.includes("localhost")) return;
@@ -105,26 +97,6 @@ export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
 		communiceer("auto-decrypt", 200);
 	}
 
-
-/**
- * Tijdens omschakelen naar ESM alles van window[func] naar export/imports.
- * Indien func nog global aanwezig, warning en return global func.
- * Anders geef terug funcDeclaratie.
- * Gebruikt ipv bij export function blablaFunc(){}
- *
- * @export
- * @param {string} funcNaam te checken of die al global aanwezig is.
- * @param {function} funcDeclaratie eigenlijke functie.
- * @returns {function} global of nieuwe functie.
- */
-export function ESMMigratieGlobalCheck(funcNaam, funcDeclaratie) {
-	if (typeof window[funcNaam] === "function") {
-		console.warn(`${funcNaam} func al gezet`);
-		return window[funcNaam];
-	} else {
-		return funcDeclaratie;
-	}
-}
 
 
 export function communiceer(tekst, tijd) {
