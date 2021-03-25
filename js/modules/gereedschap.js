@@ -1,3 +1,4 @@
+
 Array.prototype.getUnique = function () {
 	var o = {},
 		a = [],
@@ -79,10 +80,8 @@ export var addErrorOrigin = ESMMigratieGlobalCheck(
 	}
 );
 
-export var alsOpLocalHostOnthoudDecrypieEnVoerIn = ESMMigratieGlobalCheck(
-	"alsOpLocalHostOnthoudDecrypieEnVoerIn",
-	function () {
-		if (!staat.dev) return;
+export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
+		if (!location.href.includes("localhost")) return;
 		try {
 			const opgeslagenWW = localStorage.getItem("crm-decryptie");
 			if (!opgeslagenWW) {
@@ -105,7 +104,7 @@ export var alsOpLocalHostOnthoudDecrypieEnVoerIn = ESMMigratieGlobalCheck(
 		}
 		communiceer("auto-decrypt", 200);
 	}
-);
+
 
 /**
  * Tijdens omschakelen naar ESM alles van window[func] naar export/imports.
@@ -127,21 +126,22 @@ export function ESMMigratieGlobalCheck(funcNaam, funcDeclaratie) {
 	}
 }
 
-export var communiceer = ESMMigratieGlobalCheck(
-	"communiceer",
-	function (tekst, tijd) {
-		$("#printer p").empty().append(tekst);
-		$("#printer").fadeIn(200);
-		/*	printer.getElementsByTagName('p')[0].textContent = tekst;
-    printer.style.display = "block";*/
 
-		if (tijd) {
-			setTimeout(function () {
-				$("#printer").fadeOut(200);
-			}, tijd);
-		}
+export function communiceer(tekst, tijd) {
+	$("#printer p").empty().append(tekst);
+	$("#printer").fadeIn(200);
+	/*	printer.getElementsByTagName('p')[0].textContent = tekst;
+	printer.style.display = "block";*/
+
+	if (tijd) {
+		setTimeout(function () {
+			$("#printer").fadeOut(200);
+		}, tijd);
 	}
-);
+}
+
+
+
 
 /**
  * doorzoekt ouders voor element.
@@ -175,4 +175,17 @@ export function vindInOuders(startElement, conditionFunc, maxRecursion = 5) {
 		teller = teller + 1;
 	}
 	return null;
+}
+
+export function welkomstWoord() {
+	//filters e.d. vullen met nieuwe info
+
+	const locationSplit = location.pathname.trim().split('/');
+	const tabelNaam = location.pathname.includes('tabel') 
+		? locationSplit[locationSplit.length-1] 
+		: 'leden'
+
+	setTimeout(()=>{
+		communiceer(`CRM geinitialiseerd. Je bent op ${tabelNaam}`, 2500);
+	}, 500)	
 }

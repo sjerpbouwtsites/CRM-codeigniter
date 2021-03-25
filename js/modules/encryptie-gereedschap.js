@@ -1,4 +1,5 @@
 import { ESMMigratieGlobalCheck } from "./gereedschap.js";
+import {communiceer} from "./gereedschap.js";
 
 export var byteArrayToBase64 = ESMMigratieGlobalCheck(
 	"byteArrayToBase64",

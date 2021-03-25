@@ -1,14 +1,15 @@
 import PersoonRij from "./persoon-rij.js";
 import { vindInOuders, formInvoerRijenArray } from "./gereedschap.js";
+import {communiceer} from "./gereedschap.js";
 
 export default function formulierInit() {
 	zetBewerkModusClick();
-
 	willekeurigeGradientHoekrijen();
 	zetSelectieFilterChange();
 	zetClickSelectieOngedaan();
 	zetClickGeneriekeSorteerOp();
 	zetClicksKeysSluitBewerkModus();
+	vulSelects ();
 }
 
 //#region bewerkModus
@@ -300,4 +301,57 @@ function willekeurigeGradientHoekrijen() {
 		const hoek = Math.floor(Math.random() * 360);
 		rij.style.background = `linear-gradient(${hoek}deg, rgba(213, 189, 180, 0.44), rgba(180, 147, 147, 0.47))`;
 	});
+}
+
+function vulSelects () {
+	Array.from(document.getElementsByClassName("selectie-filter")).forEach(
+		(selectElement) => {
+			const filtert = selectElement.getAttribute("data-filter");
+			const moetGesplit = selectElement.getAttribute("data-split");
+			const gerelateerdeInvoerVelden = document.querySelectorAll(
+				`.pers-input[data-naam='${filtert}']`
+			);
+			const invoerVeldenValues = Array.from(gerelateerdeInvoerVelden)
+				.map((veld) => veld.value)
+				.map((veldValue) => {
+					if (moetGesplit) {
+						return veldValue.split(" ");
+					} else {
+						return veldValue;
+					}
+				})
+				.sort()
+				.reverse();
+
+			const uniekeWaarden = [];
+			invoerVeldenValues.forEach((v) => {
+				if (!v) {
+					return;
+				}
+				if (typeof v === "string") {
+					if (!uniekeWaarden.includes(v)) {
+						uniekeWaarden.push(v);
+					}
+				} else {
+					// dus array
+					v.forEach((w) => {
+						if (!uniekeWaarden.includes(w)) {
+							uniekeWaarden.push(w);
+						}
+					});
+				}
+			});
+
+			const icon = Math.random() > 0.5 ? "🔎" : "🔍";
+
+			selectElement.innerHTML = `
+					<option value=''>${filtert} <span class='select-icon'>${icon}</span></option>
+					${uniekeWaarden
+						.map((optie) => {
+							return `<option value='${optie}'>${optie}</option>`;
+						})
+						.join("")}
+				`;
+		}
+	);
 }
