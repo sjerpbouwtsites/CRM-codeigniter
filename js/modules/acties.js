@@ -4,13 +4,14 @@
 import { formInvoerRijenArray } from "./gereedschap.js";
 import PersoonRij from "./persoon-rij.js";
 import {NavElement} from "./navigatie-animatie.js";
-import {communiceer} from "./gereedschap.js";
+import * as gr from "./gereedschap.js";
 
 /**
  * initialisatie functie van alle acties die uit de navpanelen komen.
  */
 export default function () {
 	zetLijstKnoppenClicks();
+	zetRiseupCheckButtonClick();
 	ZetClickVoegPersoonToe();
 	zetUpdateLaatsGezienClick();
 	zetVerwijderRijClick();
@@ -20,26 +21,28 @@ export default function () {
 }
 
 /**
- * lijst èn riseup check
+ * zet lijst buttons click handlers.
  */
 function zetLijstKnoppenClicks() {
-	const lijstMail = document.getElementById("lijst-mail-button");
-	const lijstTelefoon = document.getElementById("lijst-telefoon-button");
-	const riseupCheckButton = document.getElementById("riseup-check");
-	lijstMail.addEventListener("click", (e) => {
+  gr.pakElementVeilig("lijst-mail-button")
+	.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("mail", e);
 	});
-	lijstTelefoon.addEventListener("click", (e) => {
+	gr.pakElementVeilig("lijst-telefoon-button")
+	.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("telefoon", e);
 	});
-	if(riseupCheckButton) {
-
-		riseupCheckButton.addEventListener("click", (e) => {
-			e.preventDefault();
-			riseupCheck(e);
-		});
-	}
+	
 }
+
+function zetRiseupCheckButtonClick(){
+	gr.pakElementVeilig("riseup-check")
+	.addEventListener("click", (e) => {
+		e.preventDefault();
+		riseupCheck(e);
+	});	
+}
+
 
 /**
  * knalt emails in script dat valt te gebruiken in de console van riseup.
@@ -107,7 +110,7 @@ function riseupCheck(e){
 		
 		VWinitRiseupScript()`;
 
-		communiceer(`Er is zojuist een script naar je klikbord gekopie&euml;rd. Er wordt over 3 seconden een tabblad geopend met de pagina van riseup waar je dient te zijn: Vloerwerk ledenlijst, 500 resultaten per pagina. <a target='_blank' href='https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500#missende-leden'>Zo niet klik dan hier</a><br><br><strong>☣☣☣</strong><br>Nu ga je dit script uitvoeren op die pagina. Klik op die pagina op <kbd>f12</kbd>, klik op het tabblad console in de developer tools en druk daar op <kbd>control c</kbd> en dan <kbd>enter</kbd>.<br><br><span id='copyboard-succes'></span>`);
+		gr.communiceer(`Er is zojuist een script naar je klikbord gekopie&euml;rd. Er wordt over 3 seconden een tabblad geopend met de pagina van riseup waar je dient te zijn: Vloerwerk ledenlijst, 500 resultaten per pagina. <a target='_blank' href='https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500#missende-leden'>Zo niet klik dan hier</a><br><br><strong>☣☣☣</strong><br>Nu ga je dit script uitvoeren op die pagina. Klik op die pagina op <kbd>f12</kbd>, klik op het tabblad console in de developer tools en druk daar op <kbd>control c</kbd> en dan <kbd>enter</kbd>.<br><br><span id='copyboard-succes'></span>`);
 		schrijfNaarClipboard(riseupScript, !!e);
 		setTimeout(()=>{
 			window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
@@ -189,7 +192,7 @@ function lijstTelefoonOfMail(lijstWat, event = null) {
 		</div>
 	`;
 
-	communiceer(printHTML);
+	gr.communiceer(printHTML);
 	schrijfNaarClipboard(linkHref, !!event);
 }
 

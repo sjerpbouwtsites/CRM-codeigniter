@@ -71,6 +71,30 @@ export  function addErrorOrigin(origin, error) {
 	return error;
 }
 
+/**
+ * Als zoek op id, ret elementById
+ * Als zoek op selector, ret querySelector
+ * Als niet gevonden, error
+ *
+ * @param {string} zoekOp
+ * @returns {HTMLElement} element.
+ */
+export function pakElementVeilig(zoekOp) {
+	if (!zoekOp) {
+		throw new Error('pak element met lege query')
+	}
+	let el;
+	if (zoekOp[0].match(/\w/)) {
+		el = document.getElementById(zoekOp);
+	} else {
+		el = document.querySelector(zoekOp);
+	}
+	if (!el) {
+		throw new Error(`Geen element ${zoekOp} gevonden`)
+	} else {
+		return el;
+	}
+}
 
 export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
 		if (!location.href.includes("localhost")) return;
