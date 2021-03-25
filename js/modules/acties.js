@@ -10,6 +10,10 @@ import PersoonRij from "./persoon-rij.js";
 export default function () {
 	zetLijstKnoppenClicks();
 	ZetClickVoegPersoonToe();
+	zetUpdateLaatsGezienClick();
+	zetVerwijderRijClick();
+	wachtwoordVeldNawerk ();
+	zetSluitPrinter();
 }
 
 /**
@@ -265,3 +269,57 @@ function voegPersoonToe(e) {
 
 	document.getElementById(`pers-${nieuweId}-naam`).focus();
 }
+
+function zetUpdateLaatsGezienClick() {
+	document
+		.getElementById("form-rijen-lijst")
+		.addEventListener("click", function (e) {
+			if (e.target.classList.contains("update-laatst-gezien")) {
+				e.preventDefault();
+				var datumInstance = new Date();
+				var vandaag =
+					datumInstance.getDate() +
+					"-" +
+					(datumInstance.getMonth() + 1) +
+					"-" +
+					datumInstance.getFullYear();
+				e.target.parentNode.querySelector("input").value = vandaag;
+			}
+		});
+}
+
+function zetVerwijderRijClick() {
+	// //verwijder functionaliteit
+	document.getElementById('grote-tabel-formulier').addEventListener('click', (e)=>{
+		if (!e.target.classList.contains('rij-verwijderen')) {
+			return 	
+		}
+		e.preventDefault();
+		const gebruikerId = e.target.querySelector('.pers-id').value;
+		const gebruikerNaam = document.getElementById(`lees-${gebruikerId}-naam`).textContent;
+
+		if (confirm(`${gebruikerNaam} verwijderen?` )){
+			const gebruikerRij = document.getElementById(`form-rij-${gebruikerId}`);
+			gebruikerRij.parentNode.removeChild(gebruikerRij)
+		}
+					
+	})
+
+}
+
+function	wachtwoordVeldNawerk () {
+	const o = document.getElementById("ontsleutel");
+	o.value = "";
+	o.focus();
+}
+
+function 	zetSluitPrinter () {
+	var p = document.getElementById("printer");
+	var s = document.getElementById("sluit-printer");
+	s.addEventListener("click", function (e) {
+		e.preventDefault();
+		p.getElementsByTagName("p")[0].innerHTML = "";
+		$("#printer").hide(200);
+	});
+},
+

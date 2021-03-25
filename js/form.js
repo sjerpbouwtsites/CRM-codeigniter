@@ -4,97 +4,6 @@ const staat = {
 	dev: location.href.includes("localhost"),
 };
 
-var acties = {
-	resetForm() {
-		document.getElementById("grote-tabel-formulier").reset();
-	},
-	updateLaatsGezien() {
-		document
-			.getElementById("form-rijen-lijst")
-			.addEventListener("click", function (e) {
-				if (e.target.classList.contains("update-laatst-gezien")) {
-					e.preventDefault();
-					var datumInstance = new Date();
-					var vandaag =
-						datumInstance.getDate() +
-						"-" +
-						(datumInstance.getMonth() + 1) +
-						"-" +
-						datumInstance.getFullYear();
-					e.target.parentNode.querySelector("input").value = vandaag;
-				}
-			});
-	},
-	verwijderen: function () {
-		// //verwijder functionaliteit
-		document.getElementById('grote-tabel-formulier').addEventListener('click', (e)=>{
-			if (!e.target.classList.contains('rij-verwijderen')) {
-				return 	
-			}
-			e.preventDefault();
-			const gebruikerId = e.target.querySelector('.pers-id').value;
-			const gebruikerNaam = document.getElementById(`lees-${gebruikerId}-naam`).textContent;
-
-			if (confirm(`${gebruikerNaam} verwijderen?` )){
-				const gebruikerRij = document.getElementById(`form-rij-${gebruikerId}`);
-				gebruikerRij.parentNode.removeChild(gebruikerRij)
-			}
-						
-		})
-
-	},
-
-	ongedaanMaken: function () {
-
-		document.getElementById('wijzigingen-ongedaan-maken').addEventListener('click', e=>{
-			e.preventDefault();
-			if (confirm("Alle wijzigingen in dit scherm wissen? Het scherm herlaadt dan.")) {
-				location.reload();
-			}
-		})
-	},
-
-	sluitPrinter: function () {
-		var p = document.getElementById("printer");
-		var s = document.getElementById("sluit-printer");
-		s.addEventListener("click", function (e) {
-			e.preventDefault();
-			p.getElementsByTagName("p")[0].innerHTML = "";
-			$("#printer").hide(200);
-		});
-	},
-	sluitActieveld: function () {
-		$("#sluit-form-acties").on("click", function (e) {
-			e.preventDefault();
-			$(".actieveld.form-acties").hide(200);
-		});
-	},
-
-	wachtwoordVeldNawerk: function () {
-		const o = document.getElementById("ontsleutel");
-		o.value = "";
-		o.focus();
-	},
-};
-
-function stapelFilters() {
-	return !!$("#stapel-filters:checked").length;
-}
-
-function lijstOokNamen() {
-	return !!$("#lijst-ook-naam:checked").length;
-}
-
-function dezeRijNaam(el) {
-	if (!window.alGedaanNaam) {
-		window.alGedaanNaam = true;
-		console.log("el", el);
-		console.log("rij", $(el).closest(".form-rij"));
-		console.log("naam", $(el).closest(".form-rij").find('[data-naam="naam"]'));
-	}
-
-	return $(el).closest(".form-rij").find('[data-naam="naam"]').val();
-}
 
 var naDecryptie = {
 	vulSelects: function () {
@@ -351,7 +260,7 @@ $(function () {
 	}
 
 	//executeer alle func objen
-	var fo = [acties, form],
+	var fo = [form],
 		fol = fo.length,
 		i,
 		fn;
