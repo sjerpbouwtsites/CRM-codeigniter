@@ -117,43 +117,105 @@ function ZetClickVoegPersoonToe() {
 
 function voegPersoonToe(e) {
 	e.preventDefault();
+
 	gr.el("voeg-rij-toe").setAttribute("disabled", true);
+
 	const formRijen = gr.formInvoerRijenArray();
-	const nieuweId =
-		Math.max(
-			...formRijen.map((rij) => {
-				const id = rij.querySelector(".pers-id").value;
-				return Number(id) || 0;
-			})
-		) + 1;
+	const nieuweId = maakNieuweId(formRijen);
+	let legeHouderDiv = document.createElement("div");
 
-	const bijnaZuivereHTML = formRijen[0].outerHTML
-		.replace(/form\-rij\-\d+/, `form-rij-${nieuweId}`)
-		.replace(/pers\-\d+\-(\w+)/g, `pers-${nieuweId}-$1`)
-		.replace(/lees\-\d+\-(\w+)/g, `lees-${nieuweId}-$1`)
-		.replace(/form\[\d+\]\[(\w+)\]/g, `form[${nieuweId}][$1]`);
+	// regex replaces
+	legeHouderDiv.innerHTML = maakLegePersoonRij(nieuweId);
+	// inputs leeggooien
+	const legeClone = legeHouderDiv.querySelector('.form-rij');
+	gr.el("form-rijen-lijst").appendChild(legeClone);
 
-	const legeHouderDiv = document.createElement("div");
-	legeHouderDiv.innerHTML = bijnaZuivereHTML;
+	legeClone.click();
 	
-	legeHouderDiv.querySelectorAll("input").forEach((i) => (i.value = ""));
-	legeHouderDiv.querySelectorAll("textarea").forEach((t) => {
-		t.value = "";
-		t.innerHTML = "";
-	});
-	legeHouderDiv.querySelectorAll(".pers-lees").forEach((p) => {
-		p.innerHTML = "";
-	});
-	legeHouderDiv.querySelector(".pers-id").value = nieuweId;
-
-	const clone = legeHouderDiv.querySelector(".form-rij");
-	gr.el("form-rijen-lijst").appendChild(clone);
-
-	// nav naar element.
-	window.location.hash = clone.id;
 	gr.el("voeg-rij-toe").removeAttribute("disabled");
-
-	// datum update.
-	gr.schrijfVandaagNaarInput(gr.el(`pers-${nieuweId}-laatst_gezien`));
-	gr.el(`pers-${nieuweId}-naam`).focus();
 }
+
+
+/**
+ * berekend hoogste ID waarde en geeft één hoger terug.
+ * helper van voegPersoonToe
+ *
+ * @param {*} persoonRijen
+ */
+function maakNieuweId(rijen){
+const id = Math.max(
+		...rijen.map((rij) => {
+			const id = rij.querySelector(".pers-id").value;
+			return Number(id) || 0;
+		})
+	) + 1;
+	console.log(id);
+	return id
+}
+
+
+function pakVandaagString(){
+	var datumInstance = new Date();
+	var vandaag =
+	datumInstance.getDate() +
+	"-" +
+	(datumInstance.getMonth() + 1) +
+	"-" +
+	datumInstance.getFullYear();
+	return vandaag;
+}
+
+
+function maakLegePersoonRij(id) {
+	return `
+	<div id="form-rij-${id}" class="form-rij" style="">
+		<button class="beeindig-bewerken-cel"></button>
+		<div class="rij-verwijderen form-cel">
+			<input class="pers-id" id="pers-${id}-id" type="hidden" name="form[${id}][id]" data-naam="id" value="${id}">
+		</div>
+		<div class="cel-naam form-cel">
+			<input class="pers-input" id="pers-${id}-naam" name="form[${id}][naam]" type="text" placeholder="naam" data-naam="naam">
+			<span data-naam="naam" id="lees-${id}-naam" class="pers-lezen pers-lezen__naam"></span>
+		</div>
+		<div class="cel-groep form-cel">
+			<input class="pers-input" id="pers-${id}-groep" name="form[${id}][groep]" type="groep" placeholder="groep" data-naam="groep">
+			<span data-naam="groep" id="lees-${id}-groep" class="pers-lezen pers-lezen__groep"></span>
+		</div>
+		<div class="cel-sector form-cel">
+			<input class="pers-input" id="pers-${id}-sector" name="form[${id}][sector]" type="sector" placeholder="sector" data-naam="sector">
+			<span data-naam="sector" id="lees-${id}-sector" class="pers-lezen pers-lezen__sector"></span>
+		</div>
+		<div class="cel-contact form-cel">
+			<input class="pers-input" id="pers-${id}-contact" name="form[${id}][contact]" type="contact" placeholder="contact" data-naam="contact">
+			<span data-naam="contact" id="lees-${id}-contact" class="pers-lezen pers-lezen__contact"></span>
+		</div>
+		<div class="cel-woonplaats form-cel">
+			<input class="pers-input" id="pers-${id}-woonplaats" name="form[${id}][woonplaats]" type="woonplaats" placeholder="woonplaats" data-naam="woonplaats">
+			<span data-naam="woonplaats" id="lees-${id}-woonplaats" class="pers-lezen pers-lezen__woonplaats"></span>
+		</div>
+		<div class="cel-email form-cel">
+			<input class="pers-input" id="pers-${id}-email" name="form[${id}][email]" type="email" required="" placeholder="email" data-naam="email">
+			<span data-naam="email" id="lees-${id}-email" class="pers-lezen pers-lezen__email"></span>
+		</div>
+		<div class="cel-telefoon form-cel">
+			<input class="pers-input" id="pers-${id}-telefoon" name="form[${id}][telefoon]" type="tel" placeholder="telefoon" data-naam="telefoon">
+			<span data-naam="telefoon" id="lees-${id}-telefoon" class="pers-lezen pers-lezen__telefoon"></span>
+		</div>
+		<div class="cel-laatst_gezien form-cel">
+			<span class="cel-vervanger">
+				<input class="pers-input" id="pers-${id}-laatst_gezien" name="form[${id}][laatst_gezien]" type="tel" placeholder="laatst_gezien" value="${pakVandaagString()}" data-naam="laatst_gezien">
+				<span data-naam="laatst_gezien" id="lees-${id}-laatst_gezien" class="pers-lezen pers-lezen__laatst_gezien"></span>
+				<button class="update-laatst-gezien">NU</button>
+			</span>
+		</div>
+		<div class="cel-ik_wil form-cel">
+			<textarea class="pers-input" id="pers-${id}-ik_wil" name="form[${id}][ik_wil]" placeholder="ik wil" data-naam="ik_wil">ontwerpen plakken</textarea>
+			<span data-naam="ik_wil" id="lees-${id}-ik_wil" class="pers-lezen pers-lezen__ik_wil"></span>
+		</div>
+		<div class="cel-aantekening form-cel">
+			<textarea class="pers-input geen-data" id="pers-${id}-aantekening" name="form[${id}][aantekening]" placeholder="aantekening" data-naam="aantekening"></textarea>
+			<span data-naam="aantekening" id="lees-${id}-aantekening" class="pers-lezen pers-lezen__aantekening"></span>
+		</div>
+	</div>
+	`
+} ;

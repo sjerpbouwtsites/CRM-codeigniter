@@ -73,8 +73,8 @@ export function pakElementVeilig(zoekOp, zoekIn = document) {
  * @param {*} argumenten
  * @returns
  */
- export function el(...argumenten){
-	return pakElementVeilig(argumenten)
+ export function el(zoekOp, zoekIn){
+	return pakElementVeilig(zoekOp, zoekIn)
 }
 
 /**
@@ -209,14 +209,3 @@ export function communiceer(tekst, tijd) {
 	}
 }
 // #endregion communicatie naar user
-
-export function schrijfVandaagNaarInput(input){
-	var datumInstance = new Date();
-	var vandaag =
-	datumInstance.getDate() +
-	"-" +
-	(datumInstance.getMonth() + 1) +
-	"-" +
-	datumInstance.getFullYear();
-	input.value = vandaag;
-}

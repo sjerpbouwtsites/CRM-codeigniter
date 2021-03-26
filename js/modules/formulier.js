@@ -31,6 +31,7 @@ function zetVerwijderRijClick() {
 			return 	
 		}
 		e.preventDefault();
+
 		const gebruikerId = gr.el('.pers-id', e.target).value;
 		const gebruikerNaam = gr.el(`lees-${gebruikerId}-naam`).textContent;
 
@@ -53,7 +54,7 @@ function zetBewerkModusClick() {
 		const rijIsGeklikt = vindInOuders(e.target, (element) => {
 			return element.classList.contains("form-rij");
 		});
-		const bewerkend = gr.el(".bewerk-modus");
+		const bewerkend = document.querySelector(".bewerk-modus");
 		if (bewerkend) {
 			// hij was bewerken en rijIsGeklikt is niet de bewerkende rij.
 			// of klikte buiten formulier. sluit alles.
