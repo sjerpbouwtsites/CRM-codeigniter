@@ -1,14 +1,14 @@
 /** 'frontend' van enscryptie */
 
-import  * as encryptieGereedschap from "./encryptie-gereedschap.js";
+import * as encGr from "./encryptie-gereedschap.js";
 import {communiceer,formInvoerVeldenArray} from "./gereedschap.js";
 
 export function maakSleutelEnVersleutel(sleutelBasis) {
 	return new Promise((resolveVersleutel, rejectVersleutel) => {
 		communiceer("versleutelen begonnen");
-		encryptieGereedschap.convertPassphraseToKey(sleutelBasis).then(function (key) {
+		encGr.convertPassphraseToKey(sleutelBasis).then(function (key) {
 			var iv = window.crypto.getRandomValues(new Uint8Array(16));
-			printIV.value = encryptieGereedschap.byteArrayToBase64(iv);
+			printIV.value = encGr.byteArrayToBase64(iv);
 
 			const veldEncryptiePromises = Array.from(
 				document.querySelectorAll(".pers-input")
@@ -21,12 +21,12 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 					var encryptieRes = window.crypto.subtle.encrypt(
 						{ name: "AES-CBC", iv: iv },
 						key,
-						encryptieGereedschap.stringToByteArray(w)
+						encGr.stringToByteArray(w)
 					);
 					encryptieRes
 						.then(function (ciphertextBuf) {
 							var ciphertextBytes = new Uint8Array(ciphertextBuf);
-							var base64Ciphertext = encryptieGereedschap.byteArrayToBase64(ciphertextBytes);
+							var base64Ciphertext = encGr.byteArrayToBase64(ciphertextBytes);
 							veld.value = base64Ciphertext;
 							veld.classList.add("verborgen");
 							resolveVeld();
@@ -53,7 +53,7 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 				});
 		});
 	}).catch(function (error) {
-		communiceer(verwerkFout(error, true));
+		communiceer(encGr.verwerkFout(error, true));
 		rejectVersleutel(error);
 	});
 }
@@ -63,9 +63,9 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
  */
 export function maakSleutelEnOntsleutel(sleutel) {
 	return new Promise((resolveOntsleutel, rejectOntsleutel) => {
-		const ivBytes = encryptieGereedschap.base64ToByteArray(printIV.value.trim());
+		const ivBytes = encGr.base64ToByteArray(printIV.value.trim());
 
-		encryptieGereedschap.convertPassphraseToKey(sleutel)
+		encGr.convertPassphraseToKey(sleutel)
 			.then(function (aesKey) {
 				const veldDecryptiePromises = formInvoerVeldenArray().map(
 					(versleuteldVeld) => {
@@ -96,7 +96,7 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 			}
 			let ciphertextBytes;
 
-			ciphertextBytes = encryptieGereedschap.base64ToByteArray(versleuteldVeld.value);
+			ciphertextBytes = encGr.base64ToByteArray(versleuteldVeld.value);
 			const decryptPromise = window.crypto.subtle
 				.decrypt({ name: "AES-CBC", iv: ivBytes }, aesKey, ciphertextBytes)
 				.then(cipherResolve)
@@ -130,7 +130,7 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 	return new Promise((zetVeldResolve, zetVeldReject) => {
 		try {
-			const nweTekst = encryptieGereedschap.byteArrayToString(plaintextBuffer);
+			const nweTekst = encGr.byteArrayToString(plaintextBuffer);
 			versleuteldVeld.setAttribute("value", nweTekst);
 			versleuteldVeld.value = nweTekst;
 

@@ -3,7 +3,7 @@ import navigatieAnimatie, { NavElement } from "./modules/navigatie-animatie.js";
 import formulierInit from "./modules/formulier.js";
 import configPaneelInit from "./modules/config-paneel.js";
 import {decryptieInit, encryptieInit} from "./modules/encryptie.js";
-import {alsOpLocalHostOnthoudDecrypieEnVoerIn, welkomstWoord} from "./modules/gereedschap.js";
+import devExInit from "./modules/dev-ex.js";
 
 import {maakSleutelEnVersleutel, maakSleutelEnOntsleutel} from "./modules/encryptie.js";
 
@@ -38,7 +38,18 @@ function sleutelaarIsTeZien() {
 		.classList.contains("ontsleuteld");
 }
 
+function welkomstWoord (){
+	//filters e.d. vullen met nieuwe info
 
+	const locationSplit = location.pathname.trim().split('/');
+	const tabelNaam = location.pathname.includes('tabel') 
+		? locationSplit[locationSplit.length-1] 
+		: 'leden'
+
+	setTimeout(()=>{
+		communiceer(`CRM geinitialiseerd. Je bent op ${tabelNaam}`, 2500);
+	}, 500)	
+}
 
 function naDecryptie() {
 	navigatieAnimatie();
@@ -55,7 +66,7 @@ function indexInit() {
 	
 	decryptieInit();
 	acties();
-	alsOpLocalHostOnthoudDecrypieEnVoerIn();
+	devExInit();
 	DITMOETEENECHTELINKMETENCRYPTIEWORDEN()
 		.then(naDecryptie)
 		.catch((nee) => {

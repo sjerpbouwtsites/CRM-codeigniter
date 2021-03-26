@@ -1,34 +1,7 @@
 
 import PersoonRij from "./persoon-rij.js";
 
-Array.prototype.getUnique = function () {
-	var o = {},
-		a = [],
-		i,
-		e;
-	for (i = 0; (e = this[i]); i++) {
-		o[e] = 1;
-	}
-	for (e in o) {
-		a.push(e);
-	}
-	return a;
-};
-
-export function verwerkFout(err, voorvoeging) {
-	var vv =
-		typeof voorvoeging !== undefined && voorvoeging
-			? "Het is mislukt want "
-			: "";
-
-	return (
-		vv +
-		err.message.replace("not defined", "ongedefinieerd") +
-		" op regel " +
-		err.lineNumber +
-		"."
-	);
-}
+// #region grote tabel queries 
 
 /**
  * @returns Array<NodeList> lijst van alle invoervelden in crm form.
@@ -43,8 +16,6 @@ export function formInvoerVeldenArray() {
 	}
 }
 
-
-
 /**
  * @returns Array<NodeList> lijst van alle rijen na de kop. invoervelden in crm form.
  * @throws
@@ -57,7 +28,6 @@ export function formInvoerRijenArray () {
 			throw error;
 		}
 	}
-
 
 /**
  * PersoonRijen die zichtbaar zijn (bv ivm selectie)
@@ -73,22 +43,9 @@ export function zichtbarePersRijen() {
 			return P.inSelectie();
 		});
 }
+// #endregion grote tabel queries
 
-/**
- * maakt origin key/string; zet nieuwe waarde.
- * @param {string} origin
- * @param {Error} error
- */
-export  function addErrorOrigin(origin, error) {
-	if (!origin || !error) {
-		throw new Error("add Error Origin faal");
-	}
-	if (!error.origin) error.origin = "";
-	error.origin = `${origin}\n${error.origin}`;
-	return error;
-}
-
-const HTMLElementNames = ["a","abbr","abbr","address","embed","object","area","article","aside","audio","b","base","bdi","bdo","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","ul","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1toh6","head","header","hr","html","i","iframe","img","input","ins","kbd","label","legend","li","link","main","map","mark","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","del","s","strong","style","sub","summary","sup","svg","table","tbody","td","template","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr"]
+// #region domqueries
 
 /**
  * Als zoek op id, ret elementById
@@ -119,85 +76,15 @@ export function pakElementVeilig(zoekOp, zoekIn = document) {
 }
 
 /**
- * 
- *
- * @param {string} tekst
- * @param {bool} isVanEvent
- */
- export function schrijfNaarClipboard(tekst, isVanEvent) {
-	if (!isVanEvent) {
-		
-		gr.el(
-			"copyboard-succes"
-		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
-	}
-	navigator.clipboard
-		.writeText(tekst)
-		.then(() => {
-			gr.el(
-				"copyboard-succes"
-			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
-		})
-		.catch(() => {
-			gr.el(
-				"copyboard-succes"
-			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
-		});
-}
-
-/**
  * alias voor pakElementVeilig
  *
  * @see pakElementVeilig
  * @param {*} argumenten
  * @returns
  */
-export function el(...argumenten){
+ export function el(...argumenten){
 	return pakElementVeilig(argumenten)
 }
-
-export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
-		if (!location.href.includes("localhost")) return;
-		try {
-			const opgeslagenWW = localStorage.getItem("crm-decryptie");
-			if (!opgeslagenWW) {
-				document
-					.getElementById("ontsleutel")
-					.addEventListener("change", function () {
-						localStorage.setItem(
-							"crm-decryptie",
-							document.getElementById("ontsleutel").value
-						);
-					});
-				return;
-			} else {
-				document.getElementById("ontsleutel").value = opgeslagenWW;
-				document.getElementById("ontsleutel-knop").click();
-			}
-		} catch (err) {
-			communiceer("Iets gaat mis bij auto-decrypt.");
-			console.error(err);
-		}
-		communiceer("auto-decrypt", 200);
-	}
-
-
-
-export function communiceer(tekst, tijd) {
-	const printerParagraph = document.querySelector('#printer p');
-	const printer = document.querySelector('#printer');
-	printerParagraph.innerHTML = tekst;
-	printer.style.display = "block";
-
-	if (tijd) {
-		setTimeout(function () {
-			printer.style.display = "none";
-		}, tijd);
-	}
-}
-
-
-
 
 /**
  * doorzoekt ouders voor element.
@@ -206,7 +93,7 @@ export function communiceer(tekst, tijd) {
  * @param {number} [maxRecursion=5] max aantal stappen omhoog.
  * @returns {HTMLElement|null} html element by success or null.
  */
-export function vindInOuders(startElement, conditionFunc, maxRecursion = 5) {
+ export function vindInOuders(startElement, conditionFunc, maxRecursion = 5) {
 	if (conditionFunc(startElement)) {
 		return startElement;
 	}
@@ -233,15 +120,69 @@ export function vindInOuders(startElement, conditionFunc, maxRecursion = 5) {
 	return null;
 }
 
-export function welkomstWoord() {
-	//filters e.d. vullen met nieuwe info
+// #endregion domqueries
 
-	const locationSplit = location.pathname.trim().split('/');
-	const tabelNaam = location.pathname.includes('tabel') 
-		? locationSplit[locationSplit.length-1] 
-		: 'leden'
+// #region foutafhandeling
+/**
+ * maakt origin key/string; zet nieuwe waarde.
+ * @param {string} origin
+ * @param {Error} error
+ */
+ export default  function addErrorOrigin(origin, error) {
+	if (!origin || !error) {
+		throw new Error("add Error Origin faal");
+	}
 
-	setTimeout(()=>{
-		communiceer(`CRM geinitialiseerd. Je bent op ${tabelNaam}`, 2500);
-	}, 500)	
+	if (!(error instanceof Error)){
+		console.log(error)
+		throw new Error('er gaat iets mis in error afhandeling')
+	}
+
+	if (!error.origin) error.origin = "";
+	error.origin = `${origin}\n${error.origin}`;
+	return error;
 }
+// #endregion foutafhandeling
+
+// #region communicatie naar user
+/**
+ * 
+ *
+ * @param {string} tekst
+ * @param {bool} isVanEvent
+ */
+ export function schrijfNaarClipboard(tekst, isVanEvent) {
+	if (!isVanEvent) {
+		
+		gr.el(
+			"copyboard-succes"
+		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
+	}
+	navigator.clipboard
+		.writeText(tekst)
+		.then(() => {
+			gr.el(
+				"copyboard-succes"
+			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
+		})
+		.catch(() => {
+			gr.el(
+				"copyboard-succes"
+			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
+		});
+}
+
+export function communiceer(tekst, tijd) {
+	const printerParagraph = document.querySelector('#printer p');
+	const printer = document.querySelector('#printer');
+	printerParagraph.innerHTML = tekst;
+	printer.style.display = "block";
+
+	if (tijd) {
+		setTimeout(function () {
+			printer.style.display = "none";
+		}, tijd);
+	}
+}
+// #endregion communicatie naar user
+

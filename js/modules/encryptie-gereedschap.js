@@ -1,4 +1,27 @@
 
+/**
+ * gebruikt om fouten van decryptie te vermensen.
+ *
+ * @export
+ * @param {*} err
+ * @param {*} voorvoeging
+ * @returns
+ */
+export function verwerkFout(err, voorvoeging) {
+	var vv =
+		typeof voorvoeging !== undefined && voorvoeging
+			? "Het is mislukt want "
+			: "";
+
+	return (
+		vv +
+		err.message.replace("not defined", "ongedefinieerd") +
+		" op regel " +
+		err.lineNumber +
+		"."
+	);
+}
+
 export function byteArrayToBase64 (byteArray) {
 		var binaryString = "";
 		for (var i = 0; i < byteArray.byteLength; i++) {
