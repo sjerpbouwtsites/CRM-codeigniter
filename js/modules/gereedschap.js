@@ -8,12 +8,7 @@ import PersoonRij from "./persoon-rij.js";
  * @throws
  */
 export function formInvoerVeldenArray() {
-	try {
-		return Array.from(document.querySelectorAll(".pers-input"));
-	} catch (error) {
-		console.error("gezocht naar .pers-input maar niets te vinden!");
-		throw error;
-	}
+	return elArray(".pers-input");
 }
 
 /**
@@ -21,12 +16,8 @@ export function formInvoerVeldenArray() {
  * @throws
  */
 export function formInvoerRijenArray () {
-		try {
-			return Array.from(document.querySelectorAll(".form-rij"));
-		} catch (error) {
-			console.error("gezocht naar .form-rij maar niets te vinden!");
-			throw error;
-		}
+	return elArray(".form-rij");
+
 	}
 
 /**
@@ -85,6 +76,39 @@ export function pakElementVeilig(zoekOp, zoekIn = document) {
  export function el(...argumenten){
 	return pakElementVeilig(argumenten)
 }
+
+/**
+ * return Array.from(doc.query)
+ * Als gegeven zoekIn, zoek daar in. dus zoekIn.querySelector
+ *
+ * @param {string} zoekOp
+ * @param {HTMLElement} zoekIn
+ * @returns {Array} HTML element array.
+ */
+ export function pakElementenLijstVeilig(zoekOp, zoekIn = document) {
+	if (!zoekOp) {
+		throw new Error('pak elementen lijst met lege query')
+	}
+	
+	const elementenLijst = zoekIn.querySelectorAll(zoekOp);
+	if (!elementenLijst) {
+		return [];
+	}
+	return Array.from(elementenLijst)
+
+}
+
+/**
+ * alias voor pakElementenLijstVeilig
+ *
+ * @see pakElementenLijstVeilig
+ * @param {*} argumenten
+ * @returns
+ */
+ export function elArray(zoekOp, zoekIn){
+	return pakElementenLijstVeilig(zoekOp, zoekIn)
+}
+
 
 /**
  * doorzoekt ouders voor element.
@@ -154,19 +178,19 @@ export function pakElementVeilig(zoekOp, zoekIn = document) {
  export function schrijfNaarClipboard(tekst, isVanEvent) {
 	if (!isVanEvent) {
 		
-		gr.el(
+		pakElementVeilig(
 			"copyboard-succes"
 		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
 	}
 	navigator.clipboard
 		.writeText(tekst)
 		.then(() => {
-			gr.el(
+			pakElementVeilig(
 				"copyboard-succes"
 			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
 		})
 		.catch(() => {
-			gr.el(
+			pakElementVeilig(
 				"copyboard-succes"
 			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
 		});
@@ -186,3 +210,13 @@ export function communiceer(tekst, tijd) {
 }
 // #endregion communicatie naar user
 
+export function schrijfVandaagNaarInput(input){
+	var datumInstance = new Date();
+	var vandaag =
+	datumInstance.getDate() +
+	"-" +
+	(datumInstance.getMonth() + 1) +
+	"-" +
+	datumInstance.getFullYear();
+	input.value = vandaag;
+}

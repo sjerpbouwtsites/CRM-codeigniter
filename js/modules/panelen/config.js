@@ -1,12 +1,14 @@
 // alles afkomstig van config paneel.
 
+import {el} from "../gereedschap.js";
+
 export default function initConfigPaneel() {
 	zetBeeldSelectOnChange();
 	alsInStorageGebruikBeeldStijl();
 }
 
 function zetBeeldSelectOnChange() {
-	document.getElementById("beeld-select").addEventListener("change", (e) => {
+	el("beeld-select").addEventListener("change", (e) => {
 		const gekozenOptie = e.target.selectedOptions[0].value;
 		localStorage.setItem("beeld-stijl", gekozenOptie);
 		document
@@ -18,7 +20,6 @@ function zetBeeldSelectOnChange() {
 
 function alsInStorageGebruikBeeldStijl() {
 	const beeldStijl = localStorage.getItem("beeld-stijl");
-	document
-		.getElementById("grote-tabel-formulier")
+	el("grote-tabel-formulier")
 		.setAttribute("data-form-stijl", beeldStijl || "lijst");
 }

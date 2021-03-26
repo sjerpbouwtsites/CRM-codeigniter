@@ -1,15 +1,46 @@
 import PersoonRij from "./persoon-rij.js";
 import { vindInOuders, formInvoerRijenArray } from "./gereedschap.js";
-import {communiceer} from "./gereedschap.js";
+
+import * as gr from "./gereedschap.js";
 
 export default function formulierInit() {
 	zetBewerkModusClick();
 	willekeurigeGradientHoekrijen();
-	zetSelectieFilterChange();
-	zetClickSelectieOngedaan();
-	zetClickGeneriekeSorteerOp();
 	zetClicksKeysSluitBewerkModus();
-	vulSelects ();
+	zetUpdateLaatsGezienClick()
+	zetVerwijderRijClick()
+}
+
+
+function zetUpdateLaatsGezienClick() {
+	gr.el("form-rijen-lijst")
+		.addEventListener("click", function (e) {
+			if (e.target.classList.contains("update-laatst-gezien")) {
+				e.preventDefault();
+				gr.schrijfVandaagNaarInput(e.target.parentNode.querySelector("input"))
+			}
+		});
+	}
+	
+
+
+function zetVerwijderRijClick() {
+	// //verwijder functionaliteit
+	gr.el('grote-tabel-formulier').addEventListener('click', (e)=>{
+		if (!e.target.classList.contains('rij-verwijderen')) {
+			return 	
+		}
+		e.preventDefault();
+		const gebruikerId = gr.el('.pers-id', e.target).value;
+		const gebruikerNaam = gr.el(`lees-${gebruikerId}-naam`).textContent;
+
+		if (confirm(`${gebruikerNaam} verwijderen?` )){
+			const gebruikerRij = gr.el(`form-rij-${gebruikerId}`);
+			gebruikerRij.parentNode.removeChild(gebruikerRij)
+		}
+					
+	})
+
 }
 
 //#region bewerkModus
@@ -18,11 +49,11 @@ export default function formulierInit() {
  */
 function zetBewerkModusClick() {
 	// zoek voor clicks op of in form-rij
-	document.getElementById("form-rijen-lijst").addEventListener("click", (e) => {
+	gr.el("form-rijen-lijst").addEventListener("click", (e) => {
 		const rijIsGeklikt = vindInOuders(e.target, (element) => {
 			return element.classList.contains("form-rij");
 		});
-		const bewerkend = document.querySelector(".bewerk-modus");
+		const bewerkend = gr.el(".bewerk-modus");
 		if (bewerkend) {
 			// hij was bewerken en rijIsGeklikt is niet de bewerkende rij.
 			// of klikte buiten formulier. sluit alles.
@@ -59,7 +90,7 @@ function zetOnChangeRijWasBewerkt(changeEvent){
 }
 
 function verwijderBewerkModus(){
-	const bewerkend = document.querySelector(".bewerk-modus");
+	const bewerkend = gr.el(".bewerk-modus");
 	if (!bewerkend) {
 		throw new Error('sluit bewerken... maar niets wordt bewerkt')
 		return;
@@ -114,187 +145,7 @@ function verwijderTabsVanInputs(formRij) {
 }
 //#endregion bewerkModus
 
-//#region sorteren
-/**
- * Zet generiekeSorteerOpHandler op de click van de sorteerknoppen.
- */
-function zetClickGeneriekeSorteerOp() {
-	const sorteerKnoppen = Array.from(
-		document.querySelectorAll("button[data-sorteert]")
-	);
-	sorteerKnoppen.forEach((knop) => {
-		knop.addEventListener("click", generiekeSorteerOpHandler);
-	});
-}
 
-function generiekeSorteerOpHandler(event) {
-	if (!event.target.hasAttribute("data-sorteert")) {
-		console.log(event);
-		throw new Error("sorteren met waardeloze knop nee thx");
-	}
-	event.preventDefault();
-	const knop = event.target;
-	const sorteerOp = knop.getAttribute("data-sorteert");
-	const startBij = knop.getAttribute("data-startBij");
-	const persoonRijen = formInvoerRijenArray().map((rij) => new PersoonRij(rij));
-	//
-	persoonRijen.sort((persoonA, persoonB) => {
-		return formRijenSorteerder(persoonA, persoonB, sorteerOp, startBij);
-	});
-
-	// en nu wegschrijven
-	const nieuweRijenHTML = persoonRijen.map((persoonRij) => {
-		return document.getElementById(persoonRij.id).outerHTML;
-	});
-	document.getElementById("form-rijen-lijst").innerHTML = `
-	${nieuweRijenHTML.join("")}
-	`;
-
-	// volgorde op knop omdraaien & postfix (css) aanpassen
-	const nieuweRichting = startBij === "laag" ? "hoog" : "laag";
-	knop.setAttribute("data-startBij", nieuweRichting);
-	const postFix =
-		sorteerOp === "laatst_gezien"
-			? nieuweRichting === "laag"
-			?  "Nieuw naar oud"
-				: "Oud naar nieuw"
-			: nieuweRichting === "laag"
-			? "A - Z"
-			: "Z - A";
-	knop.setAttribute("data-postfix", postFix);
-}
-
-function formRijenSorteerder(persoonA, persoonB, sorteerVeldNaam, richting) {
-	let veldWaardeBijA = persoonA[sorteerVeldNaam];
-	let veldWaardeBijB = persoonB[sorteerVeldNaam];
-	if (sorteerVeldNaam === "naam") {
-		// nummers maken van eerste 5 letters
-		veldWaardeBijA = veldWaardeBijA.toLowerCase();
-		veldWaardeBijA = Number(
-			veldWaardeBijA
-				.substring(0, 5)
-				.padEnd(5, "a")
-				.split("")
-				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
-				.join("")
-		);
-		veldWaardeBijB = Number(
-			veldWaardeBijB
-				.substring(0, 5)
-				.padEnd(5, "a")
-				.split("")
-				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
-				.join("")
-		);
-	} else if (sorteerVeldNaam === "laatst_gezien") {
-		console.log(veldWaardeBijA)
-		veldWaardeBijA = veldWaardeBijA.split('-').reverse().join('')
-		veldWaardeBijB = veldWaardeBijB.split('-').reverse().join('')
-	}
-
-	veldWaardeBijA = Number(veldWaardeBijA)
-	veldWaardeBijB = Number(veldWaardeBijB)
-
-	if (richting === "hoog") {
-		if (veldWaardeBijA > veldWaardeBijB) {
-			return -1;
-		}
-		if (veldWaardeBijA < veldWaardeBijB) {
-			return 1;
-		}
-	} else {
-		if (veldWaardeBijA < veldWaardeBijB) {
-			return -1;
-		}
-		if (veldWaardeBijA > veldWaardeBijB) {
-			return 1;
-		}
-	}
-
-	return 0;
-}
-//#endregion sorteren
-
-/**
- * zet draaiSelectieFilters op change op alle selectieFilters
- *
- */
-function zetSelectieFilterChange() {
-	document.getElementById("crm-nav-filters").addEventListener("change", (e) => {
-		if (!e.target.hasAttribute("data-filter")) {
-			return;
-		}
-		e.preventDefault();
-		draaiSelectieFilters();
-	});
-}
-
-/**
- * filters draaien allemaal tegelijk, onafhankelijk van events
- */
-function draaiSelectieFilters() {
-	// we moeten de data van alle selects hebben.
-	const filterData = Array.from(
-		document.querySelectorAll("select[data-filter]")
-	)
-		.filter((selectElement) => {
-			// nu diegeen er uit halen die geen keuze hebben, oftewel selectedIndex 0.
-			return selectElement.selectedIndex !== 0;
-		})
-		.map((selectElement) => {
-			// nu array maken met filter waardes voor controle
-			// plus welke het laatst gewijzigd is.
-			return {
-				filterOp: selectElement.getAttribute("data-filter"), // de sleutel waarop gefilterd moet worden
-				filterMet: selectElement.options[
-					selectElement.selectedIndex
-				].value.toLowerCase(),
-				splitRijWaarden: selectElement.hasAttribute("data-split"),
-			};
-		});
-
-	// nu per rij, per filterDataset, controleren.
-	const rijenRes = formInvoerRijenArray().map((rij) => {
-		// array met bools en rij refs.
-		const verzamelingBoolsofFiltersSucces = filterData.map(
-			({ filterOp, filterMet, splitRijWaarden }) => {
-				if (!splitRijWaarden) {
-					// eenvoudige vergelijking
-					return (
-						rij.querySelector(`[data-naam=${filterOp}]`).value.toLowerCase() ===
-						filterMet
-					);
-				} else {
-					// een van de waarden in de rij-input moet overeen komen.
-					return rij
-						.querySelector(`[data-naam=${filterOp}]`)
-						.value.toLowerCase()
-						.split(" ")
-						.includes(filterMet);
-				}
-			}
-		);
-		// als alles in de verzameling true is zijn alle filters succesvol.
-		return {
-			rij,
-			succes: !verzamelingBoolsofFiltersSucces.includes(false),
-		};
-	});
-	rijenRes.forEach(({ rij, succes }) => {
-		rij.style.display = succes ? "flex" : "none";
-	});
-}
-
-function zetClickSelectieOngedaan() {
-	// form native reset zorgt voor reset van filters e.d. hier alleen hide show
-	document
-		.getElementById("reset-navs-en-toon-alles")
-		.addEventListener("click", (e) => {
-			formInvoerRijenArray().forEach((rij) => {
-				rij.style.display = "flex";
-			});
-		});
-}
 
 function willekeurigeGradientHoekrijen() {
 	formInvoerRijenArray().forEach((rij) => {
@@ -303,55 +154,3 @@ function willekeurigeGradientHoekrijen() {
 	});
 }
 
-function vulSelects () {
-	Array.from(document.getElementsByClassName("selectie-filter")).forEach(
-		(selectElement) => {
-			const filtert = selectElement.getAttribute("data-filter");
-			const moetGesplit = selectElement.getAttribute("data-split");
-			const gerelateerdeInvoerVelden = document.querySelectorAll(
-				`.pers-input[data-naam='${filtert}']`
-			);
-			const invoerVeldenValues = Array.from(gerelateerdeInvoerVelden)
-				.map((veld) => veld.value)
-				.map((veldValue) => {
-					if (moetGesplit) {
-						return veldValue.split(" ");
-					} else {
-						return veldValue;
-					}
-				})
-				.sort()
-				.reverse();
-
-			const uniekeWaarden = [];
-			invoerVeldenValues.forEach((v) => {
-				if (!v) {
-					return;
-				}
-				if (typeof v === "string") {
-					if (!uniekeWaarden.includes(v)) {
-						uniekeWaarden.push(v);
-					}
-				} else {
-					// dus array
-					v.forEach((w) => {
-						if (!uniekeWaarden.includes(w)) {
-							uniekeWaarden.push(w);
-						}
-					});
-				}
-			});
-
-			const icon = Math.random() > 0.5 ? "🔎" : "🔍";
-
-			selectElement.innerHTML = `
-					<option value=''>${filtert} <span class='select-icon'>${icon}</span></option>
-					${uniekeWaarden
-						.map((optie) => {
-							return `<option value='${optie}'>${optie}</option>`;
-						})
-						.join("")}
-				`;
-		}
-	);
-}

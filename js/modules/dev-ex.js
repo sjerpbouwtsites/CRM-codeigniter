@@ -1,4 +1,4 @@
-import {communiceer} from "./gereedschap.js"
+import * as gr from "./gereedschap.js"
 
 export default function (){
   alsOpLocalHostOnthoudDecrypieEnVoerIn ()
@@ -7,25 +7,23 @@ export default function (){
 function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
 	if (!location.href.includes("localhost")) return;
 	try {
-		const opgeslagenWW = localStorage.getItem("crm-decryptie");
+		const opgeslagenWW = sessionStorage.getItem("crm-decryptie");
 		if (!opgeslagenWW) {
-			document
-				.getElementById("ontsleutel")
-				.addEventListener("change", function () {
-					localStorage.setItem(
-						"crm-decryptie",
-						document.getElementById("ontsleutel").value
-					);
-				});
+			gr.el("ontsleutel").addEventListener("change", function () {
+				sessionStorage.setItem(
+					"crm-decryptie",
+					gr.el("ontsleutel").value
+				);
+			});
 			return;
 		} else {
-			document.getElementById("ontsleutel").value = opgeslagenWW;
-			document.getElementById("ontsleutel-knop").click();
+			gr.el("ontsleutel").value = opgeslagenWW;
+			gr.el("ontsleutel-knop").click();
 		}
 	} catch (err) {
-		communiceer("Iets gaat mis bij auto-decrypt.");
+		gr.communiceer("Iets gaat mis bij auto-decrypt.");
 		console.error(err);
 	}
-	communiceer("auto-decrypt", 200);
+	gr.communiceer("auto-decrypt", 200);
 }
 

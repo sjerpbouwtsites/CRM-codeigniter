@@ -1,11 +1,11 @@
-import acties from "./modules/acties.js";
+import panelenInit from "./modules/paneel-acties.js";
 import navigatieAnimatie, { NavElement } from "./modules/navigatie-animatie.js";
 import formulierInit from "./modules/formulier.js";
-import configPaneelInit from "./modules/config-paneel.js";
-import {decryptieInit, encryptieInit} from "./modules/encryptie.js";
 import devExInit from "./modules/dev-ex.js";
+import * as encryptie from "./modules/encryptie.js";
+import printerInit from "./modules/printer.js";
+import * as gr from "./modules/gereedschap.js";
 
-import {maakSleutelEnVersleutel, maakSleutelEnOntsleutel} from "./modules/encryptie.js";
 
 function DITMOETEENECHTELINKMETENCRYPTIEWORDEN() {
 	return new Promise((resolve, reject) => {
@@ -20,52 +20,41 @@ function DITMOETEENECHTELINKMETENCRYPTIEWORDEN() {
 		}, 50);
 	});
 }
-
-/**
- * Omdat form.js nog een global script is en encryptie reeds een module vereist 
- * form global funcs.
- */
-function enscyptieModulesFuncsNaarGlobal(){
-	window['maakSleutelEnVersleutel'] = maakSleutelEnVersleutel;
-	window['maakSleutelEnOntsleutel']	= maakSleutelEnOntsleutel;
+function zetEscapeKlikVoorAlles() {
+	document.addEventListener("keydown", (event) => {
+		// verstopt navs
+		if (event.key !== "Escape") return;
+		gr.elArray('.crm-nav')
+			.map((nav) => new NavElement(nav))
+			.forEach((navElement) => {
+				navElement.sluit();
+			});
+		// printer / communiceer
+		gr.el("printer").style.display = "none";
+	});
 }
 
-
-
 function sleutelaarIsTeZien() {
-	return document
-		.getElementById("sleutelaars")
+	return gr.el("sleutelaars")
 		.classList.contains("ontsleuteld");
 }
 
-function welkomstWoord (){
-	//filters e.d. vullen met nieuwe info
 
-	const locationSplit = location.pathname.trim().split('/');
-	const tabelNaam = location.pathname.includes('tabel') 
-		? locationSplit[locationSplit.length-1] 
-		: 'leden'
-
-	setTimeout(()=>{
-		communiceer(`CRM geinitialiseerd. Je bent op ${tabelNaam}`, 2500);
-	}, 500)	
-}
 
 function naDecryptie() {
 	navigatieAnimatie();
 	formulierInit();
-	configPaneelInit();
-	encryptieInit();
-	welkomstWoord();
+	panelenInit();
+	encryptie.encryptieInit();
+	printerInit();
 	// vastleggen bezoek
 	localStorage.setItem("vw-crm-eerder-bezocht", "ja");
+	zetEscapeKlikVoorAlles()
+
 }
 
 function indexInit() {
-	enscyptieModulesFuncsNaarGlobal();
-	
-	decryptieInit();
-	acties();
+	encryptie.decryptieInit();
 	devExInit();
 	DITMOETEENECHTELINKMETENCRYPTIEWORDEN()
 		.then(naDecryptie)

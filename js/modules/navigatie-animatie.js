@@ -1,14 +1,16 @@
+import * as gr from "./gereedschap.js";
+
 export default function navigatieAnimatie() {
 	const navElsCSSSelector =
 		"#crm-nav-menu, #crm-nav-filters, #crm-nav-acties, #crm-nav-config";
 	const navKnopElsCSSSelector =
 		"#schakel-navigatie-menu, #schakel-navigatie-filters, #schakel-navigatie-acties, #schakel-navigatie-config";
 
-	const navKnoppen = document.querySelectorAll(navKnopElsCSSSelector);
+	const navKnoppen = gr.elArray(navKnopElsCSSSelector);
 
 	// nu nog muisover status zetten die tegenhoud dat menu's inklappen.
 	// muisover staat dus in data ttr muis over.
-	const navs = Array.from(document.querySelectorAll(navElsCSSSelector)).map(
+	const navs = gr.elArray(navElsCSSSelector).map(
 		(navEl) => {
 			return new NavElement(navEl);
 		}

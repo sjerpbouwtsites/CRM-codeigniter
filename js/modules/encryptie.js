@@ -1,18 +1,18 @@
 /** 'frontend' van enscryptie */
 
 import * as encGr from "./encryptie-gereedschap.js";
-import {communiceer,formInvoerVeldenArray} from "./gereedschap.js";
+import * as gr from "./gereedschap.js";
+
 
 export function maakSleutelEnVersleutel(sleutelBasis) {
 	return new Promise((resolveVersleutel, rejectVersleutel) => {
-		communiceer("versleutelen begonnen");
+		gr.communiceer("versleutelen begonnen");
 		encGr.convertPassphraseToKey(sleutelBasis).then(function (key) {
 			var iv = window.crypto.getRandomValues(new Uint8Array(16));
 			printIV.value = encGr.byteArrayToBase64(iv);
 
-			const veldEncryptiePromises = Array.from(
-				document.querySelectorAll(".pers-input")
-			).map((veld) => {
+			gr.elArray(".pers-input")
+			.map((veld) => {
 				return new Promise((resolveVeld, rejectVeld) => {
 					var w = veld.value.trim();
 					if (veld.getAttribute("naam") === "telefoon") {
@@ -35,7 +35,7 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 							const errMsg = `veld ${veld.getAttribute(
 								"name"
 							)} cijferen mislukt: ${err.message}\n`;
-							communiceer("fuck!");
+							grcommuniceer("fuck!");
 							err.message = `${errMsg}${err.message}`;
 							rejectVeld(err);
 						});
@@ -44,8 +44,8 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 
 			Promise.all(veldEncryptiePromises)
 				.then(() => {
-					communiceer("versleutelen klaar", 1000);
-					document.getElementById('grote-tabel-formulier').classList.add("versleuteld");
+					gr.communiceer("versleutelen klaar", 1000);
+					gr.el('grote-tabel-formulier').classList.add("versleuteld");
 					resolveVersleutel(true);
 				})
 				.catch((err) => {
@@ -53,7 +53,7 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 				});
 		});
 	}).catch(function (error) {
-		communiceer(encGr.verwerkFout(error, true));
+		gr.communiceer(encGr.verwerkFout(error, true));
 		rejectVersleutel(error);
 	});
 }
@@ -67,7 +67,7 @@ export function maakSleutelEnOntsleutel(sleutel) {
 
 		encGr.convertPassphraseToKey(sleutel)
 			.then(function (aesKey) {
-				const veldDecryptiePromises = formInvoerVeldenArray().map(
+				const veldDecryptiePromises = gr.formInvoerVeldenArray().map(
 					(versleuteldVeld) => {
 						return perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes });
 					}
@@ -75,7 +75,7 @@ export function maakSleutelEnOntsleutel(sleutel) {
 				return Promise.all(veldDecryptiePromises);
 			})
 			.then(() => {
-				communiceer("decryptie klaar", 1000);
+				gr.communiceer("decryptie klaar", 1000);
 				resolveOntsleutel(true);
 			})
 			.catch((error) => {
@@ -145,9 +145,7 @@ function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 				versleuteldVeld.textContent = nweTekst;
 			}
 			versleuteldVeld.classList.remove("verborgen");
-			const leesVeld = document.getElementById(
-				versleuteldVeld.id.replace("pers-", "lees-")
-			);
+			const leesVeld = gr.el(versleuteldVeld.id.replace("pers-", "lees-"));
 			leesVeld.innerHTML = nweTekst;
 			leesVeld.classList.remove("verborgen");
 			zetVeldResolve(true);
@@ -158,6 +156,7 @@ function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 }
 
 export function decryptieInit(){
+	wachtwoordVeldNawerk();
 	zetOntsleutelClick();
 }
 
@@ -168,7 +167,7 @@ export function decryptieInit(){
  */
  function sleutelInputPromise() {
 	return new Promise((sleutelResolve, sleutelReject) => {
-		const sleutelEl = document.getElementById("ontsleutel");
+		const sleutelEl = gr.el("ontsleutel");
 		if (!sleutelEl) {
 			const e = new Error("Je vulde niets in.");
 			sessionStorage.setItem('wachtwoord', null);
@@ -180,21 +179,22 @@ export function decryptieInit(){
 		}
 	});
 }
-
+function	wachtwoordVeldNawerk () {
+	const o = gr.el("ontsleutel");
+	o.value = "";
+	o.focus();
+}
 function zetOntsleutelClick () {
 	// enter terwijl in invoerveld = klik button
-	document
-		.getElementById("ontsleutel")
-		.addEventListener("keyup", function (e) {
-			if (e.key.toLowerCase() === "enter") {
-				e.preventDefault();
-				$("button.ontsleutel").click();
-			}
-		});
+	gr.el("ontsleutel").addEventListener("keyup", function (e) {
+		if (e.key.toLowerCase() === "enter") {
+			e.preventDefault();
+			gr.el("ontsleutel-knop").click();
+		}
+	});
 
-	document
-		.getElementById("ontsleutel-knop")
-		.addEventListener("click", (ontsleutelButtonEvent) => {
+	gr.el("ontsleutel-knop")
+	.addEventListener("click", (ontsleutelButtonEvent) => {
 			ontsleutelButtonEvent.preventDefault();
 
 			sleutelInputPromise()
@@ -203,17 +203,14 @@ function zetOntsleutelClick () {
 					return maakSleutelEnOntsleutel(sleutel);
 				})
 				.then(() => {
-					document
-						.getElementById("grote-tabel-formulier")
-						.classList.add("ontsleuteld");
-					document.getElementById("sleutelaars").classList.add("ontsleuteld");
+					gr.el("grote-tabel-formulier").classList.add("ontsleuteld");
+					gr.el("sleutelaars").classList.add("ontsleuteld");
 					sessionStorage.setItem('ontsleuteld', 'true');
-					
 				})
 
 				.then(() => {})
 				.catch((e) => {
-					communiceer(`fout in het ontsleutelen ${e.message}`);
+					gr.communiceer(`fout in het ontsleutelen ${e.message}`);
 					e.origin ? console.dir(e) && console.stack(e) : console.error(e);
 				});
 		});
@@ -224,10 +221,8 @@ export function encryptieInit(){
 }
 
 function zetVerzendenInStukken () {
-	const groteFormulier = document.getElementById("grote-tabel-formulier");
-	const groteFormulierVerzendKnop = document.getElementById(
-		"verzend-grote-formulier-knop"
-	);
+	const groteFormulier = gr.el("grote-tabel-formulier");
+	const groteFormulierVerzendKnop = gr.el("verzend-grote-formulier-knop");
 	groteFormulierVerzendKnop.addEventListener(
 		"click",
 		verzendInStukkenCallback
@@ -239,19 +234,15 @@ function zetVerzendenInStukken () {
 function verzendInStukkenCallback(e) {
 	e.preventDefault();
 	//button disablen
-	document
-		.getElementById("verzend-grote-formulier-knop")
-		.setAttribute("disabled", true);
+	gr.el("verzend-grote-formulier-knop").setAttribute("disabled", true);
 	// eerst versleutelen
 	if (!sessionStorage.getItem('wachtwoord')) throw new Error("wachtwoord vergeten door app");
 	const versleutelMet = sessionStorage.getItem('wachtwoord');
 	maakSleutelEnVersleutel(versleutelMet)
 		.then(() => {
-			document
-				.getElementsByTagName("body")[0]
-				.classList.add("voorbereid-op-afsluiten");
-			communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
-			const groteFormulier = document.getElementById("grote-tabel-formulier");
+			document.body.classList.add("voorbereid-op-afsluiten");
+			gr.communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
+			const groteFormulier = gr.el("grote-tabel-formulier");
 			const formDataSys = new FormData(groteFormulier);
 
 			/**
@@ -302,26 +293,23 @@ function verzendInStukkenCallback(e) {
 
 			return axios
 				.request({
-					url: document.getElementById("grote-tabel-formulier").action,
+					url: gr.el("grote-tabel-formulier").action,
 					method: "post",
 					data: SQLVriendelijkePostData,
 				})
 				.then((antwoord) => {
 					// afsluiten
-					communiceer(
+					gr.communiceer(
 						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af.`,
 						2000
 					);
-					document.getElementsByTagName("body")[0].classList.add("afsluiten");
+					document.body.classList.add("afsluiten");
 				})
 				.catch((e) => {
 					console.log(e);
-					document
-						.getElementsByTagName("body")[0]
-						.classList.remove("voorbereid-op-afsluiten");
-
+					document.body.classList.remove("voorbereid-op-afsluiten");
 					try {
-						communiceer(
+						gr.communiceer(
 							`En dat is een fout!
 						De server zegt: ${e}`,
 							5000
@@ -335,7 +323,7 @@ function verzendInStukkenCallback(e) {
 				});
 		}) // then van maakSleutelEnVersleutel
 		.catch((e) => {
-			communiceer(`fout in de versleuteling ${e}`, 1000);
+			gr.communiceer(`fout in de versleuteling ${e}`, 1000);
 			throw e;
 		});
 }

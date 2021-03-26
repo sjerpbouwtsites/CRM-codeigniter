@@ -1,3 +1,5 @@
+import * as gr from "./gereedschap.js";
+
 /**
  * ease-of-access wrapper om form-rij heen.
  * Lees / zet inputs alsof ze properties zijn van de instance
@@ -65,7 +67,7 @@ export default class PersoonRij {
 	 * @param {HTMLElement} rij
 	 */
 	inputsNaarData(rij) {
-		Array.from(rij.querySelectorAll(".pers-input")).forEach((invoerVeld) => {
+		gr.elArray(".pers-input", rij).forEach((invoerVeld) => {
 			const naam = invoerVeld.getAttribute("data-naam");
 			const waarde = invoerVeld.value;
 			this._data[naam] = waarde;
@@ -108,7 +110,7 @@ export default class PersoonRij {
 	 * @returns {boolean} of wordt getoond.
 	 */
 	inSelectie() {
-		const s = document.getElementById(this.id).getAttribute("style") || "";
+		const s = gr.el(this.id).getAttribute("style") || "";
 		if (s.replace(/\W/g, "").includes("displaynone")) {
 			return false;
 		}
@@ -124,11 +126,11 @@ export default class PersoonRij {
 			const inputId = `pers-${idBasis}`;
 			const print = this._data[naam];
 
-			document.getElementById(leesId).innerHTML = print;
+			gr.el(leesId).innerHTML = print;
 			if (print.trim().length === 0) {
-				document.getElementById(inputId).classList.add("geen-data");
+				gr.el(inputId).classList.add("geen-data");
 			} else {
-				document.getElementById(inputId).classList.remove("geen-data");
+				gr.el(inputId).classList.remove("geen-data");
 			}
 		});
 	}
@@ -154,7 +156,7 @@ export default class PersoonRij {
 				geproxiedObject.sleutelCheck(sleutel); // zie boven
 				geproxiedObject._data[sleutel] = waarde;
 				const inputId = geproxiedObject.naamIdMap[sleutel];
-				const input = document.getElementById(inputId);
+				const input = gr.el(inputId);
 				input.value = waarde;
 				return true;
 			},

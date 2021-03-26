@@ -1,29 +1,17 @@
-/**
- * @file de handelingen afkomstig vanuit het actie-paneel aan de rechterkant.
- */
-import {NavElement} from "./navigatie-animatie.js";
-import * as gr from "./gereedschap.js";
 import maakRiseupScript from "./riseup-script.js";
-import pakTekst from "./teksten.js";
+import pakTekst from "../teksten.js";
+import * as gr from "../gereedschap.js";
 
-/**
- * initialisatie functie van alle acties die uit de navpanelen komen.
- */
-export default function () {
+export default function() {
 	zetLijstKnoppenClicks();
-	zetRiseupCheckButtonClick();
-	ZetClickVoegPersoonToe();
-	zetUpdateLaatsGezienClick();
-	zetVerwijderRijClick();
-	wachtwoordVeldNawerk ();
-	zetSluitPrinter();
-	zetEscapeKlikVoorAlles();
+	zetRiseupCheckButtonClick();  
+  ZetClickVoegPersoonToe();
 }
 
 /**
  * zet lijst buttons click handlers.
  */
-function zetLijstKnoppenClicks() {
+ function zetLijstKnoppenClicks() {
   gr.pakElementVeilig("lijst-mail-button")
 	.addEventListener("click", (e) => {
 		lijstTelefoonOfMail("mail", e);
@@ -47,20 +35,21 @@ function zetRiseupCheckButtonClick(){
 /**
  * knalt emails in script dat valt te gebruiken in de console van riseup.
  */
-function riseupCheck(e){
-	const mailsVanLedenUitCRM = Array.from(document.querySelectorAll('.pers-input[type="email"]')).map(emailVeld => {
+ function riseupCheck(e){
+	const mailsVanLedenUitCRM = gr
+		.elArray('.pers-input[type="email"]')
+		.map(emailVeld => {
 		return emailVeld.value.toLowerCase().trim()
 	})
 	const mailsVanLedenUitCRMJSON = JSON.stringify(mailsVanLedenUitCRM);
 	const riseupScript = maakRiseupScript(mailsVanLedenUitCRMJSON);
 	gr.communiceer(pakTekst('riseup'));
-	schrijfNaarClipboard(riseupScript, !!e);
+	gr.schrijfNaarClipboard(riseupScript, !!e);
 	setTimeout(()=>{
 		window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
 	}, 3000)
 		
 }
-
 
 /**
  * mapt over rijen en haalt van getoonde rijen data op,
@@ -70,7 +59,7 @@ function riseupCheck(e){
  * @param {string} lijstWat mail|telefoon
  * @param {event} event click event
  */
-function lijstTelefoonOfMail(lijstWat, event = null) {
+ function lijstTelefoonOfMail(lijstWat, event = null) {
 	event && event.preventDefault();
 	const isMail = lijstWat === "mail";
 	const printMetNamen = gr.el("lijst-ook-naam").checked;
@@ -165,75 +154,6 @@ function voegPersoonToe(e) {
 	gr.el("voeg-rij-toe").removeAttribute("disabled");
 
 	// datum update.
-	schrijfVandaagNaarInput(gr.el(`pers-${nieuweId}-laatst_gezien`));
+	gr.schrijfVandaagNaarInput(gr.el(`pers-${nieuweId}-laatst_gezien`));
 	gr.el(`pers-${nieuweId}-naam`).focus();
-}
-
-function zetUpdateLaatsGezienClick() {
-	gr.el("form-rijen-lijst")
-		.addEventListener("click", function (e) {
-			if (e.target.classList.contains("update-laatst-gezien")) {
-				e.preventDefault();
-				schrijfVandaagNaarInput(e.target.parentNode.querySelector("input"))
-			}
-		});
-	}
-	
-function schrijfVandaagNaarInput(input){
-		var datumInstance = new Date();
-		var vandaag =
-		datumInstance.getDate() +
-		"-" +
-		(datumInstance.getMonth() + 1) +
-		"-" +
-		datumInstance.getFullYear();
-		input.value = vandaag;
-}
-
-function zetVerwijderRijClick() {
-	// //verwijder functionaliteit
-	gr.el('grote-tabel-formulier').addEventListener('click', (e)=>{
-		if (!e.target.classList.contains('rij-verwijderen')) {
-			return 	
-		}
-		e.preventDefault();
-		const gebruikerId = gr.el('.pers-id', e.target).value;
-		const gebruikerNaam = gr.el(`lees-${gebruikerId}-naam`).textContent;
-
-		if (confirm(`${gebruikerNaam} verwijderen?` )){
-			const gebruikerRij = gr.el(`form-rij-${gebruikerId}`);
-			gebruikerRij.parentNode.removeChild(gebruikerRij)
-		}
-					
-	})
-
-}
-
-function	wachtwoordVeldNawerk () {
-	const o = gr.el("ontsleutel");
-	o.value = "";
-	o.focus();
-}
-
-function zetSluitPrinter () {
-	gr.el("sluit-printer")
-	.addEventListener("click", function (e) {
-		e.preventDefault();
-		gr.el('.print-p').innerHTML = "";
-		gr.el('printer').style.display = "none";
-	});
-}
-
-function zetEscapeKlikVoorAlles() {
-	document.addEventListener("keydown", (event) => {
-		// verstopt navs
-		if (event.key !== "Escape") return;
-		Array.from(document.querySelectorAll(".crm-nav"))
-			.map((nav) => new NavElement(nav))
-			.forEach((navElement) => {
-				navElement.sluit();
-			});
-		// printer / communiceer
-		gr.el("printer").style.display = "none";
-	});
 }
