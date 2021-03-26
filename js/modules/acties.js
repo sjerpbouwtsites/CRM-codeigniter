@@ -5,6 +5,8 @@ import { formInvoerRijenArray } from "./gereedschap.js";
 import PersoonRij from "./persoon-rij.js";
 import {NavElement} from "./navigatie-animatie.js";
 import * as gr from "./gereedschap.js";
+import maakRiseupScript from "./riseup-script.js";
+import pakTekst from "./teksten.js";
 
 /**
  * initialisatie functie van alle acties die uit de navpanelen komen.
@@ -52,69 +54,12 @@ function riseupCheck(e){
 		return emailVeld.value.toLowerCase().trim()
 	})
 	const mailsVanLedenUitCRMJSON = JSON.stringify(mailsVanLedenUitCRM);
-	
-	const riseupScript = `
-
-		const mailsVanLedenUitCRM = ${mailsVanLedenUitCRMJSON};
-		
-		function VWRequirementsMet(){
-			return location.href.includes('lists.riseup.net') && location.search.includes('size=500')
-		}
-		
-		function makeRiseupInsertHTML(welInCRMNietInRiseup){
-			const lis = (welInCRMNietInRiseup.map(missendLid =>{
-					return "<li>"+missendLid+"</li>";
-			}).join(''));
-			return "<div id='missende-leden' style='background-color: rgb(228, 133, 133); padding: 20px'><h2>De volgende mensen zitten wel in het CRM maar niet in Riseup.</h2><ol>"+lis+"</ol></div>";
-			}
-
-		function runVWFilters(){
-			const riseupMailAdressen = Array.from(document.querySelectorAll('a[href*="@"][href^="/www/editsubscriber"]'));
-		
-			// check welke mails wel in riseup zitten, maar niet in het CRM.
-			riseupMailAdressen.forEach(riseupAnker => {
-				const mailAdres = riseupAnker.textContent;
-				if (mailsVanLedenUitCRM.includes(mailAdres)) {
-					riseupAnker.parentNode.parentNode.style = "background-color: #85e485;"
-					riseupAnker.parentNode.parentNode.title = "Ik zit in het CRM èn in Riseup"
-				} else {
-					riseupAnker.parentNode.parentNode.style = "background-color: #85b3e4;"
-					riseupAnker.parentNode.parentNode.title = "Ik zit wel in Riseup, maar niet in de CRM ledentabel."    
-				}
-			})
-			
-			const riseupMailAdressenTekst = riseupMailAdressen.map(adres => adres.textContent)
-			
-			const welInCRMNietInRiseup = mailsVanLedenUitCRM.filter(lidUitCRM =>{
-				return !riseupMailAdressenTekst.includes(lidUitCRM);
-			})
-		
-			if (welInCRMNietInRiseup.length) {
-				const insertHTML = makeRiseupInsertHTML(welInCRMNietInRiseup);
-		
-				// damn dirty
-				document.querySelector('.search_form').innerHTML = insertHTML;
-				location.hash = 'missende-leden';
-			}
-			
-			alert('muis over de mailregistraties om de tooltip te lezen.')
-		}
-		
-		function VWinitRiseupScript (){
-			if (!VWRequirementsMet()) {
-				alert('je bent niet op de goede pagina gek')
-				location.href = "https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500"
-			}
-			runVWFilters()
-		}
-		
-		VWinitRiseupScript()`;
-
-		gr.communiceer(`Er is zojuist een script naar je klikbord gekopie&euml;rd. Er wordt over 3 seconden een tabblad geopend met de pagina van riseup waar je dient te zijn: Vloerwerk ledenlijst, 500 resultaten per pagina. <a target='_blank' href='https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500#missende-leden'>Zo niet klik dan hier</a><br><br><strong>☣☣☣</strong><br>Nu ga je dit script uitvoeren op die pagina. Klik op die pagina op <kbd>f12</kbd>, klik op het tabblad console in de developer tools en druk daar op <kbd>control c</kbd> en dan <kbd>enter</kbd>.<br><br><span id='copyboard-succes'></span>`);
-		schrijfNaarClipboard(riseupScript, !!e);
-		setTimeout(()=>{
-			window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
-		}, 3000)
+	const riseupScript = maakRiseupScript(mailsVanLedenUitCRMJSON);
+	gr.communiceer(pakTekst('riseup'));
+	schrijfNaarClipboard(riseupScript, !!e);
+	setTimeout(()=>{
+		window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
+	}, 3000)
 		
 }
 
@@ -146,7 +91,7 @@ function zichtbarePersRijen() {
 function lijstTelefoonOfMail(lijstWat, event = null) {
 	event && event.preventDefault();
 	const isMail = lijstWat === "mail";
-	const printMetNamen = document.getElementById("lijst-ook-naam").checked;
+	const printMetNamen = gr.el("lijst-ook-naam").checked;
 	let printTekst = "";
 	let linkHref = "";
 	let ankerHTML = "";
@@ -204,19 +149,20 @@ function lijstTelefoonOfMail(lijstWat, event = null) {
  */
 function schrijfNaarClipboard(tekst, isVanEvent) {
 	if (!isVanEvent) {
-		document.getElementById(
+		
+		gr.el(
 			"copyboard-succes"
 		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
 	}
 	navigator.clipboard
 		.writeText(tekst)
 		.then(() => {
-			document.getElementById(
+			gr.el(
 				"copyboard-succes"
 			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
 		})
 		.catch(() => {
-			document.getElementById(
+			gr.el(
 				"copyboard-succes"
 			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
 		});
@@ -225,20 +171,19 @@ function schrijfNaarClipboard(tekst, isVanEvent) {
 function ZetClickVoegPersoonToe() {
 	//laatste rij kopieeren;
 	//vind hoogst aanwezige ID en geef die aan nieuwe rij.
-	document
-		.getElementById("voeg-rij-toe")
-		.addEventListener("click", voegPersoonToe);
+	gr.el("voeg-rij-toe").addEventListener("click", voegPersoonToe);
 }
 
 function voegPersoonToe(e) {
 	e.preventDefault();
-	document.getElementById("voeg-rij-toe").setAttribute("disabled", true);
+	gr.el("voeg-rij-toe").setAttribute("disabled", true);
 
 	const formRijen = formInvoerRijenArray();
 
 	const nieuweId =
 		Math.max(
 			...formRijen.map((rij) => {
+				
 				const id = rij.querySelector(".pers-id").value;
 				return Number(id) || 0;
 			})
@@ -252,6 +197,7 @@ function voegPersoonToe(e) {
 
 	const legeHouderDiv = document.createElement("div");
 	legeHouderDiv.innerHTML = bijnaZuivereHTML;
+	
 	legeHouderDiv.querySelectorAll("input").forEach((i) => (i.value = ""));
 	legeHouderDiv.querySelectorAll("textarea").forEach((t) => {
 		t.value = "";
@@ -262,50 +208,51 @@ function voegPersoonToe(e) {
 	});
 	legeHouderDiv.querySelector(".pers-id").value = nieuweId;
 
-	console.log(legeHouderDiv);
 	const clone = legeHouderDiv.querySelector(".form-rij");
-	document.getElementById("form-rijen-lijst").appendChild(clone);
+	gr.el("form-rijen-lijst").appendChild(clone);
 
 	// nav naar element.
 	window.location.hash = clone.id;
-	document.getElementById("voeg-rij-toe").removeAttribute("disabled");
+	gr.el("voeg-rij-toe").removeAttribute("disabled");
 
 	// datum update.
-	document.querySelector(`#form-rij-${nieuweId} .update-laatst-gezien`).click();
-
-	document.getElementById(`pers-${nieuweId}-naam`).focus();
+	schrijfVandaagNaarInput(gr.el(`pers-${nieuweId}-laatst_gezien`));
+	gr.el(`pers-${nieuweId}-naam`).focus();
 }
 
 function zetUpdateLaatsGezienClick() {
-	document
-		.getElementById("form-rijen-lijst")
+	gr.el("form-rijen-lijst")
 		.addEventListener("click", function (e) {
 			if (e.target.classList.contains("update-laatst-gezien")) {
 				e.preventDefault();
-				var datumInstance = new Date();
-				var vandaag =
-					datumInstance.getDate() +
-					"-" +
-					(datumInstance.getMonth() + 1) +
-					"-" +
-					datumInstance.getFullYear();
-				e.target.parentNode.querySelector("input").value = vandaag;
+				schrijfVandaagNaarInput(e.target.parentNode.querySelector("input"))
 			}
 		});
+	}
+	
+	function schrijfVandaagNaarInput(input){
+		var datumInstance = new Date();
+		var vandaag =
+		datumInstance.getDate() +
+		"-" +
+		(datumInstance.getMonth() + 1) +
+		"-" +
+		datumInstance.getFullYear();
+		input.value = vandaag;
 }
 
 function zetVerwijderRijClick() {
 	// //verwijder functionaliteit
-	document.getElementById('grote-tabel-formulier').addEventListener('click', (e)=>{
+	gr.el('grote-tabel-formulier').addEventListener('click', (e)=>{
 		if (!e.target.classList.contains('rij-verwijderen')) {
 			return 	
 		}
 		e.preventDefault();
-		const gebruikerId = e.target.querySelector('.pers-id').value;
-		const gebruikerNaam = document.getElementById(`lees-${gebruikerId}-naam`).textContent;
+		const gebruikerId = gr.el('.pers-id', e.target).value;
+		const gebruikerNaam = gr.el(`lees-${gebruikerId}-naam`).textContent;
 
 		if (confirm(`${gebruikerNaam} verwijderen?` )){
-			const gebruikerRij = document.getElementById(`form-rij-${gebruikerId}`);
+			const gebruikerRij = gr.el(`form-rij-${gebruikerId}`);
 			gebruikerRij.parentNode.removeChild(gebruikerRij)
 		}
 					
@@ -314,18 +261,17 @@ function zetVerwijderRijClick() {
 }
 
 function	wachtwoordVeldNawerk () {
-	const o = document.getElementById("ontsleutel");
+	const o = gr.el("ontsleutel");
 	o.value = "";
 	o.focus();
 }
 
-function 	zetSluitPrinter () {
-	var p = document.getElementById("printer");
-	var s = document.getElementById("sluit-printer");
-	s.addEventListener("click", function (e) {
+function zetSluitPrinter () {
+	gr.el("sluit-printer")
+	.addEventListener("click", function (e) {
 		e.preventDefault();
-		p.getElementsByTagName("p")[0].innerHTML = "";
-		document.querySelector('#printer').style.display = "none";
+		gr.el('.print-p').innerHTML = "";
+		gr.el('printer').style.display = "none";
 	});
 }
 
@@ -339,6 +285,6 @@ function zetEscapeKlikVoorAlles() {
 				navElement.sluit();
 			});
 		// printer / communiceer
-		document.getElementById("printer").style.display = "none";
+		gr.el("printer").style.display = "none";
 	});
 }

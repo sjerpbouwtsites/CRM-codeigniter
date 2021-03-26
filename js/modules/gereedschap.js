@@ -71,29 +71,45 @@ export  function addErrorOrigin(origin, error) {
 	return error;
 }
 
+const HTMLElementNames = ["a","abbr","abbr","address","embed","object","area","article","aside","audio","b","base","bdi","bdo","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","ul","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1toh6","head","header","hr","html","i","iframe","img","input","ins","kbd","label","legend","li","link","main","map","mark","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","del","s","strong","style","sub","summary","sup","svg","table","tbody","td","template","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr"]
+
 /**
  * Als zoek op id, ret elementById
  * Als zoek op selector, ret querySelector
+ * Als gegeven zoekIn, zoek daar in. dus zoekIn.querySelector
  * Als niet gevonden, error
  *
  * @param {string} zoekOp
+ * @param {HTMLElement} zoekIn
  * @returns {HTMLElement} element.
  */
-export function pakElementVeilig(zoekOp) {
+export function pakElementVeilig(zoekOp, zoekIn = document) {
 	if (!zoekOp) {
 		throw new Error('pak element met lege query')
 	}
 	let el;
+
 	if (zoekOp[0].match(/\w/)) {
 		el = document.getElementById(zoekOp);
 	} else {
-		el = document.querySelector(zoekOp);
+		el = zoekIn.querySelector(zoekOp);
 	}
 	if (!el) {
 		throw new Error(`Geen element ${zoekOp} gevonden`)
 	} else {
 		return el;
 	}
+}
+
+/**
+ * alias voor pakElementVeilig
+ *
+ * @see pakElementVeilig
+ * @param {*} argumenten
+ * @returns
+ */
+export function el(...argumenten){
+	return pakElementVeilig(argumenten)
 }
 
 export function alsOpLocalHostOnthoudDecrypieEnVoerIn () {
