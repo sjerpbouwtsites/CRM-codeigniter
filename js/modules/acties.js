@@ -1,8 +1,6 @@
 /**
  * @file de handelingen afkomstig vanuit het actie-paneel aan de rechterkant.
  */
-import { formInvoerRijenArray } from "./gereedschap.js";
-import PersoonRij from "./persoon-rij.js";
 import {NavElement} from "./navigatie-animatie.js";
 import * as gr from "./gereedschap.js";
 import maakRiseupScript from "./riseup-script.js";
@@ -64,22 +62,6 @@ function riseupCheck(e){
 }
 
 
-
-/**
- * PersoonRijen die zichtbaar zijn (bv ivm selectie)
- * @returns {array<PersoonRij>} array met persoonRijen
- */
-function zichtbarePersRijen() {
-	const persRijenArr = formInvoerRijenArray();
-	return persRijenArr
-		.map((rij) => {
-			return new PersoonRij(rij);
-		})
-		.filter((P) => {
-			return P.inSelectie();
-		});
-}
-
 /**
  * mapt over rijen en haalt van getoonde rijen data op,
  * schrijft die naar de printer, stuurt clipboard aan.
@@ -96,7 +78,7 @@ function lijstTelefoonOfMail(lijstWat, event = null) {
 	let linkHref = "";
 	let ankerHTML = "";
 
-	const persRijen = zichtbarePersRijen();
+	const persRijen = gr.zichtbarePersRijen();
 
 	// MAIL
 	if (isMail) {
@@ -111,11 +93,7 @@ function lijstTelefoonOfMail(lijstWat, event = null) {
 		});
 		const a = encodeURIComponent(linkHref);
 		ankerHTML = `
-      <span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in 
-      </span>
-      <a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a>
-      
-      <a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>      
+      <span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in </span><a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a><a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>      
 		`;
 	} else {
 		// TELEFOON
@@ -138,35 +116,9 @@ function lijstTelefoonOfMail(lijstWat, event = null) {
 	`;
 
 	gr.communiceer(printHTML);
-	schrijfNaarClipboard(linkHref, !!event);
+	gr.schrijfNaarClipboard(linkHref, !!event);
 }
 
-/**
- * helper van lijstTelefoonOfMail & riseupcheck
- *
- * @param {string} tekst
- * @param {bool} isVanEvent
- */
-function schrijfNaarClipboard(tekst, isVanEvent) {
-	if (!isVanEvent) {
-		
-		gr.el(
-			"copyboard-succes"
-		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
-	}
-	navigator.clipboard
-		.writeText(tekst)
-		.then(() => {
-			gr.el(
-				"copyboard-succes"
-			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
-		})
-		.catch(() => {
-			gr.el(
-				"copyboard-succes"
-			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
-		});
-}
 
 function ZetClickVoegPersoonToe() {
 	//laatste rij kopieeren;
@@ -177,13 +129,10 @@ function ZetClickVoegPersoonToe() {
 function voegPersoonToe(e) {
 	e.preventDefault();
 	gr.el("voeg-rij-toe").setAttribute("disabled", true);
-
-	const formRijen = formInvoerRijenArray();
-
+	const formRijen = gr.formInvoerRijenArray();
 	const nieuweId =
 		Math.max(
 			...formRijen.map((rij) => {
-				
 				const id = rij.querySelector(".pers-id").value;
 				return Number(id) || 0;
 			})
@@ -230,7 +179,7 @@ function zetUpdateLaatsGezienClick() {
 		});
 	}
 	
-	function schrijfVandaagNaarInput(input){
+function schrijfVandaagNaarInput(input){
 		var datumInstance = new Date();
 		var vandaag =
 		datumInstance.getDate() +

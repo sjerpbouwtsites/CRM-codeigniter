@@ -1,4 +1,6 @@
 
+import PersoonRij from "./persoon-rij.js";
+
 Array.prototype.getUnique = function () {
 	var o = {},
 		a = [],
@@ -58,6 +60,21 @@ export function formInvoerRijenArray () {
 
 
 /**
+ * PersoonRijen die zichtbaar zijn (bv ivm selectie)
+ * @returns {array<PersoonRij>} array met persoonRijen
+ */
+export function zichtbarePersRijen() {
+	const persRijenArr = formInvoerRijenArray();
+	return persRijenArr
+		.map((rij) => {
+			return new PersoonRij(rij);
+		})
+		.filter((P) => {
+			return P.inSelectie();
+		});
+}
+
+/**
  * maakt origin key/string; zet nieuwe waarde.
  * @param {string} origin
  * @param {Error} error
@@ -99,6 +116,33 @@ export function pakElementVeilig(zoekOp, zoekIn = document) {
 	} else {
 		return el;
 	}
+}
+
+/**
+ * 
+ *
+ * @param {string} tekst
+ * @param {bool} isVanEvent
+ */
+ export function schrijfNaarClipboard(tekst, isVanEvent) {
+	if (!isVanEvent) {
+		
+		gr.el(
+			"copyboard-succes"
+		).innerHTML = `Clipboard kon niet gebruikt worden omdat lijst niet door gebruiker zelf werd aangeroepen`;
+	}
+	navigator.clipboard
+		.writeText(tekst)
+		.then(() => {
+			gr.el(
+				"copyboard-succes"
+			).innerHTML = `Addressen of script naar clipboard gekopieerd (je hoeft niet te kopie&euml;ren)`;
+		})
+		.catch(() => {
+			gr.el(
+				"copyboard-succes"
+			).innerHTML = `Clipboard werkt niet. Heb je toevallig een Apple 😶`;
+		});
 }
 
 /**
