@@ -17,13 +17,13 @@ const teksten = {
  */
 export default function pakTekst(naam, taal = 'nl'){
 
-  if (!teksten.includes(naam)) {
+  if (!Object.keys(teksten).includes(naam)) {
     throw new Error(`tekst ${naam} bestaat niet`)
   }
 
   const tekst = teksten[naam];
 
-  if (typeof tekst === string) {
+  if (typeof tekst === 'string') {
     return tekst;
   }
 
