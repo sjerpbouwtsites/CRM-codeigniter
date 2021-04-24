@@ -1,5 +1,5 @@
 import * as gr from "../gereedschap.js";
-//import {NavElement} from "../navigatie-animatie.js";
+import PersoonRij from "../persoon-rij.js";
 
 
 export default function (){
