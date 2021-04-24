@@ -37,7 +37,10 @@ body > * {
 	transition: 1s ease-in-out 0.5s;
 	opacity: 1;
 }
-body.succesvol-opgeslagen > *, body.mislukt-opgeslagen > * {
+body.succesvol-opgeslagen > .kop-en-knoppen, 
+body.succesvol-opgeslagen > .formulier-en-controls, 
+body.mislukt-opgeslagen > .kop-en-knoppen, 
+body.mislukt-opgeslagen > .formulier-en-controls {
 	opacity: 0;
 }
 

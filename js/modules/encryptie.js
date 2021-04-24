@@ -134,12 +134,24 @@ function verzendInStukkenCallback(e) {
 				})
 				.then((antwoord) => {
 					// afsluiten
-					DB().opslagProcedure = 'succesvol'
+
+					setTimeout(()=>{
+						DB().opslagProcedure = 'succesvol'
+					}, 1500)
 
 					gr.communiceer(
-						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af.`,
-						2000
+						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af. Druk F5 voor herladen & ontcijferen.`,
+						5000
 					);
+
+					document.body.addEventListener('keydown', (e) =>{
+						if (e.key === 'F5') {
+							e.preventDefault();
+							localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
+							location.hash = 'herladen-met-wachtwoord';
+							location.reload();
+						}
+					})
 				});
 		}) // then van maakSleutelEnVersleutel
 		.catch((e) => {
