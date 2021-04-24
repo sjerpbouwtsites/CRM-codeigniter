@@ -27,7 +27,8 @@ export class Database {
 
   static _data = {
     ontsleuteld: false,
-    wachtwoord: null
+    wachtwoord: null,
+    opslagProcedure: null
   }
 
   constructor(){
@@ -45,16 +46,30 @@ export class Database {
     if (typeof waarde !== 'boolean'){
       throw new Error('ontsleuteling niet bool')
     }
+    const oudeWaarde = Database._data.ontsleuteld;
     Database._data.ontsleuteld = waarde;
-    this._draaiOpVerandering('ontsleuteld', waarde);
+    this._draaiOpVerandering('ontsleuteld', waarde, oudeWaarde);
   }
 
   set wachtwoord(waarde) {
     if (typeof waarde !== 'string'){
       throw new Error('wachtwoord niet string')
     }
+    const oudeWaarde = Database._data.wachtwoord;
     Database._data.wachtwoord = waarde;
-    this._draaiOpVerandering('wachtwoord', waarde);
+    this._draaiOpVerandering('wachtwoord', waarde, oudeWaarde);
+  }
+
+  set opslagProcedure(waarde) {
+    if (typeof waarde !== 'string'){
+      throw new Error('opslagProcedure niet string')
+    }    
+    if (!['voorbereiding', 'succesvol', 'mislukt', 'herstarten'].includes(waarde)) {
+      throw new Error('opslagProcedure niet toestane waarde '+waarde)
+    }
+    const oudeWaarde = Database._data.opslagProcedure;
+    Database._data.opslagProcedure = waarde;
+    this._draaiOpVerandering('opslagProcedure', waarde, oudeWaarde);
   }
 
   // GETTERS
@@ -64,6 +79,9 @@ export class Database {
   }
   get wachtwoord(){
     return Database._data.wachtwoord
+  }
+  get opslagProcedure(){
+    return Database._data.opslagProcedure
   }
 
   // METHODES
@@ -75,10 +93,10 @@ export class Database {
    * @private 
    * @memberof Database
    */
-  _draaiOpVerandering = (recordNaam, waarde) => {
+  _draaiOpVerandering = (recordNaam, waarde, oudeWaarde) => {
     const opVeranderingCallbacks = Database._opVerandering[recordNaam];
     opVeranderingCallbacks.forEach(func =>{
-      func(waarde, Database, recordNaam)
+      func(waarde, oudeWaarde, recordNaam, Database)
     })
   }
 
@@ -106,7 +124,8 @@ export class Database {
    */
   static _opVerandering = {
     ontsleuteld: [],
-    wachtwoord: []
+    wachtwoord: [],
+    opslagProcedure: [],
   }
 
 }

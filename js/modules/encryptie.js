@@ -4,49 +4,43 @@ import * as encGr from "./encryptie-gereedschap.js";
 import * as gr from "./gereedschap.js";
 import DB from "./database.js";
 
+// #region versleuteling
 
 export function maakSleutelEnVersleutel(sleutelBasis) {
 	return new Promise((resolveVersleutel, rejectVersleutel) => {
-		gr.communiceer("versleutelen begonnen");
-		encGr.convertPassphraseToKey(sleutelBasis).then(function (key) {
-			var iv = window.crypto.getRandomValues(new Uint8Array(16));
-			printIV.value = encGr.byteArrayToBase64(iv);
 
+		gr.communiceer("versleutelen begonnen");
+
+		encGr
+		  .convertPassphraseToKey(sleutelBasis)
+		  .then(function (encryptieSleutel) {
+			
+			var iv = window.crypto.getRandomValues(new Uint8Array(16));
+			// schrijf naar tabel
+			printIV.value = encGr.byteArrayToBase64(iv);
+			// ieder veld encrypten
 			const veldEncryptiePromises = gr.elArray(".pers-input")
 			.map((veld) => {
 				return new Promise((resolveVeld, rejectVeld) => {
-					var w = veld.value.trim();
-					if (veld.getAttribute("naam") === "telefoon") {
-						w = w.replace(/[^0-9]+|\s+/gim, "");
-					}
-					var encryptieRes = window.crypto.subtle.encrypt(
-						{ name: "AES-CBC", iv: iv },
-						key,
-						encGr.stringToByteArray(w)
-					);
-					encryptieRes
-						.then(function (ciphertextBuf) {
-							var ciphertextBytes = new Uint8Array(ciphertextBuf);
-							var base64Ciphertext = encGr.byteArrayToBase64(ciphertextBytes);
-							veld.value = base64Ciphertext;
-							veld.classList.add("verborgen");
-							resolveVeld();
-						})
-						.catch(function (err) {
-							const errMsg = `veld ${veld.getAttribute(
-								"name"
-							)} cijferen mislukt: ${err.message}\n`;
-							grcommuniceer("fuck!");
-							err.message = `${errMsg}${err.message}`;
-							rejectVeld(err);
-						});
+					// encrypten
+					veldEncryptie(iv, encryptieSleutel, veld.value.trim())
+					// naar veld schrijven en stijlen
+					.then((encryptiebuffer)=>{
+						veldEncryptieThen(encryptiebuffer, veld)
+					})
+					// naar promises array
+					.then(resolveVeld)
+					// idem
+					.catch((err) => {
+						veldEncryptieCatch(err, veld);
+						rejectVeld(err);
+					});
 				});
 			});
 
 			Promise.all(veldEncryptiePromises)
 				.then(() => {
 					gr.communiceer("versleutelen klaar", 1000);
-					gr.el('grote-tabel-formulier').classList.add("versleuteld");
 					resolveVersleutel(true);
 				})
 				.catch((err) => {
@@ -58,6 +52,163 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 		rejectVersleutel(error);
 	});
 }
+
+/**
+ * helper van maakSleutelEnVersleutel
+ *
+ * @param {*} iv
+ * @param {*} encryptieSleutel
+ * @param {*} veldWaarde
+ * @returns {Promise<buffer>}
+ */
+function veldEncryptie(iv, encryptieSleutel, veldWaarde){
+	return window.crypto.subtle.encrypt(
+		{ name: "AES-CBC", iv: iv },
+		encryptieSleutel,
+		encGr.stringToByteArray(veldWaarde)
+	)	
+}
+
+/**
+ * helper van maakSleutelEnVersleutel
+ * CATCH in mapper over velden + encryptie
+ *
+ * @param {*} err
+ * @param {*} veld
+ */
+function veldEncryptieCatch(err, veld){
+	const errMsg = `veld ${veld.getAttribute(
+		"name"
+	)} cijferen mislukt: ${err.message}\n`;
+	gr.communiceer("fuck!");
+	err.message = `${errMsg}${err.message}`;
+}
+/**
+ * helper van maakSleutelEnVersleutel
+ * THEN in mapper over velden + encryptie
+ *
+ * @param {*} encryptiebuffer
+ * @return {Promise<boolean>}
+ */
+function veldEncryptieThen(encryptiebuffer, veld){
+	return new Promise(resolve => {
+		var encryptieBytes = new Uint8Array(encryptiebuffer);
+		var base64encryptieTekst = encGr.byteArrayToBase64(encryptieBytes);
+		veld.value = base64encryptieTekst;
+		veld.classList.add("verborgen");
+		resolve();
+	})
+}
+
+
+function zetVerzendenInStukken () {
+	const groteFormulier = gr.el("grote-tabel-formulier");
+	const groteFormulierVerzendKnop = gr.el("verzend-grote-formulier-knop");
+	groteFormulierVerzendKnop.addEventListener(
+		"click",
+		verzendInStukkenCallback
+	);
+	groteFormulier.addEventListener("submit", verzendInStukkenCallback);
+}
+
+
+function verzendInStukkenCallback(e) {
+	e.preventDefault();
+	//button disablen
+	gr.el("verzend-grote-formulier-knop").setAttribute("disabled", true);
+	// eerst versleutelen
+	 
+	if (!DB().wachtwoord) throw new Error("wachtwoord vergeten door app");
+	maakSleutelEnVersleutel(DB().wachtwoord)
+		.then(() => {
+			DB().ontsleuteld = false;
+			DB().opslagProcedure = 'voorbereiding'
+			gr.communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
+			const groteFormulier = gr.el("grote-tabel-formulier");
+			const formDataSys = new FormData(groteFormulier);
+
+			/**
+			 * makkelijker te verzenden en beter te vertalen naar SQL
+			 */
+			const SQLVriendelijkePostData = {
+				meta: {},
+				ids: [],
+				kolommen: [],
+				waardenPerId: {},
+			};
+			// voor bereiden met de ids.
+			Array.from(formDataSys.entries())
+				.filter(([key, value]) => key.includes("[id]"))
+				.forEach(([key, uniekeIdUitForm]) => {
+					SQLVriendelijkePostData.ids.push(uniekeIdUitForm);
+					SQLVriendelijkePostData.waardenPerId[uniekeIdUitForm] = [];
+				});
+
+			// kolommen bepalen
+			const eersteId = SQLVriendelijkePostData.ids[0];
+			const eersteRijInputs = document
+				.querySelector(".form-rij")
+				.querySelectorAll(".pers-input");
+			SQLVriendelijkePostData.kolommen = Array.from(eersteRijInputs)
+				.map((veld) => {
+					return veld.getAttribute("data-naam");
+				})
+				.filter((veldNaam) => {
+					return veldNaam !== "id";
+				});
+
+			// per id waardenPerId invullen.
+			Array.from(formDataSys.entries()).forEach(([key, value]) => {
+				if (key.includes("form_meta") || key.includes("[id]")) {
+					return;
+				}
+				const id = key.replace(/\D/g, "");
+				SQLVriendelijkePostData.waardenPerId[id].push(value);
+			});
+
+			// tenslotte de meta data
+			SQLVriendelijkePostData.meta = {
+				xsrf: formDataSys.get("form_meta[csrf-token]"),
+				iv: formDataSys.get("form_meta[iv]"),
+				tabel: formDataSys.get("form_meta[tabel_naam]"),
+			};
+
+			return axios
+				.request({
+					url: gr.el("grote-tabel-formulier").action,
+					method: "post",
+					data: SQLVriendelijkePostData,
+				})
+				.then((antwoord) => {
+					// afsluiten
+					DB().opslagProcedure = 'succesvol'
+
+					gr.communiceer(
+						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af.`,
+						2000
+					);
+				})
+				.catch((e) => {
+					console.error(e);
+					gr.communiceer(
+						`En dat is een fout!
+					De server zegt: ${e.message}`,
+						5000
+					);
+					throw e;
+				});
+		}) // then van maakSleutelEnVersleutel
+		.catch((e) => {
+			gr.communiceer(`fout in de versleuteling ${e}`, 1000);
+			DB().opslagProcedure = 'mislukt';
+			throw e;
+		});
+}
+
+// #endregion versleuteling
+
+// #region ontsleutelen
+
 /**
  * @returns Promise<Bool|Error>
  * @param {wachtwoord} sleutel
@@ -68,8 +219,8 @@ export function maakSleutelEnOntsleutel(sleutel) {
 
 		encGr.convertPassphraseToKey(sleutel)
 			.then(function (aesKey) {
-				const veldDecryptiePromises = gr.formInvoerVeldenArray().map(
-					(versleuteldVeld) => {
+				const veldDecryptiePromises = gr.formInvoerVeldenArray()
+				.map((versleuteldVeld) => {
 						return perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes });
 					}
 				);
@@ -203,12 +354,8 @@ function zetOntsleutelClick () {
 					return maakSleutelEnOntsleutel(sleutel);
 				})
 				.then(() => {
-					gr.el("grote-tabel-formulier").classList.add("ontsleuteld");
-					gr.el("sleutelaars").classList.add("ontsleuteld");
 					DB().ontsleuteld = true;
 				})
-
-				.then(() => {})
 				.catch((e) => {
 					gr.communiceer(`fout in het ontsleutelen ${e.message}`);
 					e.origin ? console.dir(e) && console.stack(e) : console.error(e);
@@ -216,115 +363,9 @@ function zetOntsleutelClick () {
 		});
 }
 
+// #endregion ontsleutelen
+
 export function encryptieInit(){
 	zetVerzendenInStukken ()
 }
 
-function zetVerzendenInStukken () {
-	const groteFormulier = gr.el("grote-tabel-formulier");
-	const groteFormulierVerzendKnop = gr.el("verzend-grote-formulier-knop");
-	groteFormulierVerzendKnop.addEventListener(
-		"click",
-		verzendInStukkenCallback
-	);
-	groteFormulier.addEventListener("submit", verzendInStukkenCallback);
-}
-
-
-function verzendInStukkenCallback(e) {
-	e.preventDefault();
-	//button disablen
-	gr.el("verzend-grote-formulier-knop").setAttribute("disabled", true);
-	// eerst versleutelen
-	 
-	if (!DB().wachtwoord) throw new Error("wachtwoord vergeten door app");
-	maakSleutelEnVersleutel(DB().wachtwoord)
-		.then(() => {
-			DB().ontsleuteld = false;
-			document.body.classList.add("voorbereid-op-afsluiten");
-			gr.communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
-			const groteFormulier = gr.el("grote-tabel-formulier");
-			const formDataSys = new FormData(groteFormulier);
-
-			/**
-			 * makkelijker te verzenden en beter te vertalen naar SQL
-			 */
-			const SQLVriendelijkePostData = {
-				meta: {},
-				ids: [],
-				kolommen: [],
-				waardenPerId: {},
-			};
-			// voor bereiden met de ids.
-			Array.from(formDataSys.entries())
-				.filter(([key, value]) => key.includes("[id]"))
-				.forEach(([key, uniekeIdUitForm]) => {
-					SQLVriendelijkePostData.ids.push(uniekeIdUitForm);
-					SQLVriendelijkePostData.waardenPerId[uniekeIdUitForm] = [];
-				});
-
-			// kolommen bepalen
-			const eersteId = SQLVriendelijkePostData.ids[0];
-			const eersteRijInputs = document
-				.querySelector(".form-rij")
-				.querySelectorAll(".pers-input");
-			SQLVriendelijkePostData.kolommen = Array.from(eersteRijInputs)
-				.map((veld) => {
-					return veld.getAttribute("data-naam");
-				})
-				.filter((veldNaam) => {
-					return veldNaam !== "id";
-				});
-
-			// per id waardenPerId invullen.
-			Array.from(formDataSys.entries()).forEach(([key, value]) => {
-				if (key.includes("form_meta") || key.includes("[id]")) {
-					return;
-				}
-				const id = key.replace(/\D/g, "");
-				SQLVriendelijkePostData.waardenPerId[id].push(value);
-			});
-
-			// tenslotte de meta data
-			SQLVriendelijkePostData.meta = {
-				xsrf: formDataSys.get("form_meta[csrf-token]"),
-				iv: formDataSys.get("form_meta[iv]"),
-				tabel: formDataSys.get("form_meta[tabel_naam]"),
-			};
-
-			return axios
-				.request({
-					url: gr.el("grote-tabel-formulier").action,
-					method: "post",
-					data: SQLVriendelijkePostData,
-				})
-				.then((antwoord) => {
-					// afsluiten
-					gr.communiceer(
-						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af.`,
-						2000
-					);
-					document.body.classList.add("afsluiten");
-				})
-				.catch((e) => {
-					console.log(e);
-					document.body.classList.remove("voorbereid-op-afsluiten");
-					try {
-						gr.communiceer(
-							`En dat is een fout!
-						De server zegt: ${e}`,
-							5000
-						);
-					} catch (error) {
-						alert(
-							"er ging iets fout, ergens, en bij het lezen van de fout ging iets fout, of de fout is niet begrepen."
-						);
-						throw error;
-					}
-				});
-		}) // then van maakSleutelEnVersleutel
-		.catch((e) => {
-			gr.communiceer(`fout in de versleuteling ${e}`, 1000);
-			throw e;
-		});
-}

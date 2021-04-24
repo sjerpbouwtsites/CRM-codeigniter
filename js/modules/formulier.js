@@ -1,5 +1,6 @@
 import PersoonRij from "./persoon-rij.js";
 import { vindInOuders, formInvoerRijenArray } from "./gereedschap.js";
+import DB from "./database.js";
 
 import * as gr from "./gereedschap.js";
 
@@ -9,6 +10,30 @@ export default function formulierInit() {
 	zetClicksKeysSluitBewerkModus();
 	zetUpdateLaatsGezienClick()
 	zetVerwijderRijClick()
+}
+
+/**
+ * Zet CSS klas op formulier en versleutelvelden afhankelijk van stand in DB van 'ontsleuteld'
+ *
+ * @export
+ */
+export function formulierOntsleutelingsAnimatie(){
+	DB().alsVeranderdDoe('ontsleuteld', (ontsleutelWaarde)=> {
+
+		const groteFormulier = gr.el('grote-tabel-formulier');
+		if (ontsleutelWaarde === true && !groteFormulier.classList.contains('versleuteld')) {
+			groteFormulier.classList.add('versleuteld');
+		} else if (ontsleutelWaarde === false && groteFormulier.classList.contains('versleuteld')){
+			groteFormulier.classList.remove('versleuteld');
+		} else {
+			groteFormulier.classList.add(ontsleutelWaarde ? '' : 'versleuteld');
+		}
+
+		if (ontsleutelWaarde) {
+			gr.el("sleutelaars").classList.add("ontsleuteld");
+		}
+
+	})	
 }
 
 
