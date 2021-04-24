@@ -13,7 +13,7 @@
  * 
  * @TODO als groter wordt met proxys werken
  * 
- * @method registreerOpVerandering {string, function} recordNaam, callback - voer functie uit als record wijzigd.
+ * @method alsVeranderdDoe {string, function} recordNaam, callback - voer functie uit als record wijzigd.
  * @class Database
  */
 export class Database {
@@ -88,7 +88,7 @@ export class Database {
    *
    * @memberof Database
    */
-  registreerOpVerandering = (recordNaam, callback) =>{
+   alsVeranderdDoe = (recordNaam, callback) =>{
     if (!Database._data.hasOwnProperty(recordNaam)) {
       throw new Error(`op verandering func geregistreerd voor niet bestaande prop ${recordNaam}`)
     }
