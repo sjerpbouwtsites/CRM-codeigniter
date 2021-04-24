@@ -1,23 +1,24 @@
 import * as gr from "./gereedschap.js"
 
 export default function (){
-	console.log("NEEEE")
   autoDecrypt()
 }
 
 /** was eerst alleen voor dev, nu ook na opslaan. */
 function autoDecrypt() {
 
+	if (true) {
+		console.error('auto decrypt utigezet ivm productie bugs')
+		return;
+	}
+
 	const isDev = location.href.includes("localhost");
 	const wilHerladen = location.hash !== '#herladen-met-wachtwoord';
 
 	if (!isDev && !wilHerladen) return;
-	console.log("JAAA'");
 	try {
 		const opgeslagenWW = localStorage.getItem("herladen-met-wachtwoord");
-		console.log("JAAA'");
 		if (!opgeslagenWW) {
-			console.log("JAAA'");
 			gr.el("ontsleutel").addEventListener("change", function () {
 				localStorage.setItem(
 					"herladen-met-wachtwoord",

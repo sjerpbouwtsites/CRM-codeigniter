@@ -106,7 +106,7 @@ export class Database {
    *
    * @memberof Database
    */
-   alsVeranderdDoe = (recordNaam, callback) =>{
+  alsVeranderdDoe = (recordNaam, callback) =>{
     if (!Database._data.hasOwnProperty(recordNaam)) {
       throw new Error(`op verandering func geregistreerd voor niet bestaande prop ${recordNaam}`)
     }

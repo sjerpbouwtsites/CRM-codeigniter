@@ -24,6 +24,9 @@ export default function() {
 }
 
 function zetRiseupCheckButtonClick(){
+
+	if (location.href.includes('contacten') || location.href.includes('bondgenoten')) return;
+
 	gr.pakElementVeilig("riseup-check")
 	.addEventListener("click", (e) => {
 		e.preventDefault();
