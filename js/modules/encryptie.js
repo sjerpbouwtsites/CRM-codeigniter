@@ -121,63 +121,16 @@ function verzendInStukkenCallback(e) {
 	if (!DB().wachtwoord) throw new Error("wachtwoord vergeten door app");
 	maakSleutelEnVersleutel(DB().wachtwoord)
 		.then(() => {
+
 			DB().ontsleuteld = false;
 			DB().opslagProcedure = 'voorbereiding'
 			gr.communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
-			const groteFormulier = gr.el("grote-tabel-formulier");
-			const formDataSys = new FormData(groteFormulier);
-
-			/**
-			 * makkelijker te verzenden en beter te vertalen naar SQL
-			 */
-			const SQLVriendelijkePostData = {
-				meta: {},
-				ids: [],
-				kolommen: [],
-				waardenPerId: {},
-			};
-			// voor bereiden met de ids.
-			Array.from(formDataSys.entries())
-				.filter(([key, value]) => key.includes("[id]"))
-				.forEach(([key, uniekeIdUitForm]) => {
-					SQLVriendelijkePostData.ids.push(uniekeIdUitForm);
-					SQLVriendelijkePostData.waardenPerId[uniekeIdUitForm] = [];
-				});
-
-			// kolommen bepalen
-			const eersteId = SQLVriendelijkePostData.ids[0];
-			const eersteRijInputs = document
-				.querySelector(".form-rij")
-				.querySelectorAll(".pers-input");
-			SQLVriendelijkePostData.kolommen = Array.from(eersteRijInputs)
-				.map((veld) => {
-					return veld.getAttribute("data-naam");
-				})
-				.filter((veldNaam) => {
-					return veldNaam !== "id";
-				});
-
-			// per id waardenPerId invullen.
-			Array.from(formDataSys.entries()).forEach(([key, value]) => {
-				if (key.includes("form_meta") || key.includes("[id]")) {
-					return;
-				}
-				const id = key.replace(/\D/g, "");
-				SQLVriendelijkePostData.waardenPerId[id].push(value);
-			});
-
-			// tenslotte de meta data
-			SQLVriendelijkePostData.meta = {
-				xsrf: formDataSys.get("form_meta[csrf-token]"),
-				iv: formDataSys.get("form_meta[iv]"),
-				tabel: formDataSys.get("form_meta[tabel_naam]"),
-			};
 
 			return axios
 				.request({
 					url: gr.el("grote-tabel-formulier").action,
 					method: "post",
-					data: SQLVriendelijkePostData,
+					data: maakSQLVriendelijkePostData(),
 				})
 				.then((antwoord) => {
 					// afsluiten
@@ -187,22 +140,65 @@ function verzendInStukkenCallback(e) {
 						`Gelukt! Server zegt: ${antwoord.data}. Dit programma sluit nu af.`,
 						2000
 					);
-				})
-				.catch((e) => {
-					console.error(e);
-					gr.communiceer(
-						`En dat is een fout!
-					De server zegt: ${e.message}`,
-						5000
-					);
-					throw e;
 				});
 		}) // then van maakSleutelEnVersleutel
 		.catch((e) => {
-			gr.communiceer(`fout in de versleuteling ${e}`, 1000);
+			gr.communiceer(`fout in de versleuteling of opslag: ${e.message}`, 1000);
 			DB().opslagProcedure = 'mislukt';
 			throw e;
 		});
+}
+
+function maakSQLVriendelijkePostData(){
+	const groteFormulier = gr.el("grote-tabel-formulier");
+	const formDataSys = new FormData(groteFormulier);
+
+	/**
+	 * makkelijker te verzenden en beter te vertalen naar SQL
+	 */
+	const SQLVriendelijkePostData = {
+		meta: {},
+		ids: [],
+		kolommen: [],
+		waardenPerId: {},
+	};
+	// voor bereiden met de ids.
+	Array.from(formDataSys.entries())
+		.filter(([key, value]) => key.includes("[id]"))
+		.forEach(([key, uniekeIdUitForm]) => {
+			SQLVriendelijkePostData.ids.push(uniekeIdUitForm);
+			SQLVriendelijkePostData.waardenPerId[uniekeIdUitForm] = [];
+		});
+
+	// kolommen bepalen
+	const eersteId = SQLVriendelijkePostData.ids[0];
+	const eersteRijInputs = document
+		.querySelector(".form-rij")
+		.querySelectorAll(".pers-input");
+	SQLVriendelijkePostData.kolommen = Array.from(eersteRijInputs)
+		.map((veld) => {
+			return veld.getAttribute("data-naam");
+		})
+		.filter((veldNaam) => {
+			return veldNaam !== "id";
+		});
+
+	// per id waardenPerId invullen.
+	Array.from(formDataSys.entries()).forEach(([key, value]) => {
+		if (key.includes("form_meta") || key.includes("[id]")) {
+			return;
+		}
+		const id = key.replace(/\D/g, "");
+		SQLVriendelijkePostData.waardenPerId[id].push(value);
+	});
+
+	// tenslotte de meta data
+	SQLVriendelijkePostData.meta = {
+		xsrf: formDataSys.get("form_meta[csrf-token]"),
+		iv: formDataSys.get("form_meta[iv]"),
+		tabel: formDataSys.get("form_meta[tabel_naam]"),
+	};
+	return SQLVriendelijkePostData	
 }
 
 // #endregion versleuteling
