@@ -1,8 +1,16 @@
 
+
+
+
 /**
  * Kan simpele data bevatten zonder setters en getters;
  * kan via setters op verandering 'on change' callbacks aanroepen
  * opVerandering callbacks krijgen nieuwe waarde mee en DB ref.
+ * 
+ * Gebruiken via default export function die singleton blijft geven.
+ * import DB from "./modules/database.js";
+ * DB().wachtwoord = 'kaasplankjes'; etc
+ * 
  * @TODO als groter wordt met proxys werken
  * 
  * @method registreerOpVerandering {string, function} recordNaam, callback - voer functie uit als record wijzigd.
@@ -27,6 +35,7 @@ export class Database {
     if (Database._self && Database._self instanceof Database) {
       return Database._self
     } 
+    this._self = this;
     return this;
   }
   
@@ -37,7 +46,7 @@ export class Database {
       throw new Error('ontsleuteling niet bool')
     }
     Database._data.ontsleuteld = waarde;
-    this._draaiOpVerandering(waarde);
+    this._draaiOpVerandering('ontsleuteld', waarde);
   }
 
   set wachtwoord(waarde) {
@@ -45,7 +54,7 @@ export class Database {
       throw new Error('wachtwoord niet string')
     }
     Database._data.wachtwoord = waarde;
-    this._draaiOpVerandering(waarde);
+    this._draaiOpVerandering('wachtwoord', waarde);
   }
 
   // GETTERS
@@ -57,6 +66,8 @@ export class Database {
     return Database._data.wachtwoord
   }
 
+  // METHODES
+
   /**
    * Wordt aangeroepen door setters. Haalt uit opVerandering object
    * mogelijke callbacks en loopt daardoorheen
@@ -64,16 +75,16 @@ export class Database {
    * @private 
    * @memberof Database
    */
-  _draaiOpVerandering = (waarde) => {
-    const opVeranderingCallbacks = this._opVerandering[waarde];
+  _draaiOpVerandering = (recordNaam, waarde) => {
+    const opVeranderingCallbacks = Database._opVerandering[recordNaam];
     opVeranderingCallbacks.forEach(func =>{
-      func(waarde, this)
+      func(waarde, Database, recordNaam)
     })
   }
 
   /**
    * Registreer callbacks die draaien indien record wijzigt. 
-   * Callbacks krijgen nieuwe recordWaarde mee en DB ref.
+   * Callbacks krijgen nieuwe recordWaarde mee, DB ref en naam gewijzigde record
    *
    * @memberof Database
    */
@@ -84,7 +95,7 @@ export class Database {
     if (!Database._opVerandering.hasOwnProperty(recordNaam)) {
       throw new Error(`opVerandering object kent geen array ${recordNaam}`)
     }
-    Database._opVerandering[recordNaam] = callback
+    Database._opVerandering[recordNaam].push(callback);
   }
 
   /**
