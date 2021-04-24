@@ -3,21 +3,40 @@
  * Kan simpele data bevatten zonder setters en getters;
  * kan via setters op verandering 'on change' callbacks aanroepen
  * opVerandering callbacks krijgen nieuwe waarde mee en DB ref.
+ * @TODO als groter wordt met proxys werken
  * 
  * @method registreerOpVerandering {string, function} recordNaam, callback - voer functie uit als record wijzigd.
  * @class Database
  */
-class Database {
+export class Database {
+
+  /**
+   *singleton storage.
+   *
+   * @memberof Database
+   */
+  static _self = null;
+
+  static _data = {
+    ontsleuteld: false,
+    wachtwoord: null
+  }
+
   constructor(){
-    this.ontsleuteld = false;
-    this.wachtwoord = null;
+    // singleton fix
+    if (Database._self && Database._self instanceof Database) {
+      return Database._self
+    } 
+    return this;
   }
   
+  // SETTERS
+
   set ontsleuteld(waarde) {
     if (typeof waarde !== 'boolean'){
       throw new Error('ontsleuteling niet bool')
     }
-    this.ontsleuteld = waarde;
+    Database._data.ontsleuteld = waarde;
     this._draaiOpVerandering(waarde);
   }
 
@@ -25,8 +44,17 @@ class Database {
     if (typeof waarde !== 'string'){
       throw new Error('wachtwoord niet string')
     }
-    this.wachtwoord = waarde;
+    Database._data.wachtwoord = waarde;
     this._draaiOpVerandering(waarde);
+  }
+
+  // GETTERS
+
+  get ontsleuteld(){
+    return Database._data.ontsleuteld
+  }
+  get wachtwoord(){
+    return Database._data.wachtwoord
   }
 
   /**
@@ -50,25 +78,28 @@ class Database {
    * @memberof Database
    */
   registreerOpVerandering = (recordNaam, callback) =>{
-    if (!this.hasOwnProperty(recordNaam)) {
+    if (!Database._data.hasOwnProperty(recordNaam)) {
       throw new Error(`op verandering func geregistreerd voor niet bestaande prop ${recordNaam}`)
     }
-    if (!this._opVerandering.hasOwnProperty(recordNaam)) {
+    if (!Database._opVerandering.hasOwnProperty(recordNaam)) {
       throw new Error(`opVerandering object kent geen array ${recordNaam}`)
     }
-    this._opVerandering[recordNaam] = callback
+    Database._opVerandering[recordNaam] = callback
   }
 
   /**
    * opslag van callbacks bij veranderen waarden records.
+   * @static
    * @private
    * @memberof Database
    */
-  _opVerandering = {
+  static _opVerandering = {
     ontsleuteld: [],
     wachtwoord: []
   }
 
 }
 
-export const DatabaseInstantie = new Database();
+export default function maakDBInstantie() {
+  return new Database();
+}
