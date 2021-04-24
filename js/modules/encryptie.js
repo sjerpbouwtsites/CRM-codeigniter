@@ -12,7 +12,7 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 			var iv = window.crypto.getRandomValues(new Uint8Array(16));
 			printIV.value = encGr.byteArrayToBase64(iv);
 
-			gr.elArray(".pers-input")
+			const veldEncryptiePromises = gr.elArray(".pers-input")
 			.map((veld) => {
 				return new Promise((resolveVeld, rejectVeld) => {
 					var w = veld.value.trim();
