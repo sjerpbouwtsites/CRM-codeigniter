@@ -2,6 +2,7 @@
 
   <span class='crm-nav__tekst'>Filter op:<br></span>
   <div class='actieform-rij'>
+    <select id='contact-selectie-filter' class='crm-nav__tabbaar filter-nav-input groep-select selectie-filter' data-filter='contact'></select>
     <select id='groep-selectie-filter' class='crm-nav__tabbaar filter-nav-input groep-select selectie-filter' data-filter='groep'></select>
     <select id='sector-selectie-filter' class='crm-nav__tabbaar filter-nav-input sector-select selectie-filter' data-filter='sector'></select>
   </div>
