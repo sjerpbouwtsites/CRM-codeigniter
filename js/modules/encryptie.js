@@ -2,6 +2,7 @@
 
 import * as encGr from "./encryptie-gereedschap.js";
 import * as gr from "./gereedschap.js";
+import DB from "./database.js";
 
 
 export function maakSleutelEnVersleutel(sleutelBasis) {
@@ -101,7 +102,7 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 				.decrypt({ name: "AES-CBC", iv: ivBytes }, aesKey, ciphertextBytes)
 				.then(cipherResolve)
 				.catch((aargh) => {
-					aargh = addErrorOrigin("veldSleutelMapper - maak Promise", aargh);
+					aargh = gr.addErrorOrigin("veldSleutelMapper - maak Promise", aargh);
 					cipherReject(aargh);
 				});
 		})
@@ -116,7 +117,7 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 				let error = new Error(err.message);
 				const veldNaam = versleuteldVeld.getAttribute("data-name");
 				error.message = `Ontsleutel catch bij veld ${veldNaam}. \n ${error.message}`;
-				error = addErrorOrigin("decrypt & in veldsleutelmapper", error);
+				error = gr.addErrorOrigin("decrypt & in veldsleutelmapper", error);
 				console.dir(error) && console.stack();
 				veldReject(error);
 			});
@@ -150,7 +151,7 @@ function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 			leesVeld.classList.remove("verborgen");
 			zetVeldResolve(true);
 		} catch (error) {
-			zetVeldReject(addErrorOrigin("zetVeldWaarde", error));
+			zetVeldReject(gr.addErrorOrigin("zetVeldWaarde", error));
 		}
 	});
 }
@@ -170,11 +171,10 @@ export function decryptieInit(){
 		const sleutelEl = gr.el("ontsleutel");
 		if (!sleutelEl) {
 			const e = new Error("Je vulde niets in.");
-			sessionStorage.setItem('wachtwoord', null);
-			sleutelReject(addErrorOrigin(e, "ontsleutel sleutel veld lezen."));
+			sleutelReject(gr.addErrorOrigin(e, "ontsleutel sleutel veld lezen."));
 			return;
 		} else {
-			sessionStorage.setItem('wachtwoord', sleutelEl.value)
+			DB().wachtwoord = sleutelEl.value;
 			sleutelResolve(sleutelEl.value);
 		}
 	});
@@ -205,7 +205,7 @@ function zetOntsleutelClick () {
 				.then(() => {
 					gr.el("grote-tabel-formulier").classList.add("ontsleuteld");
 					gr.el("sleutelaars").classList.add("ontsleuteld");
-					sessionStorage.setItem('ontsleuteld', 'true');
+					DB().ontsleuteld = true;
 				})
 
 				.then(() => {})
@@ -236,10 +236,11 @@ function verzendInStukkenCallback(e) {
 	//button disablen
 	gr.el("verzend-grote-formulier-knop").setAttribute("disabled", true);
 	// eerst versleutelen
-	if (!sessionStorage.getItem('wachtwoord')) throw new Error("wachtwoord vergeten door app");
-	const versleutelMet = sessionStorage.getItem('wachtwoord');
-	maakSleutelEnVersleutel(versleutelMet)
+	 
+	if (!DB().wachtwoord) throw new Error("wachtwoord vergeten door app");
+	maakSleutelEnVersleutel(DB().wachtwoord)
 		.then(() => {
+			DB().ontsleuteld = false;
 			document.body.classList.add("voorbereid-op-afsluiten");
 			gr.communiceer("Versleuteld. Nu comprimeren en versturen.", 1000);
 			const groteFormulier = gr.el("grote-tabel-formulier");

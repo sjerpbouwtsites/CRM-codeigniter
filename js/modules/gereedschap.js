@@ -152,7 +152,7 @@ export function pakElementVeilig(zoekOp, zoekIn = document) {
  * @param {string} origin
  * @param {Error} error
  */
- export default  function addErrorOrigin(origin, error) {
+ export function addErrorOrigin(origin, error) {
 	if (!origin || !error) {
 		throw new Error("add Error Origin faal");
 	}

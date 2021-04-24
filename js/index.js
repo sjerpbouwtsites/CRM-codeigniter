@@ -5,21 +5,9 @@ import devExInit from "./modules/dev-ex.js";
 import * as encryptie from "./modules/encryptie.js";
 import printerInit from "./modules/printer.js";
 import * as gr from "./modules/gereedschap.js";
+import DB from "./modules/database.js";
 
 
-function DITMOETEENECHTELINKMETENCRYPTIEWORDEN() {
-	return new Promise((resolve, reject) => {
-		const checkSleutelTeZienInterval = setInterval(() => {
-			console.log('NET ENCRYPTIE PROMISE OID')
-			if (!sleutelaarIsTeZien()) {
-				return;
-			} else {
-				clearInterval(checkSleutelTeZienInterval);
-				resolve();
-			}
-		}, 50);
-	});
-}
 function zetEscapeKlikVoorAlles() {
 	document.addEventListener("keydown", (event) => {
 		// verstopt navs
@@ -34,32 +22,25 @@ function zetEscapeKlikVoorAlles() {
 	});
 }
 
-function sleutelaarIsTeZien() {
-	return gr.el("sleutelaars")
-		.classList.contains("ontsleuteld");
-}
-
-
-
 function naDecryptie() {
 	navigatieAnimatie();
 	formulierInit();
 	panelenInit();
 	encryptie.encryptieInit();
 	printerInit();
-	// vastleggen bezoek
-	localStorage.setItem("vw-crm-eerder-bezocht", "ja");
 	zetEscapeKlikVoorAlles()
-
 }
 
 function indexInit() {
+	
+	// dingen die gaan draaien na decryptie. async.
+	
+	DB()
+	.registreerOpVerandering('ontsleuteld', naDecryptie)
+
+	// sync
 	encryptie.decryptieInit();
-	devExInit();
-	DITMOETEENECHTELINKMETENCRYPTIEWORDEN()
-		.then(naDecryptie)
-		.catch((nee) => {
-			console.error(nee);
-		});
+//	devExInit();
+	
 }
 indexInit();
