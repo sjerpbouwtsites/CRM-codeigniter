@@ -61,6 +61,9 @@ export default class PersoonRij {
 		return new Date(this.laatst_gezien.split("-").reverse()).getTime();
 	}
 
+	get heeftGeldigeTel(){
+		return document.getElementById(`pers-${this.naamIdMap.telefoon}`).length >= 10;
+	}
 
 	get heeftGeldigeEmail(){
 		const v = document.getElementById(`pers-${this.naamIdMap.email}`).validity;
@@ -97,7 +100,8 @@ export default class PersoonRij {
 				"naamIdMap",
 				"schrijfDataNaarLeesVeldenEnZetGeenDataClass",
 				"laatstGezienInMicroseconden",
-				"heeftGeldigeEmail"
+				"heeftGeldigeEmail",
+				"heeftGeldigeTel"
 			].includes(sleutelNaam)
 		) {
 			return false;
