@@ -74,13 +74,15 @@ function zetRiseupCheckButtonClick(){
 
 	// MAIL
 	if (isMail) {
-		persRijen.forEach((P, index) => {
+		persRijen
+		.filter(P => P.heeftGeldigeEmail)
+		.forEach((P, index) => {
 			if (printMetNamen) {
-				printTekst += `${P.naam} &lt;${P.email}&gt;, `;
-				linkHref += `${P.naam} <${P.email}>, `;
+				printTekst += `${P.naam} &lt;${P.email}&gt;, `.toLowerCase();
+				linkHref += `${P.naam} <${P.email}>, `.toLowerCase();
 			} else {
-				linkHref += `${P.email}, `;
-				printTekst += `${P.email}, `;
+				linkHref += `${P.email}, `.toLowerCase();
+				printTekst += `${P.email}, `.toLowerCase();
 			}
 		});
 		const a = encodeURIComponent(linkHref);
@@ -89,13 +91,16 @@ function zetRiseupCheckButtonClick(){
 		`;
 	} else {
 		// TELEFOON
-		persRijen.forEach((P) => {
-			printTekst += `${P.telefoon}, `;
-			linkHref += `${P.telefoon}, `;
+		persRijen
+		.filter(P => P.heeftGeldigeTel)
+		.forEach((P) => {
+			const t  = P.telefoon.replace(/[\s-]/,'');
+			printTekst += printMetNamen ? `${P.naam}: ${t}<br>` : `${t}, `;
+			linkHref += `${t}, `;
 			const a = encodeURIComponent(linkHref);
-			ankerHTML = `
+			ankerHTML = !printMetNamen ? `
       <span class='print-buttons-text'>Stuur:</span>
-      <a class='print-button tel-sms' href='sms:${a}'>SMS (mobiel)</a>`;
+      <a class='print-button tel-sms' href='sms:${a}'>SMS (mobiel)</a>` : '';
 		});
 	}
 
