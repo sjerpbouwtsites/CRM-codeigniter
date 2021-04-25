@@ -61,6 +61,12 @@ export default class PersoonRij {
 		return new Date(this.laatst_gezien.split("-").reverse()).getTime();
 	}
 
+
+	get heeftGeldigeEmail(){
+		const v = document.getElementById(`pers-${this.naamIdMap.email}`).validity;
+		return !v.valueMissing && !v.typeMismatch;
+	}
+
 	/**
 	 * vult (voor maken zelf proxy) de private stores.
 	 *
@@ -91,6 +97,7 @@ export default class PersoonRij {
 				"naamIdMap",
 				"schrijfDataNaarLeesVeldenEnZetGeenDataClass",
 				"laatstGezienInMicroseconden",
+				"heeftGeldigeEmail"
 			].includes(sleutelNaam)
 		) {
 			return false;
