@@ -62,7 +62,8 @@ export default class PersoonRij {
 	}
 
 	get heeftGeldigeTel(){
-		return document.getElementById(`pers-${this.naamIdMap.telefoon}`).length >= 10;
+		console.log(this.naamIdMap);
+		return document.getElementById(`pers-${this.naamIdMap.telefoon}`).value.length >= 10;
 	}
 
 	get heeftGeldigeEmail(){
