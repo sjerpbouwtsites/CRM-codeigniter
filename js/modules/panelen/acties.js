@@ -14,13 +14,16 @@ export default function() {
  function zetLijstKnoppenClicks() {
   gr.pakElementVeilig("lijst-mail-button")
 	.addEventListener("click", (e) => {
-		lijstTelefoonOfMail("mail", e);
+		maakLijst("mail", e);
 	});
 	gr.pakElementVeilig("lijst-telefoon-button")
 	.addEventListener("click", (e) => {
-		lijstTelefoonOfMail("telefoon", e);
+		maakLijst("telefoon", e);
 	});
-	
+	gr.pakElementVeilig("lijst-telefoon-multi")
+	.addEventListener("click", (e) => {
+		maakLijst("multi", e);
+	});	
 }
 
 function zetRiseupCheckButtonClick(){
@@ -62,9 +65,10 @@ function zetRiseupCheckButtonClick(){
  * @param {string} lijstWat mail|telefoon
  * @param {event} event click event
  */
- function lijstTelefoonOfMail(lijstWat, event = null) {
+ function maakLijst(lijstWat, event = null) {
 	event && event.preventDefault();
 	const isMail = lijstWat === "mail";
+	const isMulti = lijstWat === "multi";
 	const printMetNamen = gr.el("lijst-ook-naam").checked;
 	let printTekst = "";
 	let linkHref = "";
@@ -89,6 +93,37 @@ function zetRiseupCheckButtonClick(){
 		ankerHTML = `
       <span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in </span><a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a><a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>      
 		`;
+	} else if (isMulti) {
+		const tabelRijen = persRijen
+		.map(P => {
+			return `<tr>
+				<td>${P.naam}</td>
+				<td>${P.heeftGeldigeTel ? P.telefoon : ''}</td>
+				<td>${P.heeftGeldigeEmail ? P.email : ''}</td>
+			</tr>`
+		}).join('')
+
+		linkHref = `CRM uitdraai ${new Date().toLocaleString()} \n\n`+ persRijen
+		.map(P => {
+			return `${P.naam.padEnd(25, ' ')}${P.heeftGeldigeTel ? P.telefoon.padEnd(15, ' ') : ''.padEnd(15, ' ')}${P.heeftGeldigeEmail ? P.email : ''}\n`
+		}).join('')
+
+		printTekst = `
+			<p>Als je 'm als een nette tabel wilt moet je 'm wel met de hand kopie&euml;ren.</p>
+			<table id='crm-uitdraai'>
+				<caption>CRM uitdraai ${new Date().toLocaleString()}</caption>
+				<thead>
+					<th><strong>Naam</strong></th>
+					<th><strong>Telefoon</strong></th>
+					<th><strong>Email</strong></th>
+				</thead>
+				<tbody>
+					${tabelRijen}
+				</tbody>
+			</table>
+		`;
+
+		ankerHTML = ``;
 	} else {
 		// TELEFOON
 		persRijen
@@ -106,7 +141,7 @@ function zetRiseupCheckButtonClick(){
 
 	const printHTML = `
 	  <span id='copyboard-succes'></span>
-		<small>${printTekst.substring(0, printTekst.length - 2)}</small>
+		<small>${printTekst}</small>
 		<div class='printer-buttons'>
 			${ankerHTML}
 		</div>
