@@ -117,7 +117,7 @@ export default class PersoonRij {
 
 		if (!this.namen.includes(sleutelNaam)) {
 			throw new Error(
-				`dit is helemaal fout om een of andere reden mss wel een symbol geen bestaande input.`
+				`dit is helemaal fout om een of andere reden mss wel een symbol geen bestaande input. Sleutelnaam: ${sleutelNaam}`
 			);
 		}
 		return true;

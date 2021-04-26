@@ -130,8 +130,8 @@ function zetOnChangeRijWasBewerkt(){
 	if (!db.bewerkModus) {
 		return;
 	}
-	db.rijInBewerking.classList.add('was-in-bewerk-modus');
-	db.rijInBewerking.removeEventListener('change', zetOnChangeRijWasBewerkt)
+	db.rijInBewerking.element.classList.add('was-in-bewerk-modus');
+	db.rijInBewerking.element.removeEventListener('change', zetOnChangeRijWasBewerkt)
 	
 }
 
