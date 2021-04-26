@@ -42,7 +42,7 @@ function zetUpdateLaatsGezienClick() {
 		.addEventListener("click", function (e) {
 			if (e.target.classList.contains("update-laatst-gezien")) {
 				e.preventDefault();
-				gr.schrijfVandaagNaarInput(e.target.parentNode.querySelector("input"))
+				e.target.parentNode.querySelector("input").value = new Date().toLocaleDateString('nl-NL', {day: '2-digit', 'month': '2-digit', 'year': 'numeric'})
 			}
 		});
 	}

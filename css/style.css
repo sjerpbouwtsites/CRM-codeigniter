@@ -105,6 +105,7 @@ select:hover,
 	min-height: 100vh;
 	background-repeat: no-repeat;
 	background-position: bottom right;
+	justify-content: space-between;
 }
 .formulier-en-controls.tabel-leden{
 	background-image: url('/afb/leden-tabel-achtergrond.png');

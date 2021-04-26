@@ -27,11 +27,9 @@ function generiekeSorteerOpHandler(event) {
 	const knop = event.target;
 	const sorteerOp = knop.getAttribute("data-sorteert");
 	const startBij = knop.getAttribute("data-startBij");
-	const persoonRijen = gr.formInvoerRijenArray().map((rij) => new PersoonRij(rij));
-	//
-	persoonRijen.sort((persoonA, persoonB) => {
-		return formRijenSorteerder(persoonA, persoonB, sorteerOp, startBij);
-	});
+	let persoonRijen = gr.formInvoerRijenArray().map((rij) => new PersoonRij(rij));
+	
+	persoonRijen = sorteerRijen[sorteerOp](persoonRijen, startBij);
 
 	// en nu wegschrijven
 	const nieuweRijenHTML = persoonRijen.map((persoonRij) => {
@@ -55,55 +53,27 @@ function generiekeSorteerOpHandler(event) {
 	knop.setAttribute("data-postfix", postFix);
 }
 
-function formRijenSorteerder(persoonA, persoonB, sorteerVeldNaam, richting) {
-	let veldWaardeBijA = persoonA[sorteerVeldNaam];
-	let veldWaardeBijB = persoonB[sorteerVeldNaam];
-	if (sorteerVeldNaam === "naam") {
-		// nummers maken van eerste 5 letters
-		veldWaardeBijA = veldWaardeBijA.toLowerCase();
-		veldWaardeBijA = Number(
-			veldWaardeBijA
-				.substring(0, 5)
-				.padEnd(5, "a")
-				.split("")
-				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
-				.join("")
-		);
-		veldWaardeBijB = Number(
-			veldWaardeBijB
-				.substring(0, 5)
-				.padEnd(5, "a")
-				.split("")
-				.map((naamLetter) => naamLetter.charCodeAt(0).toString())
-				.join("")
-		);
-	} else if (sorteerVeldNaam === "laatst_gezien") {
-		console.log(veldWaardeBijA)
-		veldWaardeBijA = veldWaardeBijA.split('-').reverse().join('')
-		veldWaardeBijB = veldWaardeBijB.split('-').reverse().join('')
+const sorteerRijen = {
+	naam: (rijen, richting) =>{
+		const gesorteerd = rijen.sort( (a, b) => {
+			return a.naam.localeCompare(b.naam, 'nl', {ignorePunctuation: true})
+		});
+		return richting === 'hoog' ? gesorteerd : gesorteerd.reverse();
+	},
+	laatst_gezien: (rijen, richting) => {
+		const gesorteerd = rijen.sort((a, b) => {
+
+			const [dagenA, maandenA, jarenA] = a.laatst_gezien.length ? a.laatst_gezien.split('-') : "01-05-2016";
+			const [dagenB, maandenB, jarenB] = b.laatst_gezien.length ? b.laatst_gezien.split('-') : "01-05-2016";
+			const dagenATotaal = Number(dagenA) + Number(maandenA*30) + Number(jarenA*365)
+			const dagenBTotaal = Number(dagenB) + Number(maandenB*30) + Number(jarenB*365)
+			console.log(dagenA, dagenB, dagenATotaal, dagenBTotaal)
+			return dagenATotaal > dagenBTotaal;
+		});
+		return richting === 'hoog' ? gesorteerd.reverse() : gesorteerd;
 	}
-
-	veldWaardeBijA = Number(veldWaardeBijA)
-	veldWaardeBijB = Number(veldWaardeBijB)
-
-	if (richting === "hoog") {
-		if (veldWaardeBijA > veldWaardeBijB) {
-			return -1;
-		}
-		if (veldWaardeBijA < veldWaardeBijB) {
-			return 1;
-		}
-	} else {
-		if (veldWaardeBijA < veldWaardeBijB) {
-			return -1;
-		}
-		if (veldWaardeBijA > veldWaardeBijB) {
-			return 1;
-		}
-	}
-
-	return 0;
 }
+
 //#endregion sorteren
 
 /**
