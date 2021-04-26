@@ -27,6 +27,7 @@ export class Database {
 
   static _data = {
     ontsleuteld: false,
+    ontsleutelFout: false,
     wachtwoord: null,
     opslagProcedure: null,
     bewerkModus: false,
@@ -52,6 +53,15 @@ export class Database {
     Database._data.ontsleuteld = waarde;
     this._draaiOpVerandering('ontsleuteld', waarde, oudeWaarde);
   }
+
+  set ontsleutelFout(waarde) {
+    if (typeof waarde !== 'boolean'){
+      throw new Error('ontsleutelFout niet bool')
+    }
+    const oudeWaarde = Database._data.ontsleutelFout;
+    Database._data.ontsleutelFout = waarde;
+    this._draaiOpVerandering('ontsleutelFout', waarde, oudeWaarde);
+  }  
 
   set bewerkModus(waarde) {
     if (typeof waarde !== 'boolean'){
@@ -98,12 +108,15 @@ export class Database {
   get ontsleuteld(){
     return Database._data.ontsleuteld
   }
+  get ontsleutelFout(){
+    return Database._data.ontsleutelFout
+  }    
   get bewerkModus(){
     return Database._data.bewerkModus
   }  
   get rijInBewerking(){
     return Database._data.rijInBewerking
-  }  
+  }
   get wachtwoord(){
     return Database._data.wachtwoord
   }
@@ -151,6 +164,7 @@ export class Database {
    */
   static _opVerandering = {
     ontsleuteld: [],
+    ontsleutelFout: [],
     bewerkModus: [],
     rijInBewerking: [],
     wachtwoord: [],
