@@ -21,6 +21,11 @@ export default class PersoonRij {
 	namen = [];
 
 	/**
+	 * element rij ref
+	 */
+	 element = null;
+
+	/**
 	 * input-name input-id (zonder voorvoeging) mapping.
 	 */
 	naamIdMap = {};
@@ -45,6 +50,7 @@ export default class PersoonRij {
 		}
 
 		this.id = rij.id;
+		this.element = rij;
 		this.inputsNaarData(rij);
 		const proxy = this.maakVanZelfProxy();
 		this.proxySet = true;
@@ -98,6 +104,7 @@ export default class PersoonRij {
 				"inSelectie",
 				"_data",
 				"id",
+				"element",
 				"naamIdMap",
 				"schrijfDataNaarLeesVeldenEnZetGeenDataClass",
 				"laatstGezienInMicroseconden",
@@ -122,7 +129,7 @@ export default class PersoonRij {
 	 * @returns {boolean} of wordt getoond.
 	 */
 	inSelectie() {
-		const s = gr.el(this.id).getAttribute("style") || "";
+		const s = this.element.getAttribute("style") || "";
 		if (s.replace(/\W/g, "").includes("displaynone")) {
 			return false;
 		}

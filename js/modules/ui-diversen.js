@@ -1,5 +1,6 @@
 import DB from "./database.js";
 import * as gr from "./gereedschap.js";
+import {NavElement} from "./navigatie-animatie.js";
 
 export default {
 	zetEscapeKlikVoorAlles,

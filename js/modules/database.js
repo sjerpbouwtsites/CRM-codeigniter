@@ -1,4 +1,4 @@
-
+import PersoonRij from "./persoon-rij.js";
 
 
 
@@ -27,8 +27,11 @@ export class Database {
 
   static _data = {
     ontsleuteld: false,
+    ontsleutelFout: false,
     wachtwoord: null,
-    opslagProcedure: null
+    opslagProcedure: null,
+    bewerkModus: false,
+    rijInBewerking: null,
   }
 
   constructor(){
@@ -50,6 +53,34 @@ export class Database {
     Database._data.ontsleuteld = waarde;
     this._draaiOpVerandering('ontsleuteld', waarde, oudeWaarde);
   }
+
+  set ontsleutelFout(waarde) {
+    if (typeof waarde !== 'boolean'){
+      throw new Error('ontsleutelFout niet bool')
+    }
+    const oudeWaarde = Database._data.ontsleutelFout;
+    Database._data.ontsleutelFout = waarde;
+    this._draaiOpVerandering('ontsleutelFout', waarde, oudeWaarde);
+  }  
+
+  set bewerkModus(waarde) {
+    if (typeof waarde !== 'boolean'){
+      throw new Error('bewerkModus niet bool')
+    }
+    const oudeWaarde = Database._data.bewerkModus;
+    Database._data.bewerkModus = waarde;
+    this._draaiOpVerandering('bewerkModus', waarde, oudeWaarde);
+  }
+
+  set rijInBewerking(waarde) {
+    if (!waarde instanceof PersoonRij){
+      throw new Error('rijInBewerking niet PersoonRij')
+    }
+    const oudeWaarde = Database._data.rijInBewerking;
+    Database._data.rijInBewerking = waarde;
+    this._draaiOpVerandering('rijInBewerking', waarde, oudeWaarde);
+  }
+  
 
   set wachtwoord(waarde) {
     if (typeof waarde !== 'string'){
@@ -76,6 +107,15 @@ export class Database {
 
   get ontsleuteld(){
     return Database._data.ontsleuteld
+  }
+  get ontsleutelFout(){
+    return Database._data.ontsleutelFout
+  }    
+  get bewerkModus(){
+    return Database._data.bewerkModus
+  }  
+  get rijInBewerking(){
+    return Database._data.rijInBewerking
   }
   get wachtwoord(){
     return Database._data.wachtwoord
@@ -124,6 +164,9 @@ export class Database {
    */
   static _opVerandering = {
     ontsleuteld: [],
+    ontsleutelFout: [],
+    bewerkModus: [],
+    rijInBewerking: [],
     wachtwoord: [],
     opslagProcedure: [],
   }

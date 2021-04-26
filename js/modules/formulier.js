@@ -10,6 +10,7 @@ export default function formulierInit() {
 	zetClicksKeysSluitBewerkModus();
 	zetUpdateLaatsGezienClick()
 	zetVerwijderRijClick()
+	zetAlsVeranderRijInBewerking()
 }
 
 /**
@@ -76,70 +77,78 @@ function zetVerwijderRijClick() {
 function zetBewerkModusClick() {
 	// zoek voor clicks op of in form-rij
 	gr.el("form-rijen-lijst").addEventListener("click", (e) => {
-		const rijIsGeklikt = vindInOuders(e.target, (element) => {
+		const rijGeklikt = vindInOuders(e.target, (element) => {
 			return element.classList.contains("form-rij");
 		});
-		const bewerkend = document.querySelector(".bewerk-modus");
-		if (bewerkend) {
-			// hij was bewerken en rijIsGeklikt is niet de bewerkende rij.
-			// of klikte buiten formulier. sluit alles.
-			if (!rijIsGeklikt || (rijIsGeklikt && rijIsGeklikt.id !== bewerkend.id)) {
-				verwijderBewerkModus()
-			}
+
+		const db = DB();
+
+		// als niet op rij geklikt en niet in bewerkmodus, klaar.
+		if (!rijGeklikt && !db.bewerkModus) {
 			return;
 		}
-		if (!rijIsGeklikt) {
+		// als in bewerkmodus en niet op rij geklikt, einde bewerkmodus.
+		if (!rijGeklikt && db.bewerkModus) {
+			db.bewerkModus = false;
+			db.rijInBewerking = null;
 			return;
 		}
 
-		// bewerk-modus is staat voor bewerken
-		// was in bewerk modus is om na sluiten bewerken te tonen dat dingen zijn bewerkt.
-		if (!rijIsGeklikt.classList.contains("bewerk-modus")) {
-			rijIsGeklikt.classList.add("bewerk-modus")
-			maakInputsTabBaarEnFocus(rijIsGeklikt);
-			rijIsGeklikt.addEventListener('change', zetOnChangeRijWasBewerkt)
-		} 
-			
+		if (db.bewerkModus && db.rijInBewerking.id === rijGeklikt.id) {
+			return;
+		}
+		
+		if (!db.bewerkModus) {
+			db.bewerkModus = true;
+		}
 
-		//scroll naar element
-		window.location.hash = rijIsGeklikt.id;
+		db.rijInBewerking = new PersoonRij(rijGeklikt);
+
+		return;
+
 	});
 }
 
-function zetOnChangeRijWasBewerkt(changeEvent){
-	const rij = vindInOuders(changeEvent.target, (element) => {return element.classList.contains('form-rij')}, 5)
-	if (rij) {
-
-		rij.classList.add('was-in-bewerk-modus');
-		rij.removeEventListener('change', zetOnChangeRijWasBewerkt)
-	}
+function zetAlsVeranderRijInBewerking(){
+	DB().alsVeranderdDoe('rijInBewerking', (nieuweRij, oudeRij)=>{
+		if (oudeRij) {
+			verwijderTabsVanInputs(oudeRij.element);
+			oudeRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
+			oudeRij.element.removeEventListener('change', zetOnChangeRijWasBewerkt)
+			oudeRij.element.classList.remove("bewerk-modus");
+		}
+		if (nieuweRij){
+			maakInputsTabBaarEnFocus(nieuweRij.element);
+			nieuweRij.element.classList.add("bewerk-modus")
+			nieuweRij.element.addEventListener('change', zetOnChangeRijWasBewerkt)
+		}
+	})
 }
 
-function verwijderBewerkModus(){
-	const bewerkend = gr.el(".bewerk-modus");
-	if (!bewerkend) {
-		throw new Error('sluit bewerken... maar niets wordt bewerkt')
+function zetOnChangeRijWasBewerkt(){
+	const db = DB();
+	if (!db.bewerkModus) {
 		return;
 	}
-	bewerkend.classList.remove("bewerk-modus");
-	verwijderTabsVanInputs(bewerkend);
-	(() => {
-		new PersoonRij(
-			bewerkend
-		).schrijfDataNaarLeesVeldenEnZetGeenDataClass();
-	})();	
+	db.rijInBewerking.classList.add('was-in-bewerk-modus');
+	db.rijInBewerking.removeEventListener('change', zetOnChangeRijWasBewerkt)
+	
 }
 
 function zetClicksKeysSluitBewerkModus(){
 	document.addEventListener('click', clickEvent =>{
 		if (clickEvent.target.classList.contains('beeindig-bewerken-cel')){
 			clickEvent.preventDefault();
-			verwijderBewerkModus()
+			DB().bewerkModus = false;
+			DB().rijInBewerking = null;
 		}
 	});
 	document.addEventListener('keyup', keyEvent =>{
 		if (keyEvent.key ==='Escape'){
-			verwijderBewerkModus()
+			if (DB().bewerkModus) {
+				DB().bewerkModus = false;
+				DB().rijInBewerking = null;
+			} 
 		}
 	});	
 }

@@ -239,6 +239,7 @@ export function maakSleutelEnOntsleutel(sleutel) {
 				resolveOntsleutel(true);
 			})
 			.catch((error) => {
+				DB().ontsleutelFout = true;
 				`Gaat iets mis bij de ontsleuteling. ${error.message}`;
 				rejectOntsleutel(error);
 			});
@@ -247,6 +248,7 @@ export function maakSleutelEnOntsleutel(sleutel) {
 
 function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 	return new Promise((veldResolve, veldReject) => {
+		if (DB().ontsleutelFout) veldReject();
 		new Promise((cipherResolve, cipherReject) => {
 			if (
 				!versleuteldVeld.value.length ||
@@ -272,12 +274,11 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 				veldResolve();
 			})
 			.catch(function (err) {
-				console.error(err);
+				DB().ontsleutelFout = true;
 				let error = new Error(err.message);
-				const veldNaam = versleuteldVeld.getAttribute("data-name");
-				error.message = `Ontsleutel catch bij veld ${veldNaam}. \n ${error.message}`;
+				const veldNaam = versleuteldVeld.getAttribute("data-naam");
+				error.message = `Foutbericht: ontsleutelfout bij veld '${veldNaam}'. \n ${error.message}`;
 				error = gr.addErrorOrigin("decrypt & in veldsleutelmapper", error);
-				console.dir(error) && console.stack();
 				veldReject(error);
 			});
 	});
@@ -365,7 +366,7 @@ function zetOntsleutelClick () {
 					DB().ontsleuteld = true;
 				})
 				.catch((e) => {
-					gr.communiceer(`fout in het ontsleutelen ${e.message}`);
+					gr.communiceer(`Fout in het ontsleutelen. Juist wachtwoord gebruikt? Herlaadt pagina om opnieuw te proberen. ${e.message}`);
 					e.origin ? console.dir(e) && console.stack(e) : console.error(e);
 				});
 		});
