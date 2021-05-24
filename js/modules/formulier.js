@@ -112,12 +112,22 @@ function zetBewerkModusClick() {
 function zetAlsVeranderRijInBewerking(){
 	DB().alsVeranderdDoe('rijInBewerking', (nieuweRij, oudeRij)=>{
 		if (oudeRij) {
+
+			// DIRTY FIX. Werkt bagger in de persoon-rij.sj
+			gr.elArray(".pers-input", oudeRij.element).forEach((invoerVeld) => {
+  			const naam = invoerVeld.getAttribute("data-naam");
+				const waarde = invoerVeld.value;
+				console.log(naam, waarde)
+				oudeRij._data[naam] = waarde;
+  		});			
 			verwijderTabsVanInputs(oudeRij.element);
 			oudeRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
 			oudeRij.element.removeEventListener('change', zetOnChangeRijWasBewerkt)
 			oudeRij.element.classList.remove("bewerk-modus");
 		}
 		if (nieuweRij){
+
+			nieuweRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
 			maakInputsTabBaarEnFocus(nieuweRij.element);
 			nieuweRij.element.classList.add("bewerk-modus")
 			nieuweRij.element.addEventListener('change', zetOnChangeRijWasBewerkt)

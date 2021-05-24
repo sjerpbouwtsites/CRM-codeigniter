@@ -89,8 +89,10 @@ export default class PersoonRij {
 			this._data[naam] = waarde;
 			this.namen.push(naam);
 			this.naamIdMap[naam] = invoerVeld.id.replace("pers-", "");
+			
 		});
 	}
+
 
 	/**
 	 * true als uit data halen, false als uit obj zelf halen.
@@ -144,7 +146,7 @@ export default class PersoonRij {
 			const leesId = `lees-${idBasis}`;
 			const inputId = `pers-${idBasis}`;
 			const print = this._data[naam];
-
+			
 			gr.el(leesId).innerHTML = print;
 			if (print.trim().length === 0) {
 				gr.el(inputId).classList.add("geen-data");
@@ -172,6 +174,7 @@ export default class PersoonRij {
 			// zet de bijpassen de input.
 			// zet geen-dataclass op input
 			set(geproxiedObject, sleutel, waarde) {
+				console.log(this, geproxiedObject);
 				geproxiedObject.sleutelCheck(sleutel); // zie boven
 				geproxiedObject._data[sleutel] = waarde;
 				const inputId = geproxiedObject.naamIdMap[sleutel];
