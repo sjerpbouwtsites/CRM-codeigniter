@@ -252,7 +252,7 @@ function maakLegePersoonRij(id) {
 			</span>
 		</div>
 		<div class="cel-ik_wil form-cel">
-			<textarea class="pers-input" id="pers-${id}-ik_wil" name="form[${id}][ik_wil]" placeholder="ik wil" data-naam="ik_wil">ontwerpen plakken</textarea>
+			<textarea class="pers-input" id="pers-${id}-ik_wil" name="form[${id}][ik_wil]" placeholder="ik wil" data-naam="ik_wil"></textarea>
 			<span data-naam="ik_wil" id="lees-${id}-ik_wil" class="pers-lezen pers-lezen__ik_wil"></span>
 		</div>
 		<div class="cel-aantekening form-cel">
