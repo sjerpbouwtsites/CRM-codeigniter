@@ -117,7 +117,6 @@ function zetAlsVeranderRijInBewerking(){
 			gr.elArray(".pers-input", oudeRij.element).forEach((invoerVeld) => {
   			const naam = invoerVeld.getAttribute("data-naam");
 				const waarde = invoerVeld.value;
-				console.log(naam, waarde)
 				oudeRij._data[naam] = waarde;
   		});			
 			verwijderTabsVanInputs(oudeRij.element);

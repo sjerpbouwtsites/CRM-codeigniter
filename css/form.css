@@ -198,11 +198,9 @@ form.crm-formulier {
 }
 
 /** alleen verwijderen in bewerk modus */
-/* behalve dan in lijst modus */
 div.rij-verwijderen {
 	display: none;
 }
-[data-form-stijl="lijst"] div.rij-verwijderen,
 .bewerk-modus div.rij-verwijderen {
 	display: inline-block;
 }
