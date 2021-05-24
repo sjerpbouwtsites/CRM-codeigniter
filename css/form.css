@@ -159,8 +159,8 @@ form.crm-formulier {
 .form-tabel textarea[style]:focus {
 	max-height: none;
 }
-.beeindig-bewerken-cel {
-	display: none;
+.beeindig-bewerken-cel, 
+.start-bewerken-cel {
 	width: 28px;
 	position: absolute;
 	top: 40px;
@@ -172,13 +172,29 @@ form.crm-formulier {
 	background-position: center center;
 	background-repeat: no-repeat;
 }
-.beeindig-bewerken-cel:hover {
+.beeindig-bewerken-cel {
+	display: none;
+}
+.beeindig-bewerken-cel:hover,
+.start-bewerken-cel:hover {
 	background-color: #60c360;
 	filter: brightness(110%)
 }
+.start-bewerken-cel {
+	display: block;
+	background-image: url("/img/account-edit.png");
+	background-size: 25px;
+}
+
+
+
 .bewerk-modus .beeindig-bewerken-cel {
 	display: block;
 }
+.bewerk-modus .start-bewerken-cel {
+	display: none;
+}
+
 .was-in-bewerk-modus {
 	order: 0;
 	border-left: 20px solid #60c360;

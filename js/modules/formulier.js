@@ -79,9 +79,20 @@ function zetBewerkModusClick() {
 	gr.el("form-rijen-lijst").addEventListener("click", (e) => {
 		const rijGeklikt = vindInOuders(e.target, (element) => {
 			return element.classList.contains("form-rij");
-		});
+		}, 8);
+		const startBewerkGeklikt = vindInOuders(e.target, (element) => {
+			return element.classList.contains("start-bewerken-cel");
+		}, 8);		
 
 		const db = DB();
+
+		// als niet aan bewerken en klik op startbewerken... 
+		if (startBewerkGeklikt){
+			e.preventDefault();
+			db.bewerkModus = true;
+			db.rijInBewerking = new PersoonRij(rijGeklikt);			
+			return
+		}
 
 		// als niet op rij geklikt en niet in bewerkmodus, klaar.
 		if (!rijGeklikt && !db.bewerkModus) {
