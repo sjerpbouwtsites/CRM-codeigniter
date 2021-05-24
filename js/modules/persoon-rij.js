@@ -89,7 +89,6 @@ export default class PersoonRij {
 			this._data[naam] = waarde;
 			this.namen.push(naam);
 			this.naamIdMap[naam] = invoerVeld.id.replace("pers-", "");
-			
 		});
 	}
 

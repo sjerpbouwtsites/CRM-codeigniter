@@ -1,6 +1,7 @@
 import maakRiseupScript from "./riseup-script.js";
 import pakTekst from "../teksten.js";
 import * as gr from "../gereedschap.js";
+import { NavElement } from "../navigatie-animatie.js";
 
 export default function() {
 	zetLijstKnoppenClicks();
@@ -159,6 +160,7 @@ function ZetClickVoegPersoonToe() {
 }
 
 function voegPersoonToe(e) {
+
 	e.preventDefault();
 
 	gr.el("voeg-rij-toe").setAttribute("disabled", true);
@@ -176,6 +178,8 @@ function voegPersoonToe(e) {
 	legeClone.click();
 	
 	gr.el("voeg-rij-toe").removeAttribute("disabled");
+
+	NavElement.sluitAlleNavElementen();
 }
 
 
@@ -192,7 +196,6 @@ const id = Math.max(
 			return Number(id) || 0;
 		})
 	) + 1;
-	console.log(id);
 	return id
 }
 
