@@ -108,8 +108,8 @@ textarea.pers-input {
 	font-size: .75em;
 	line-height: .9em;
 	max-height: 3.7em;
-	overflow-y: hidden;
-}
+	overflow: hidden;
+
 }
 
 form.crm-formulier {
@@ -165,11 +165,11 @@ form.crm-formulier {
 .rij-in-handmatige-selectie {
 	width: 28px;
 	position: absolute;
-	top: 40px;
+	bottom: 0;
 	right: 0px;
 	text-align: center;
 	font-weight: bold;
-	background-color: #60c360;
+	background-color: #4ebcde;
 	background-position: center center;
 	background-repeat: no-repeat;
 }
@@ -183,7 +183,7 @@ form.crm-formulier {
 .beeindig-bewerken-cel:hover,
 .start-bewerken-cel:hover,
 .beeindig-bewerken-multi:hover {
-	background-color: #60c360;
+	background-color: #4ebcde;
   filter: brightness(110%)
 }
 .start-bewerken-cel {
@@ -263,7 +263,7 @@ form.crm-formulier {
 .rij-verwijderen {
 	width: 28px;
 	position: absolute;
-	top: 0;
+	bottom: 35px;
 	right: 0;
 	text-align: center;
 	font-weight: bold;
@@ -315,7 +315,8 @@ div.rij-verwijderen {
 	height: 100%;
 }
 .form-cel.cel-aantekening {
-	flex-basis: 100%;
+	flex-basis: calc(100% - 30px);
+	overflow-x:hidden;
 }
 
 
