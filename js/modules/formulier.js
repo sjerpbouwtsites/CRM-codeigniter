@@ -1,7 +1,7 @@
 import PersoonRij from "./persoon-rij.js";
 import { vindInOuders, formInvoerRijenArray } from "./gereedschap.js";
 import DB from "./database.js";
-
+import tekst from "./teksten.js";
 import * as gr from "./gereedschap.js";
 
 export default function formulierInit() {
@@ -150,6 +150,8 @@ function zetAlsVeranderRijInBewerking(){
 	})
 }
 
+let ikWilControleTimer = null;
+
 /**
  * mensen vullen hele zinnen in bij ik wil. Dat moet niet.....
  * Tellen hoeveel termen gebruikt worden; als meer dan 2, dan wss zin.
@@ -157,17 +159,18 @@ function zetAlsVeranderRijInBewerking(){
  *
  */
 function onChangeControleerIkWil(e){
-	const invoer = e.target.value;
+	
 	const laatsteAanslagWasLetter = !! e.code.match(/^Key\w+$/)
 	if (!laatsteAanslagWasLetter) {
 		return;
 	}
 
-	if (this.timer) {
-		clearTimeout(this.timer)
+	if (ikWilControleTimer) {
+		clearTimeout(ikWilControleTimer)
 	}
 
-	this.timer = setTimeout(()=>{
+	ikWilControleTimer = setTimeout(()=>{
+		let invoer = gr.el(e.target.id).value;
 		const ikWilTermen = invoer.split(' ');
 		let nieuweTermen = 0;
 		let maxNieuweTermen = 2;
@@ -182,17 +185,18 @@ function onChangeControleerIkWil(e){
 		}
 	
 		if (ikWilTermen > maxTermen) {
-			gr.communiceer(`Het veld 'ik wil' is voor steekwoorden als plakken, schrijven, klussen, spreken. Niet voor zinnen. Je hebt ${ikWilTermen.length} termen gebruikt. Weet je zeker dat <em>${invoer}</em> steekwoorden zijn?`)
+			gr.communiceer(tekst('ikWilControleTeVeelTermen', null, ikWilTermen.length, invoer))
+			e.target.removeEventListener('keydown', onChangeControleerIkWil)
+			return;
 		}
 	
 		if (nieuweTermen > maxNieuweTermen) {
-			gr.communiceer(`Het veld 'ik wil' is voor steekwoorden als plakken, schrijven, klussen, spreken. Niet voor zinnen. Je hebt ${ikWilTermen.length} termen gebruikt waarvan er ${nieuweTermen} niet voorkomen bij anderen. Weet je zeker dat <em>${invoer}</em> steekwoorden zijn?`)
+			gr.communiceer(tekst('ikWilControleNieuweTermenOverdaad', null, ikWilTermen.length, nieuweTermen, invoer))
+			e.target.removeEventListener('keydown', onChangeControleerIkWil)
+			return;			
 		}
 	
-		if (nieuweTermen > maxNieuweTermen || ikWilTermen > maxTermen) {
-			e.target.removeEventListener('keydown', onChangeControleerIkWil)
-		}
-	}, 500);
+	}, 2000);
 
 }
 
