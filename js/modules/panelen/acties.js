@@ -349,6 +349,7 @@ function pakVandaagString(){
 function maakLegePersoonRij(id) {
 	return `
 	<div id="form-rij-${id}" class="form-rij" style="">
+	<button class="start-bewerken-cel"></button>
 		<button class="beeindig-bewerken-cel"></button>
 		<div class="rij-verwijderen form-cel">
 			<input class="pers-id" id="pers-${id}-id" type="hidden" name="form[${id}][id]" data-naam="id" value="${id}">
