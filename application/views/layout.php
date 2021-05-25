@@ -42,6 +42,7 @@ function cel($html = "", $class = '')
 
 				echo "<button class='start-bewerken-cel'></button>";
 				echo "<button class='beeindig-bewerken-cel'></button>";
+				echo "<button class='rij-in-handmatige-selectie'></button>";
 
 				cel("<input
 							class='pers-id'

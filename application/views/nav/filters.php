@@ -12,6 +12,11 @@
     <select id='ik-wil-selectie-filter' data-filter='ik_wil' class='crm-nav__tabbaar filter-nav-input selectie-filter ik_wil-select' data-split='true'></select>
   </div>
 
+  <span class='crm-nav__tekst'>Handmatige selectie: <br></span>
+  <div class='actieform-rij'>
+    <button id='handmatige-selectie' class='crm-nav__tabbaar sorteer-knoppen filter-nav-input handmatige-selectie'>staat uit</button>
+  </div>
+
   <span class='crm-nav__tekst'>Sorteer op: <br></span>
   <div class='actieform-rij'>
     <button data-sorteert='naam' data-startBij='laag' data-postfix='A-Z' id='sorteer-op-naam' class='crm-nav__tabbaar sorteer-knoppen filter-nav-input sorteer-op-naam'>Naam</button>

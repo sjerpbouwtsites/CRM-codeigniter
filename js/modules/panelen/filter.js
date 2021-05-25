@@ -1,5 +1,6 @@
 import * as gr from "../gereedschap.js";
 import PersoonRij from "../persoon-rij.js";
+import DB from "../database.js";
 
 
 export default function (){
@@ -7,7 +8,51 @@ export default function (){
   zetClickGeneriekeSorteerOp()
   zetSelectieFilterChange()
   zetClickSelectieOngedaan()
+	zetClickHandmatigeSelectie()
+	zetAlsVeranderHandmatigeSelectie()
+	zetClickRijInHandmatigeSelectie()
 }
+
+function zetClickHandmatigeSelectie(){
+	gr.el('handmatige-selectie').addEventListener('click', schakelHandmatigeSelectie)
+}
+function schakelHandmatigeSelectie(e){
+	e.preventDefault();
+	const db = DB();
+	db.handmatigeSelectie = !db.handmatigeSelectie;
+}
+function zetAlsVeranderHandmatigeSelectie(){
+	DB().alsVeranderdDoe('handmatigeSelectie', (nieuweStaat, oudeStaat)=>{
+		
+		// zet tekst in button
+		gr.el('handmatige-selectie').innerHTML = nieuweStaat === true ? "in werking" : "staat uit";
+
+		const groteForm = gr.el('grote-tabel-formulier');
+
+		nieuweStaat === true 
+			? groteForm.setAttribute('data-handmatige-selectie', true)
+			: groteForm.removeAttribute('data-handmatige-selectie')
+	})
+}
+function zetClickRijInHandmatigeSelectie(){
+	gr.el('grote-tabel-formulier').addEventListener('click', rijInHandmatigeSelectie)
+}
+
+function rijInHandmatigeSelectie(e){
+	const rijInHandmatigeSelectieGeklikt = gr.vindInOuders(e.target, (element) => {
+		return element.classList.contains("rij-in-handmatige-selectie");
+	}, 7);	
+	if (!rijInHandmatigeSelectieGeklikt){
+		return
+	}
+	e.preventDefault();
+	const rijGeklikt = gr.vindInOuders(e.target, (element) => {
+		return element.classList.contains("form-rij");
+	}, 7); 
+	rijGeklikt.classList.toggle('in-handmatige-selectie')
+}
+
+
 
 //#region sorteren
 /**
@@ -203,4 +248,4 @@ function vulSelects () {
 				`;
 		}
 	);
-}
+}   

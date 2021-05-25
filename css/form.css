@@ -160,30 +160,45 @@ form.crm-formulier {
 	max-height: none;
 }
 .beeindig-bewerken-cel, 
-.start-bewerken-cel {
+.start-bewerken-cel,
+.rij-in-handmatige-selectie {
 	width: 28px;
 	position: absolute;
 	top: 40px;
 	right: 0px;
 	text-align: center;
 	font-weight: bold;
-	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0nd2hpdGUnIGQ9Ik0xOCA3bC0xLjQxLTEuNDEtNi4zNCA2LjM0IDEuNDEgMS40MUwxOCA3em00LjI0LTEuNDFMMTEuNjYgMTYuMTcgNy40OCAxMmwtMS40MSAxLjQxTDExLjY2IDE5bDEyLTEyLTEuNDItMS40MXpNLjQxIDEzLjQxTDYgMTlsMS40MS0xLjQxTDEuODMgMTIgLjQxIDEzLjQxeiIvPjwvc3ZnPgoK);
 	background-color: #60c360;
 	background-position: center center;
 	background-repeat: no-repeat;
 }
 .beeindig-bewerken-cel {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0nd2hpdGUnIGQ9Ik0xOCA3bC0xLjQxLTEuNDEtNi4zNCA2LjM0IDEuNDEgMS40MUwxOCA3em00LjI0LTEuNDFMMTEuNjYgMTYuMTcgNy40OCAxMmwtMS40MSAxLjQxTDExLjY2IDE5bDEyLTEyLTEuNDItMS40MXpNLjQxIDEzLjQxTDYgMTlsMS40MS0xLjQxTDEuODMgMTIgLjQxIDEzLjQxeiIvPjwvc3ZnPgoK);	
 	display: none;
 }
 .beeindig-bewerken-cel:hover,
 .start-bewerken-cel:hover {
 	background-color: #60c360;
-	filter: brightness(110%)
+  filter: brightness(110%)
 }
 .start-bewerken-cel {
 	display: block;
 	background-image: url("/img/account-edit.png");
 	background-size: 25px;
+}
+.rij-in-handmatige-selectie {
+	display: none;
+	background: transparent;
+	background-image: url("/img/select-group.png");
+	background-size: 25px;
+	background-position: center;
+	background-color: rgba(0,0,0,0.3);	
+	background-repeat: no-repeat;
+}
+
+.rij-in-handmatige-selectie:hover {
+	background-color: rgba(0,0,0,0.5);	
+	cursor: pointer
 }
 
 
@@ -199,6 +214,20 @@ form.crm-formulier {
 	order: 0;
 	border-left: 20px solid #60c360;
 }
+[data-handmatige-selectie] .beeindig-bewerken-cel ,
+[data-handmatige-selectie] .start-bewerken-cel {
+	display: none;
+}
+[data-handmatige-selectie] .rij-in-handmatige-selectie{
+	display: block;
+}
+[data-handmatige-selectie] .form-rij {
+	opacity: 0.5;
+}
+[data-handmatige-selectie] .form-rij.in-handmatige-selectie {
+	opacity: 1;
+}
+
 .rij-verwijderen {
 	width: 28px;
 	position: absolute;
