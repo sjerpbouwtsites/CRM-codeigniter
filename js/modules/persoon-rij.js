@@ -92,6 +92,7 @@ export default class PersoonRij {
 		});
 	}
 
+
 	/**
 	 * true als uit data halen, false als uit obj zelf halen.
 	 *
@@ -125,14 +126,19 @@ export default class PersoonRij {
 
 	/**
 	 * of de PersoonRij getoond wordt. Checkt display none;
+	 * Als in handmatigeSelectieModus, dan dat ook controleren. 
 	 *
 	 * @returns {boolean} of wordt getoond.
 	 */
-	inSelectie() {
+	inSelectie(handmatigeSelectieModus = false) {
 		const s = this.element.getAttribute("style") || "";
 		if (s.replace(/\W/g, "").includes("displaynone")) {
 			return false;
 		}
+		if (handmatigeSelectieModus) {
+			return this.element.classList.contains('in-handmatige-selectie')
+		} 
+
 		return true;
 	}
 
@@ -144,7 +150,7 @@ export default class PersoonRij {
 			const leesId = `lees-${idBasis}`;
 			const inputId = `pers-${idBasis}`;
 			const print = this._data[naam];
-
+			
 			gr.el(leesId).innerHTML = print;
 			if (print.trim().length === 0) {
 				gr.el(inputId).classList.add("geen-data");
@@ -174,7 +180,7 @@ export default class PersoonRij {
 			set(geproxiedObject, sleutel, waarde) {
 				geproxiedObject.sleutelCheck(sleutel); // zie boven
 				geproxiedObject._data[sleutel] = waarde;
-				const inputId = geproxiedObject.naamIdMap[sleutel];
+				const inputId = `pers-${geproxiedObject.naamIdMap[sleutel]}`;
 				const input = gr.el(inputId);
 				input.value = waarde;
 				return true;

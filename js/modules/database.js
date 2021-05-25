@@ -32,6 +32,8 @@ export class Database {
     opslagProcedure: null,
     bewerkModus: false,
     rijInBewerking: null,
+    handmatigeSelectie: false,
+    multiBewerk: false,
   }
 
   constructor(){
@@ -103,6 +105,24 @@ export class Database {
     this._draaiOpVerandering('opslagProcedure', waarde, oudeWaarde);
   }
 
+  set handmatigeSelectie(waarde) {
+    if (typeof waarde !== 'boolean'){
+      throw new Error('handmatigeSelectie niet bool')
+    }
+    const oudeWaarde = Database._data.handmatigeSelectie;
+    Database._data.handmatigeSelectie = waarde;
+    this._draaiOpVerandering('handmatigeSelectie', waarde, oudeWaarde);
+  }
+
+  set multiBewerk(waarde) {
+    if (typeof waarde !== 'boolean'){
+      throw new Error('multiBewerk niet bool')
+    }
+    const oudeWaarde = Database._data.multiBewerk;
+    Database._data.multiBewerk = waarde;
+    this._draaiOpVerandering('multiBewerk', waarde, oudeWaarde);
+  }
+
   // GETTERS
 
   get ontsleuteld(){
@@ -122,6 +142,12 @@ export class Database {
   }
   get opslagProcedure(){
     return Database._data.opslagProcedure
+  }
+  get handmatigeSelectie(){
+    return Database._data.handmatigeSelectie
+  }
+  get multiBewerk(){
+    return Database._data.multiBewerk
   }
 
   // METHODES
@@ -169,6 +195,8 @@ export class Database {
     rijInBewerking: [],
     wachtwoord: [],
     opslagProcedure: [],
+    handmatigeSelectie: [],
+    multiBewerk: [],
   }
 
 }

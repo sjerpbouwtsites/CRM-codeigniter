@@ -158,6 +158,14 @@ export class NavElement {
 		}
 		this.id = this._nav.id;
 	}
+	
+	static sluitAlleNavElementen(){
+		gr.elArray('.crm-nav')
+		.map((nav) => new NavElement(nav))
+		.forEach((navElement) => {
+			navElement.sluit();
+		});		
+	}
 	get element() {
 		return this._nav;
 	}

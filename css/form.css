@@ -108,8 +108,8 @@ textarea.pers-input {
 	font-size: .75em;
 	line-height: .9em;
 	max-height: 3.7em;
-	overflow-y: hidden;
-}
+	overflow: hidden;
+
 }
 
 form.crm-formulier {
@@ -132,7 +132,7 @@ form.crm-formulier {
 .form-rij {
 	width: 270px;
 	padding: 5px;
-	box-shadow: -1px 2px 2px #999;
+	box-shadow: -1px 2px 3px #999;
 	background-color: rgba(255, 255, 230, 0.04);
 	display: flex;
 	flex-wrap: wrap;
@@ -144,7 +144,7 @@ form.crm-formulier {
 	order: 1;
 	flex-grow: 1;
 	background: linear-gradient(
-		65deg,
+		65deg,    
 		#d1947c70,
 		#c0242477
 	); /* wordt gecorrigeerd naar random in js*/
@@ -159,34 +159,111 @@ form.crm-formulier {
 .form-tabel textarea[style]:focus {
 	max-height: none;
 }
-.beeindig-bewerken-cel {
-	display: none;
+.beeindig-bewerken-cel, 
+.beeindig-bewerken-multi,
+.start-bewerken-cel,
+.rij-in-handmatige-selectie {
 	width: 28px;
 	position: absolute;
-	top: 40px;
+	bottom: 0;
 	right: 0px;
 	text-align: center;
 	font-weight: bold;
-	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0nd2hpdGUnIGQ9Ik0xOCA3bC0xLjQxLTEuNDEtNi4zNCA2LjM0IDEuNDEgMS40MUwxOCA3em00LjI0LTEuNDFMMTEuNjYgMTYuMTcgNy40OCAxMmwtMS40MSAxLjQxTDExLjY2IDE5bDEyLTEyLTEuNDItMS40MXpNLjQxIDEzLjQxTDYgMTlsMS40MS0xLjQxTDEuODMgMTIgLjQxIDEzLjQxeiIvPjwvc3ZnPgoK);
-	background-color: #60c360;
+	background-color: #4ebcde;
 	background-position: center center;
 	background-repeat: no-repeat;
 }
-.beeindig-bewerken-cel:hover {
-	background-color: #60c360;
-	filter: brightness(110%)
+.beeindig-bewerken-cel,
+.beeindig-bewerken-multi {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0nd2hpdGUnIGQ9Ik0xOCA3bC0xLjQxLTEuNDEtNi4zNCA2LjM0IDEuNDEgMS40MUwxOCA3em00LjI0LTEuNDFMMTEuNjYgMTYuMTcgNy40OCAxMmwtMS40MSAxLjQxTDExLjY2IDE5bDEyLTEyLTEuNDItMS40MXpNLjQxIDEzLjQxTDYgMTlsMS40MS0xLjQxTDEuODMgMTIgLjQxIDEzLjQxeiIvPjwvc3ZnPgoK);	
 }
+.beeindig-bewerken-cel {
+	display: none;
+}
+.beeindig-bewerken-cel:hover,
+.start-bewerken-cel:hover,
+.beeindig-bewerken-multi:hover {
+	background-color: #4ebcde;
+  filter: brightness(110%)
+}
+.start-bewerken-cel {
+	display: block;
+	background-image: url("/img/account-edit.png");
+	background-size: 25px;
+}
+.rij-in-handmatige-selectie {
+	display: none;
+	background: transparent;
+	background-image: url("/img/select-group.png");
+	background-size: 25px;
+	background-position: center;
+	background-color: rgba(0,0,0,0.3);	
+	background-repeat: no-repeat;
+}
+
+.rij-in-handmatige-selectie:hover {
+	background-color: rgba(0,0,0,0.5);	
+	cursor: pointer
+}
+
 .bewerk-modus .beeindig-bewerken-cel {
 	display: block;
 }
+.bewerk-modus .start-bewerken-cel {
+	display: none;
+}
+
 .was-in-bewerk-modus {
 	order: 0;
 	border-left: 20px solid #60c360;
 }
+[data-handmatige-selectie] .beeindig-bewerken-cel ,
+[data-handmatige-selectie] .start-bewerken-cel {
+	display: none;
+}
+[data-handmatige-selectie] .rij-in-handmatige-selectie{
+	display: block;
+}
+[data-handmatige-selectie] .form-rij {
+	opacity: 0.5;
+}
+[data-handmatige-selectie] .form-rij.in-handmatige-selectie {
+	opacity: 1;
+}
+
+[data-multi-bewerking] .form-rij {
+	opacity: .5;
+}
+[data-multi-bewerking] .form-rij.multi-rij {
+	opacity: 1;
+	margin-right: 0;
+	width: calc(100% - 40px);
+	height: calc(100vh - 40px);
+	font-size: 1.5rem;
+}
+.multi-rij-buiten {
+	flex-basis: 100%;
+}
+.multi-rij-uitleg {
+	padding: 20px;
+	margin: 10px;
+	background-color: #f5f5f5;
+	font-size: 1rem;	
+	width:100%;
+}
+.form-rij-tekst {
+	max-width:65ch
+}
+.form-rij-lijst {
+	padding-left: 15px;
+	font-size: .66rem;
+	columns: 6;
+}
+
 .rij-verwijderen {
 	width: 28px;
 	position: absolute;
-	top: 0;
+	bottom: 35px;
 	right: 0;
 	text-align: center;
 	font-weight: bold;
@@ -198,14 +275,13 @@ form.crm-formulier {
 }
 
 /** alleen verwijderen in bewerk modus */
-/* behalve dan in lijst modus */
 div.rij-verwijderen {
 	display: none;
 }
-[data-form-stijl="lijst"] div.rij-verwijderen,
 .bewerk-modus div.rij-verwijderen {
 	display: inline-block;
 }
+
 
 .pers-input {
 	width: 100%;
@@ -230,11 +306,17 @@ div.rij-verwijderen {
 	position: relative;
 	left: -10%;
 }
+.multi-rij .form-cel.cel-groep {
+	flex-basis: 90%;
+	position: relative;
+	left: auto;
+}
 .form-cel.cel-groep .pers-input {
 	height: 100%;
 }
 .form-cel.cel-aantekening {
-	flex-basis: 100%;
+	flex-basis: calc(100% - 30px);
+	overflow-x:hidden;
 }
 
 

@@ -1,5 +1,6 @@
 
 import PersoonRij from "./persoon-rij.js";
+import DB from "./database.js";
 
 // #region grote tabel queries 
 
@@ -26,12 +27,14 @@ export function formInvoerRijenArray () {
  */
 export function zichtbarePersRijen() {
 	const persRijenArr = formInvoerRijenArray();
+	const db = DB();
+	const handmatigeSelectieModus = db.handmatigeSelectie;
 	return persRijenArr
 		.map((rij) => {
 			return new PersoonRij(rij);
 		})
 		.filter((P) => {
-			return P.inSelectie();
+			return P.inSelectie(handmatigeSelectieModus);
 		});
 }
 // #endregion grote tabel queries

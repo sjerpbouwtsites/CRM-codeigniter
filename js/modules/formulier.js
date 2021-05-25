@@ -79,9 +79,20 @@ function zetBewerkModusClick() {
 	gr.el("form-rijen-lijst").addEventListener("click", (e) => {
 		const rijGeklikt = vindInOuders(e.target, (element) => {
 			return element.classList.contains("form-rij");
-		});
+		}, 8);
+		const startBewerkGeklikt = vindInOuders(e.target, (element) => {
+			return element.classList.contains("start-bewerken-cel");
+		}, 8);		
 
 		const db = DB();
+
+		// als niet aan bewerken en klik op startbewerken... 
+		if (startBewerkGeklikt){
+			e.preventDefault();
+			db.bewerkModus = true;
+			db.rijInBewerking = new PersoonRij(rijGeklikt);			
+			return
+		}
 
 		// als niet op rij geklikt en niet in bewerkmodus, klaar.
 		if (!rijGeklikt && !db.bewerkModus) {
@@ -98,11 +109,11 @@ function zetBewerkModusClick() {
 			return;
 		}
 		
-		if (!db.bewerkModus) {
+		if (!db.bewerkModus && startBewerkGeklikt) {
 			db.bewerkModus = true;
+			db.rijInBewerking = new PersoonRij(rijGeklikt);
 		}
 
-		db.rijInBewerking = new PersoonRij(rijGeklikt);
 
 		return;
 
@@ -112,12 +123,21 @@ function zetBewerkModusClick() {
 function zetAlsVeranderRijInBewerking(){
 	DB().alsVeranderdDoe('rijInBewerking', (nieuweRij, oudeRij)=>{
 		if (oudeRij) {
+
+			// DIRTY FIX. Werkt bagger in de persoon-rij.sj
+			gr.elArray(".pers-input", oudeRij.element).forEach((invoerVeld) => {
+  			const naam = invoerVeld.getAttribute("data-naam");
+				const waarde = invoerVeld.value;
+				oudeRij._data[naam] = waarde;
+  		});			
 			verwijderTabsVanInputs(oudeRij.element);
 			oudeRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
 			oudeRij.element.removeEventListener('change', zetOnChangeRijWasBewerkt)
 			oudeRij.element.classList.remove("bewerk-modus");
 		}
 		if (nieuweRij){
+
+			nieuweRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
 			maakInputsTabBaarEnFocus(nieuweRij.element);
 			nieuweRij.element.classList.add("bewerk-modus")
 			nieuweRij.element.addEventListener('change', zetOnChangeRijWasBewerkt)

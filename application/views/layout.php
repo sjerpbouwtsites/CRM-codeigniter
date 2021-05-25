@@ -40,7 +40,9 @@ function cel($html = "", $class = '')
 
 				echo "<div id='form-rij-{$pers['id']}' class='form-rij'>";
 
+				echo "<button class='start-bewerken-cel'></button>";
 				echo "<button class='beeindig-bewerken-cel'></button>";
+				echo "<button class='rij-in-handmatige-selectie'></button>";
 
 				cel("<input
 							class='pers-id'
