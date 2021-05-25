@@ -2,11 +2,139 @@ import maakRiseupScript from "./riseup-script.js";
 import pakTekst from "../teksten.js";
 import * as gr from "../gereedschap.js";
 import { NavElement } from "../navigatie-animatie.js";
+import DB from "../database.js";
 
 export default function() {
 	zetLijstKnoppenClicks();
 	zetRiseupCheckButtonClick();  
   ZetClickVoegPersoonToe();
+	zetClickOpenMultiBewerk();
+	zetAlsMultiBewerkVeranderd()
+	zetClickBeeindigMultiBewerker()
+}
+
+function zetClickOpenMultiBewerk(){
+	gr.el('schakel-multi-bewerk').addEventListener('click', toggleMultiBewerk)
+}
+
+function zetAlsMultiBewerkVeranderd(){
+	DB().alsVeranderdDoe('multiBewerk', (nieuweStaat, oudeStaat)=>{
+		
+		// zet tekst in button
+		const multiBewerkKnop = gr.el('schakel-multi-bewerk');
+		const appBody = gr.el('app-body');
+		if(nieuweStaat === true) {
+			multiBewerkKnop.innerHTML = "Stop multi bewerking";
+			multiBewerkKnop.setAttribute('data-ingeschakeld', true)
+			appBody.setAttribute('data-multi-bewerking', true)
+		} else {
+			multiBewerkKnop.innerHTML = "Hele selectie bewerken";
+			multiBewerkKnop.removeAttribute('data-ingeschakeld')			
+			appBody.removeAttribute('data-multi-bewerking')
+			const oudeMultiRijBuiten = gr.el('multi-rij-buiten');
+			oudeMultiRijBuiten.parentNode.removeChild(oudeMultiRijBuiten);
+			return;
+		}
+
+		const rijenInBewerking = gr.zichtbarePersRijen();
+		if (!rijenInBewerking.length) {
+			gr.communiceer('Geen rijen gevonden om te bewerken?')
+			return;
+		}
+
+		const rijenLijst = gr.el('form-rijen-lijst');
+
+		const basisBewerkingRij = maakLegePersoonRij('multi-rij');
+		const multiBewerkSchil = document.createElement('div');
+		multiBewerkSchil.id = 'multi-rij-buiten';
+		multiBewerkSchil.className = 'multi-rij-buiten';
+		multiBewerkSchil.innerHTML = basisBewerkingRij;
+		rijenLijst.appendChild(multiBewerkSchil)
+		const multiRij = gr.el('form-rij-multi-rij');
+		multiRij.classList.add('multi-rij', 'bewerk-modus')
+		
+		// verwijderen uit multi rij
+		const ongewensteElementen = ['.rij-verwijderen', '.cel-naam', '.cel-email', '.cel-telefoon', '.cel-laatst_gezien', '.cel-aantekening' ];
+		ongewensteElementen.forEach(ongewenst => {
+			const o = gr.el(ongewenst, multiRij);
+			o.parentNode.removeChild(o)
+		})
+		
+		const beeindigBewerken = gr.el('.beeindig-bewerken-cel', multiRij)
+		beeindigBewerken.classList.remove('beeindig-bewerken-cel')
+		beeindigBewerken.classList.add('beeindig-bewerken-multi')
+
+		const namen = rijenInBewerking.map(rij => {
+			return rij.naam
+		})
+
+		const multiRijUitleg = document.createElement('div');
+		multiRijUitleg.className= 'multi-rij-uitleg';
+		multiRijUitleg.innerHTML = `<h2 class='form-rij-titel'>Je bewerkt meerdere rijen in &eacute;&eacute;n keer.</h2>
+		<p class='form-rij-tekst'>In ieder veld waar je iets invuld zal dit alle voorgaande data bij al deze rijen overschrijven bij de volgende rijen: :</p>
+		<ol class='form-rij-lijst'>
+			${namen.map(naam=> {
+				return `<li class='form-rij-lijst-stuk'>${naam}</li>`;
+			}).join('')}
+		</ol>`
+		;
+		multiRij.appendChild(multiRijUitleg);
+
+	})
+}
+
+function zetClickBeeindigMultiBewerker(){
+	gr.el('grote-tabel-formulier').addEventListener('click', beeindigMultiBewerken)
+}
+function beeindigMultiBewerken(e){
+
+	if (!gr.vindInOuders(e.target, (element) => {
+		return element.classList.contains("beeindig-bewerken-multi");
+	}, 3)) {
+		return;
+	}
+	e.preventDefault();
+
+	const groepNaam = gr.el('pers-multi-rij-groep').value;
+	const sectorNaam = gr.el('pers-multi-rij-sector').value;
+	const contactNaam = gr.el('pers-multi-rij-contact').value;
+	const woonplaatsNaam = gr.el('pers-multi-rij-woonplaats').value;
+	const ikWil = gr.el('pers-multi-rij-ik_wil').value;
+
+	const rijenInBewerking = gr.zichtbarePersRijen();
+	rijenInBewerking.forEach(persoonRij => {
+		const rij = persoonRij.element;
+		if (groepNaam.length) {
+			gr.el('[data-naam="groep"]', rij).value = groepNaam;
+			gr.el('.pers-lezen__groep', rij).innerHTML = groepNaam;
+		}
+		if (sectorNaam.length) {
+			gr.el('[data-naam="sector"]', rij).value = sectorNaam;
+			gr.el('.pers-lezen__sector', rij).innerHTML = sectorNaam;
+		}		
+		if (contactNaam.length) {
+			gr.el('[data-naam="contact"]', rij).value = contactNaam;
+			gr.el('.pers-lezen__contact', rij).innerHTML = contactNaam;
+		}				
+		if (woonplaatsNaam.length) {
+			gr.el('[data-naam="woonplaats"]', rij).value = woonplaatsNaam;
+			gr.el('.pers-lezen__woonplaats', rij).innerHTML = woonplaatsNaam;
+		}						
+		if (ikWil.length) {
+			gr.el('[data-naam="ik_wil"]', rij).value = ikWil;
+			gr.el('.pers-lezen__ik_wil', rij).innerHTML = ikWil;
+		}								
+	})
+	DB().handmatigeSelectie = false;
+	DB().multiBewerk = false;
+
+}
+
+function toggleMultiBewerk(e){
+	e.preventDefault();
+	const db = DB();
+	NavElement.sluitAlleNavElementen();
+	db.multiBewerk = !db.multiBewerk;
 }
 
 /**

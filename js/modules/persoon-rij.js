@@ -178,10 +178,9 @@ export default class PersoonRij {
 			// zet de bijpassen de input.
 			// zet geen-dataclass op input
 			set(geproxiedObject, sleutel, waarde) {
-				console.log(this, geproxiedObject);
 				geproxiedObject.sleutelCheck(sleutel); // zie boven
 				geproxiedObject._data[sleutel] = waarde;
-				const inputId = geproxiedObject.naamIdMap[sleutel];
+				const inputId = `pers-${geproxiedObject.naamIdMap[sleutel]}`;
 				const input = gr.el(inputId);
 				input.value = waarde;
 				return true;

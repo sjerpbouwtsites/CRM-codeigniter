@@ -13,7 +13,10 @@
         <!-- html via css -->
       </label>
     </span>
-    <button id='wijzigingen-ongedaan-maken' class='crm-nav__tabbaar actieknoppen opgepast ongedaan'>🏳 herstel </button>
+    <button id='wijzigingen-ongedaan-maken' class='crm-nav__tabbaar actieknoppen opgepast ongedaan'>alles ongedaan</button>
+  </div>
+  <div class='actieform-rij'>
+     <button id='schakel-multi-bewerk' class='crm-nav__tabbaar actieknoppen open-multi-bewerk'>Hele selectie bewerken</button>
   </div>
 
   <div class='actieform-rij'>
