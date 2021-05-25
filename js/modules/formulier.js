@@ -1,7 +1,7 @@
 import PersoonRij from "./persoon-rij.js";
 import { vindInOuders, formInvoerRijenArray } from "./gereedschap.js";
 import DB from "./database.js";
-
+import tekst from "./teksten.js";
 import * as gr from "./gereedschap.js";
 
 export default function formulierInit() {
@@ -133,6 +133,9 @@ function zetAlsVeranderRijInBewerking(){
 			verwijderTabsVanInputs(oudeRij.element);
 			oudeRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
 			oudeRij.element.removeEventListener('change', zetOnChangeRijWasBewerkt)
+
+			gr.el('[data-naam="ik_wil"]', oudeRij.element).removeEventListener('keydown', onChangeControleerIkWil)
+
 			oudeRij.element.classList.remove("bewerk-modus");
 		}
 		if (nieuweRij){
@@ -141,8 +144,60 @@ function zetAlsVeranderRijInBewerking(){
 			maakInputsTabBaarEnFocus(nieuweRij.element);
 			nieuweRij.element.classList.add("bewerk-modus")
 			nieuweRij.element.addEventListener('change', zetOnChangeRijWasBewerkt)
+
+			gr.el('[data-naam="ik_wil"]', nieuweRij.element).addEventListener('keydown', onChangeControleerIkWil)			
 		}
 	})
+}
+
+let ikWilControleTimer = null;
+
+/**
+ * mensen vullen hele zinnen in bij ik wil. Dat moet niet.....
+ * Tellen hoeveel termen gebruikt worden; als meer dan 2, dan wss zin.
+ * Dan tellen hoeveel nieuwe termen gebruikt zijn. 
+ *
+ */
+function onChangeControleerIkWil(e){
+	
+	const laatsteAanslagWasLetter = !! e.code.match(/^Key\w+$/)
+	if (!laatsteAanslagWasLetter) {
+		return;
+	}
+
+	if (ikWilControleTimer) {
+		clearTimeout(ikWilControleTimer)
+	}
+
+	ikWilControleTimer = setTimeout(()=>{
+		let invoer = gr.el(e.target.id).value;
+		const ikWilTermen = invoer.split(' ');
+		let nieuweTermen = 0;
+		let maxNieuweTermen = 2;
+		let maxTermen = 6;
+		const bestaandeTermen = Array.from(gr.el('ik-wil-selectie-filter').options).map(option => option.value).filter(optieNaam => optieNaam); 
+	
+		for (let i = 0; i < ikWilTermen.length; i++){
+			const t = ikWilTermen[i];
+			if (!bestaandeTermen.includes(t)) {
+				nieuweTermen = nieuweTermen + 1;
+			}
+		}
+	
+		if (ikWilTermen > maxTermen) {
+			gr.communiceer(tekst('ikWilControleTeVeelTermen', null, ikWilTermen.length, invoer))
+			e.target.removeEventListener('keydown', onChangeControleerIkWil)
+			return;
+		}
+	
+		if (nieuweTermen > maxNieuweTermen) {
+			gr.communiceer(tekst('ikWilControleNieuweTermenOverdaad', null, ikWilTermen.length, nieuweTermen, invoer))
+			e.target.removeEventListener('keydown', onChangeControleerIkWil)
+			return;			
+		}
+	
+	}, 2000);
+
 }
 
 function zetOnChangeRijWasBewerkt(){

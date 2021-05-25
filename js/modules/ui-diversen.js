@@ -24,7 +24,6 @@ export function afsluitingsAnimatieHandler(){
 	DB().alsVeranderdDoe('opslagProcedure', afsluitingsAnimatie)
 }
 function afsluitingsAnimatie(waarde, oudeWaarde) {
-	console.log(waarde, oudeWaarde)
 	const appBody = gr.el('app-body');
 	if (waarde === 'voorbereiding'){
 		appBody.classList.remove('succesvol', 'mislukt', 'herstarten')
