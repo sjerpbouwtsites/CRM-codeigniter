@@ -3,6 +3,7 @@ import pakTekst from "../teksten.js";
 import * as gr from "../gereedschap.js";
 import { NavElement } from "../navigatie-animatie.js";
 import DB from "../database.js";
+import PersoonRij from "../persoon-rij.js";
 
 export default function() {
 	zetLijstKnoppenClicks();
@@ -303,9 +304,14 @@ function voegPersoonToe(e) {
 	const legeClone = legeHouderDiv.querySelector('.form-rij');
 	gr.el("form-rijen-lijst").appendChild(legeClone);
 
-	legeClone.click();
+	//
+	const oudeStijl = document.querySelector('.form-rij[style*=background]').getAttribute('style');
+	legeClone.setAttribute('style', oudeStijl); 
 	
 	gr.el("voeg-rij-toe").removeAttribute("disabled");
+	const db = DB();
+	db.bewerkModus = true;
+	db.rijInBewerking = new PersoonRij(legeClone);
 
 	NavElement.sluitAlleNavElementen();
 }
