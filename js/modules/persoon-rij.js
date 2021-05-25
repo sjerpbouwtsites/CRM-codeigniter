@@ -126,14 +126,19 @@ export default class PersoonRij {
 
 	/**
 	 * of de PersoonRij getoond wordt. Checkt display none;
+	 * Als in handmatigeSelectieModus, dan dat ook controleren. 
 	 *
 	 * @returns {boolean} of wordt getoond.
 	 */
-	inSelectie() {
+	inSelectie(handmatigeSelectieModus = false) {
 		const s = this.element.getAttribute("style") || "";
 		if (s.replace(/\W/g, "").includes("displaynone")) {
 			return false;
 		}
+		if (handmatigeSelectieModus) {
+			return this.element.classList.contains('in-handmatige-selectie')
+		} 
+
 		return true;
 	}
 
