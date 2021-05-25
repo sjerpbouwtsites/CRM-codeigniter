@@ -133,6 +133,9 @@ function zetAlsVeranderRijInBewerking(){
 			verwijderTabsVanInputs(oudeRij.element);
 			oudeRij.schrijfDataNaarLeesVeldenEnZetGeenDataClass();
 			oudeRij.element.removeEventListener('change', zetOnChangeRijWasBewerkt)
+
+			gr.el('[data-naam="ik_wil"]', oudeRij.element).removeEventListener('keydown', onChangeControleerIkWil)
+
 			oudeRij.element.classList.remove("bewerk-modus");
 		}
 		if (nieuweRij){
@@ -141,8 +144,56 @@ function zetAlsVeranderRijInBewerking(){
 			maakInputsTabBaarEnFocus(nieuweRij.element);
 			nieuweRij.element.classList.add("bewerk-modus")
 			nieuweRij.element.addEventListener('change', zetOnChangeRijWasBewerkt)
+
+			gr.el('[data-naam="ik_wil"]', nieuweRij.element).addEventListener('keydown', onChangeControleerIkWil)			
 		}
 	})
+}
+
+/**
+ * mensen vullen hele zinnen in bij ik wil. Dat moet niet.....
+ * Tellen hoeveel termen gebruikt worden; als meer dan 2, dan wss zin.
+ * Dan tellen hoeveel nieuwe termen gebruikt zijn. 
+ *
+ */
+function onChangeControleerIkWil(e){
+	const invoer = e.target.value;
+	const laatsteAanslagWasLetter = !! e.code.match(/^Key\w+$/)
+	if (!laatsteAanslagWasLetter) {
+		return;
+	}
+
+	if (this.timer) {
+		clearTimeout(this.timer)
+	}
+
+	this.timer = setTimeout(()=>{
+		const ikWilTermen = invoer.split(' ');
+		let nieuweTermen = 0;
+		let maxNieuweTermen = 2;
+		let maxTermen = 6;
+		const bestaandeTermen = Array.from(gr.el('ik-wil-selectie-filter').options).map(option => option.value).filter(optieNaam => optieNaam); 
+	
+		for (let i = 0; i < ikWilTermen.length; i++){
+			const t = ikWilTermen[i];
+			if (!bestaandeTermen.includes(t)) {
+				nieuweTermen = nieuweTermen + 1;
+			}
+		}
+	
+		if (ikWilTermen > maxTermen) {
+			gr.communiceer(`Het veld 'ik wil' is voor steekwoorden als plakken, schrijven, klussen, spreken. Niet voor zinnen. Je hebt ${ikWilTermen.length} termen gebruikt. Weet je zeker dat <em>${invoer}</em> steekwoorden zijn?`)
+		}
+	
+		if (nieuweTermen > maxNieuweTermen) {
+			gr.communiceer(`Het veld 'ik wil' is voor steekwoorden als plakken, schrijven, klussen, spreken. Niet voor zinnen. Je hebt ${ikWilTermen.length} termen gebruikt waarvan er ${nieuweTermen} niet voorkomen bij anderen. Weet je zeker dat <em>${invoer}</em> steekwoorden zijn?`)
+		}
+	
+		if (nieuweTermen > maxNieuweTermen || ikWilTermen > maxTermen) {
+			e.target.removeEventListener('keydown', onChangeControleerIkWil)
+		}
+	}, 500);
+
 }
 
 function zetOnChangeRijWasBewerkt(){
