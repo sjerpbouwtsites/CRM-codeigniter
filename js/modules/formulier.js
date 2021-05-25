@@ -109,11 +109,11 @@ function zetBewerkModusClick() {
 			return;
 		}
 		
-		if (!db.bewerkModus) {
+		if (!db.bewerkModus && startBewerkGeklikt) {
 			db.bewerkModus = true;
+			db.rijInBewerking = new PersoonRij(rijGeklikt);
 		}
 
-		db.rijInBewerking = new PersoonRij(rijGeklikt);
 
 		return;
 
