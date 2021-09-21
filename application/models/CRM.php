@@ -37,7 +37,7 @@ class CRM extends CI_Model
 		// 		}
 		// 	}
 		// }
-		return $this->toegestane_tabel_namen = ['leden', 'bondgenoten', 'contacten'];
+		return $this->toegestane_tabel_namen = ['leden', 'bondgenoten', 'contacten', 'riders'];
 	}
 
 	public function zet_tabel_naam($tabelnaam)
