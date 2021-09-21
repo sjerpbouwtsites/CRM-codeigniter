@@ -158,7 +158,7 @@ function toggleMultiBewerk(e){
 
 function zetRiseupCheckButtonClick(){
 
-	if (location.href.includes('contacten') || location.href.includes('bondgenoten')) return;
+	if (location.href.includes('contacten') || location.href.includes('bondgenoten') || location.href.includes('riders')) return;
 
 	gr.pakElementVeilig("riseup-check")
 	.addEventListener("click", (e) => {
