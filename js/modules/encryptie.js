@@ -111,6 +111,26 @@ function zetVerzendenInStukken () {
 	groteFormulier.addEventListener("submit", verzendInStukkenCallback);
 }
 
+export function opslaan(){
+	const e = new Event('submit');
+	verzendInStukkenCallback(e);
+}
+
+export function alsWachtwoordGewijzigd(){
+	if (!DB().ontsleuteld) {
+		console.warn('wachtwoord wijzigen automatisch... maar nog niet ontsleuteld');
+		return;
+	}
+	var regex = /vernieuwWachtwoord=(\w*)/;
+	var matches = regex.exec(location.search);
+	if (!matches || !matches.length) {
+		console.warn('geen matches');
+		console.log(matches);
+	};
+	DB().wachtwoord = matches[1]
+	opslaan();
+}
+
 
 function verzendInStukkenCallback(e) {
 	e.preventDefault();
