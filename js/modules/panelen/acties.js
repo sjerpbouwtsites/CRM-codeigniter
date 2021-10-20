@@ -12,6 +12,19 @@ export default function() {
 	zetClickOpenMultiBewerk();
 	zetAlsMultiBewerkVeranderd()
 	zetClickBeeindigMultiBewerker()
+	zetWachtwoordVeranderen();
+}
+
+function zetWachtwoordVeranderen(){
+	gr.el('wachtwoord-veranderen').addEventListener('click', veranderWachtwoord)
+}
+
+function veranderWachtwoord(e){
+	e.preventDefault();
+	if (!confirm('Weet je zeker dat je het wachtwoord wilt veranderen?')) return;
+	var nieuwWachtwoord = prompt('Verander wachtwoord naar');
+	DB().wachtwoord = nieuwWachtwoord;
+	gr.communiceer('Vergeet niet het wachtwoord te veranderen in de andere tabellen.')
 }
 
 function zetClickOpenMultiBewerk(){

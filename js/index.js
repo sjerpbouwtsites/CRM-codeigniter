@@ -18,8 +18,7 @@ function indexInit() {
 		panelenInit();
 		encryptie.encryptieInit();
 		printerInit();
-		zetEscapeKlikVoorAlles()		
-
+		zetEscapeKlikVoorAlles()
 	})
 
 	// sync

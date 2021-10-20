@@ -20,6 +20,10 @@
   </div>
 
   <div class='actieform-rij'>
+    <button id='wachtwoord-veranderen' class='crm-nav__tabbaar actieknoppen opgepast wachtwoord-veranderen'>🔑⚡☣ - wachtwoord veranderen</button>
+  </div>
+
+  <div class='actieform-rij'>
     <button id='verzend-grote-formulier-knop' class='crm-nav__tabbaar actieknoppen opgepast verzenden'>🔐 & 💾 - opslaan</button>
   </div>
   <div class='actieform-rij'>

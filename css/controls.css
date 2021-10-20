@@ -20,6 +20,12 @@ input[type="submit"] {
 .actieknoppen.toevoegen:hover {
 	background-color: #4decd5;
 }
+.opgepast.wachtwoord-veranderen {
+	background-color: #bde64e;
+}
+.opgepast.wachtwoord-veranderen:hover {
+	background-color: #a8d823;
+}
 
 .form-knoppen {
 	margin-bottom: 0;
