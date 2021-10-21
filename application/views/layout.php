@@ -25,9 +25,8 @@ function cel($html = "", $class = '')
 
 	<div class='formulier-en-controls tabel-<?=$tabel_naam?>'>
 
-		<form id='grote-tabel-formulier' <?=$lege_tabel?'data-lege-tabel="true"':""?> data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
+		<form id='grote-tabel-formulier' data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
-			<input type='hidden' name='form_meta[user]' value='<?= $_SESSION['user'] ?>'>
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 			<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
 			<input type='hidden' name='form_meta[tabel_naam]' value='<?= $tabel_naam ?>'>

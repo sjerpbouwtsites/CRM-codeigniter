@@ -5,31 +5,24 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Personslist extends CI_Controller
 {
 
-	public $user;
-
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('users');
 		$this->load->model('CRM');
-		$this->users->handle_user();
 		$this->url_delen = explode('/', $_SERVER['REQUEST_URI']);
 	}
 
 	// dus vloerwerk.org/CRM
 	public function index()
 	{
-		if (!$this->users->user()) return;
 		$this->leden();
 	}
-
 
 	/**
 	 * Aangeroepen vanuit de routes om andere tabellen dan leden te zien.
 	 */
 	public function tabel($tabel_naam)
 	{
-		if (!$this->users->user()) return;
 		if ($tabel_naam === '') {
 			throw new Error("BOE! een sys error HAHAHA 😱 Je url klopt niet of een tabel die zocht is niet geinstalleerd. Later!");
 		}
@@ -168,7 +161,6 @@ class Personslist extends CI_Controller
 			'nav_inhoud'  => $this->dirty_get_view('nav/config.php', [])
 		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
-		$data['lege_tabel'] = $this->CRM->lege_tabel;
 		$this->load->view('layout.php', $data);
 	}
 }

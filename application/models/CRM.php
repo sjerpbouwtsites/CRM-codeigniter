@@ -12,18 +12,12 @@ class CRM extends CI_Model
 
 	function __construct()
 	{
-		$this->lege_tabel = false;
 		$this->form_data = array();
 		$this->een_naam_klein = '';
 		$this->load->database();
 		$this->post_data = NULL;
-		$this->load->model('users');
 		$this->zet_toegestane_tabel_namen();
 		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 95;
-	}
-
-	private function user(){
-		return $this->users->user();
 	}
 
 	/**
@@ -97,8 +91,8 @@ class CRM extends CI_Model
 	{
 
 		$tabel = $this->tabel;
-		$u = $this->user();
-		$q = $this->db->query("SELECT * FROM $tabel WHERE user='$u'" )->result_array();
+
+		$q = $this->db->query("SELECT * FROM $tabel")->result_array();
 
 		if (count($q) > 0) {
 			foreach ($q as $p) {
@@ -118,7 +112,6 @@ class CRM extends CI_Model
 		} else {
 
 			$this->form_data[] = $this->form_data_helper();
-			$this->lege_tabel = true;
 			$this->een_naam_klein = '';
 		}
 
@@ -222,9 +215,8 @@ class CRM extends CI_Model
 	{
 
 		$tabel = $this->tabel;
-		$u = $this->user();
 
-		$id_objs = $this->db->query("SELECT id FROM $tabel WHERE user='$u'")->result();
+		$id_objs = $this->db->query("SELECT id FROM $tabel")->result();
 		$ids = [];
 		foreach ($id_objs as $io) {
 			$ids[] = $io->id;
@@ -273,16 +265,12 @@ class CRM extends CI_Model
 		// 	];
 		// }
 
-		$kolommen[] = 'user';
-		$user = $meta['user'];
-
 		$kolommen_string = "(" . implode(', ', $kolommen) . ")";
 		$waarden_string_map = [];
 		foreach ($waarden_per_id as $id => $waarden) {
 			$waarden_met_apostrophe = array_map(function ($waarde) {
 				return "'" . $waarde . "'";
 			}, $waarden);
-			$waarden_met_apostrophe[] = "'".$user."'";
 			$waarden_string_map[] .= "(" . implode(",", $waarden_met_apostrophe) . ")";
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
@@ -290,7 +278,7 @@ class CRM extends CI_Model
 		$sql_s = "INSERT INTO " . $this->tabel . " $kolommen_string VALUES $waarden_string";
 
 		try {
-			$this->db->query("DELETE FROM " . $this->tabel . " WHERE user='$user'");
+			$this->db->query("TRUNCATE TABLE " . $this->tabel);
 			$this->db->query($sql_s);
 
 			$this->zet_iv($meta['iv']);
@@ -302,7 +290,7 @@ class CRM extends CI_Model
 		}
 
 		$leden_er_in = count($ids);
-		$sql_s = "SELECT count(id) as count FROM " . $this->tabel . " WHERE user='$user'";
+		$sql_s = "SELECT count(id) as count FROM " . $this->tabel;
 		$leden_huidig = $this->db->query($sql_s)->result()[0]->count;
 
 		return [
@@ -345,7 +333,7 @@ class CRM extends CI_Model
 			if (in_array($pers['id'], $db_id_lijst)) {
 
 				$zetlijst = $this->maak_zetlijst($pers);
-				$queries['update'][] = "UPDATE $tabel SET $zetlijst WHERE id = {$pers['id']}; AND user = '$this->user()'";
+				$queries['update'][] = "UPDATE $tabel SET $zetlijst WHERE id = {$pers['id']};";
 			} else { //niet in id lijst? -> insert sql
 
 				//maar één keer maken.
@@ -358,10 +346,9 @@ class CRM extends CI_Model
 			}
 		}
 
-		$u =$this->user();
 		foreach ($db_id_lijst as $aanwezig) {
 			if (!in_array($aanwezig, $form_id_lijst)) {
-				$queries['delete'][] = "DELETE FROM $tabel WHERE id = '$aanwezig' AND user = '$u';";
+				$queries['delete'][] = "DELETE FROM $tabel WHERE id = '$aanwezig';";
 			}
 		}
 
@@ -382,19 +369,9 @@ class CRM extends CI_Model
 	{
 
 		$tabel = $this->tabel;
-		$u = $this->user();
-		$sql = "SELECT waarde FROM meta WHERE sleutel='$tabel-iv' AND user='$u'";
 
-		$q = $this->db->query($sql);
-		if (count ($q->result()) < 1) {
-			echo "<h1>geen iv gevonden</h1>";
-			echo "<code>$sql</code>";
-			echo "<pre>";
-			var_dump($q);
-			echo "</pre>";
-die();
-		}
-		return $q->result()[0]->waarde;
+		$q = $this->db->query("SELECT waarde FROM meta WHERE sleutel='$tabel-iv'")->result();
+		return $q[0]->waarde;
 	}
 
 	public function zet_iv($iv = '')
@@ -403,8 +380,8 @@ die();
 		$tabel = $this->tabel;
 
 		if ($iv === '') return false;
-$u = $this->user();
-		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$tabel-iv' AND user='$u'");
+
+		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$tabel-iv'");
 		return true;
 	}
 
