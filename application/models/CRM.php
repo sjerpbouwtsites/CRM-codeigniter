@@ -12,6 +12,7 @@ class CRM extends CI_Model
 
 	function __construct()
 	{
+		$this->lege_tabel = false;
 		$this->form_data = array();
 		$this->een_naam_klein = '';
 		$this->load->database();
@@ -117,6 +118,7 @@ class CRM extends CI_Model
 		} else {
 
 			$this->form_data[] = $this->form_data_helper();
+			$this->lege_tabel = true;
 			$this->een_naam_klein = '';
 		}
 

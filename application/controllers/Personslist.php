@@ -168,6 +168,7 @@ class Personslist extends CI_Controller
 			'nav_inhoud'  => $this->dirty_get_view('nav/config.php', [])
 		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
+		$data['lege_tabel'] = $this->CRM->lege_tabel;
 		$this->load->view('layout.php', $data);
 	}
 }

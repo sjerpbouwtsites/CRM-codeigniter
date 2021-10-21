@@ -267,8 +267,12 @@ export function maakSleutelEnOntsleutel(sleutel) {
 }
 
 function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
+	const legeTabel = gr.el("grote-tabel-formulier").hasAttribute('data-lege-tabel');
 	return new Promise((veldResolve, veldReject) => {
 		if (DB().ontsleutelFout) veldReject();
+		if (legeTabel) {
+			veldResolve('');
+		}
 		new Promise((cipherResolve, cipherReject) => {
 			if (
 				!versleuteldVeld.value.length ||
@@ -297,7 +301,7 @@ function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
 				DB().ontsleutelFout = true;
 				let error = new Error(err.message);
 				const veldNaam = versleuteldVeld.getAttribute("data-naam");
-				error.message = `Foutbericht: ontsleutelfout bij veld '${veldNaam}'. \n ${error.message}`;
+				error.message = `<br>Foutbericht: ontsleutelfout bij veld '${veldNaam}', waarde ${versleuteldVeld.value}. \n ${error.message}`;
 				error = gr.addErrorOrigin("decrypt & in veldsleutelmapper", error);
 				veldReject(error);
 			});

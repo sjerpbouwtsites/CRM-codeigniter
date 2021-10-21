@@ -25,7 +25,7 @@ function cel($html = "", $class = '')
 
 	<div class='formulier-en-controls tabel-<?=$tabel_naam?>'>
 
-		<form id='grote-tabel-formulier' data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
+		<form id='grote-tabel-formulier' <?=$lege_tabel?'data-lege-tabel="true"':""?> data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
 			<input type='hidden' name='form_meta[user]' value='<?= $_SESSION['user'] ?>'>
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
@@ -36,6 +36,8 @@ function cel($html = "", $class = '')
 
 
 			echo "<div id='form-rijen-lijst' class='form-tabel'>";
+
+			echo "<script>console.log(".json_encode($form_data).");</script>";
 
 			foreach ($form_data as $pers) :
 
