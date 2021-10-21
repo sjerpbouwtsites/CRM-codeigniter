@@ -228,6 +228,7 @@ function maakSQLVriendelijkePostData(){
 		xsrf: formDataSys.get("form_meta[csrf-token]"),
 		iv: formDataSys.get("form_meta[iv]"),
 		tabel: formDataSys.get("form_meta[tabel_naam]"),
+		user: formDataSys.get("form_meta[user]"),
 	};
 	return SQLVriendelijkePostData	
 }
