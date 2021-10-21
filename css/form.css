@@ -188,13 +188,13 @@ form.crm-formulier {
 }
 .start-bewerken-cel {
 	display: block;
-	background-image: url("/img/account-edit.png");
+	/* background-image: url("/img/account-edit.png"); zie head*/
 	background-size: 25px;
 }
 .rij-in-handmatige-selectie {
 	display: none;
 	background: transparent;
-	background-image: url("/img/select-group.png");
+	/* background-image: url("/img/select-group.png"); zie head*/
 	background-size: 25px;
 	background-position: center;
 	background-color: rgba(0,0,0,0.3);	

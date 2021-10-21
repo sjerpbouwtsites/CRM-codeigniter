@@ -16,18 +16,12 @@ function fixLocalhost(){
 	})	
 }
 
-/** was eerst alleen voor dev, nu ook na opslaan. */
 function autoDecrypt() {
 
-	if (true) {
-		console.error('auto decrypt utigezet ivm productie bugs')
-		return;
-	}
-
 	const isDev = location.href.includes("localhost");
-	const wilHerladen = location.hash !== '#herladen-met-wachtwoord';
+	const wilHerladen = location.hash.includes('herladen-met-wachtwoord');
 
-	if (!isDev && !wilHerladen) return;
+	if (!isDev || !wilHerladen) return;
 	try {
 		const opgeslagenWW = localStorage.getItem("herladen-met-wachtwoord");
 		if (!opgeslagenWW) {
@@ -41,7 +35,6 @@ function autoDecrypt() {
 		} else {
 			gr.el("ontsleutel").value = opgeslagenWW;
 			gr.el("ontsleutel-knop").click();
-			console.log("JAfdsfdsfdsAA'");
 		}
 	} catch (err) {
 		gr.communiceer("Iets gaat mis bij auto-decrypt.");

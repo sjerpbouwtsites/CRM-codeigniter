@@ -9,7 +9,7 @@ body {
 	box-sizing: border-box;
 }
 body.lenin-poster {
-	background-image: url("/volg-het-ware-pad.jpg");
+	/* background-image: url("/volg-het-ware-pad.jpg"); */ /* zie head */
 	background-size: cover;
 	background-position: top center;
 }
@@ -109,13 +109,13 @@ select:hover,
 	justify-content: space-between;
 }
 .formulier-en-controls.tabel-leden{
-	background-image: url('/afb/leden-tabel-achtergrond.png');
+	/* background-image: url('/afb/leden-tabel-achtergrond.png'); zie head */
 }
 .formulier-en-controls.tabel-contacten{
-	background-image: url('/afb/contacten-tabel-achtergrond.png');
+	/* background-image: url('/afb/contacten-tabel-achtergrond.png'); zie head */
 }
 .formulier-en-controls.tabel-bondgenoten{
-	background-image: url('/afb/bondgenoten-tabel-achtergrond.png');
+	/* background-image: url('/afb/bondgenoten-tabel-achtergrond.png'); zie head*/
 }
 .verborgen {
 	display: none !important;
