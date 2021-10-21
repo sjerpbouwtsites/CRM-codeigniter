@@ -6,6 +6,7 @@ import * as encryptie from "./modules/encryptie.js";
 import printerInit from "./modules/printer.js";
 import DB from "./modules/database.js";
 import {zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler} from "./modules/ui-diversen.js";
+import nieuweTabelInit from "./modules/nieuwe-tabel.js";
 
 function indexInit() {
 	
@@ -20,11 +21,12 @@ function indexInit() {
 		zetEscapeKlikVoorAlles()
 		encryptie.alsWachtwoordGewijzigd();
 	})
-
+	
 	// sync
 	encryptie.decryptieInit();
 	formulierOntsleutelingsAnimatie();
 	afsluitingsAnimatieHandler();
+	nieuweTabelInit();
 
 	devExInit();
 	
