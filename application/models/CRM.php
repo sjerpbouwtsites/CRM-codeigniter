@@ -273,21 +273,24 @@ class CRM extends CI_Model
 		// 	];
 		// }
 
+		$kolommen[] = 'user';
+		$user = $meta['user'];
+
 		$kolommen_string = "(" . implode(', ', $kolommen) . ")";
 		$waarden_string_map = [];
 		foreach ($waarden_per_id as $id => $waarden) {
 			$waarden_met_apostrophe = array_map(function ($waarde) {
 				return "'" . $waarde . "'";
 			}, $waarden);
+			$waarden_met_apostrophe[] = "'".$user."'";
 			$waarden_string_map[] .= "(" . implode(",", $waarden_met_apostrophe) . ")";
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
-		$u = $this->user();
 
 		$sql_s = "INSERT INTO " . $this->tabel . " $kolommen_string VALUES $waarden_string";
 
 		try {
-			$this->db->query("TRUNCATE TABLE " . $this->tabel);
+			$this->db->query("DELETE FROM " . $this->tabel . " WHERE user='$user'");
 			$this->db->query($sql_s);
 
 			$this->zet_iv($meta['iv']);
@@ -299,7 +302,7 @@ class CRM extends CI_Model
 		}
 
 		$leden_er_in = count($ids);
-		$sql_s = "SELECT count(id) as count FROM " . $this->tabel . " WHERE user='$u'";
+		$sql_s = "SELECT count(id) as count FROM " . $this->tabel . " WHERE user='$user'";
 		$leden_huidig = $this->db->query($sql_s)->result()[0]->count;
 
 		return [
