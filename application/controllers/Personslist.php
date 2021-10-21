@@ -25,15 +25,15 @@ class Personslist extends CI_Controller
 
 
 	/**
-	 * Aangeroepen vanuit de routes om andere tabellen dan leden te zien.
+	 * Aangeroepen vanuit de routes om andere categorieen dan leden te zien.
 	 */
-	public function tabel($tabel_naam)
+	public function categorie($categorie_naam)
 	{
 		if (!$this->users->user()) return;
-		if ($tabel_naam === '') {
-			throw new Error("BOE! een sys error HAHAHA 😱 Je url klopt niet of een tabel die zocht is niet geinstalleerd. Later!");
+		if ($categorie_naam === '') {
+			throw new Error("BOE! een sys error HAHAHA 😱 Je url klopt niet of een categorie die zocht is niet geinstalleerd. Later!");
 		}
-		$this->CRM->zet_tabel_naam($tabel_naam);
+		$this->CRM->zet_categorie_naam($categorie_naam);
 		$this->leden();
 	}
 
@@ -69,19 +69,19 @@ class Personslist extends CI_Controller
 
 	/**
 	 * @returns array met naam, url, actief bool, icon.
-	 * haalt adhv toegestane tabellen nav aan.
+	 * haalt adhv toegestane categorieen nav aan.
 	 */
 	public function make_nav()
 	{
 
-		$pages = array_map(function ($tabel) {
+		$pages = array_map(function ($categorie) {
 
 			return [
-				'naam' 		=> $tabel,
-				'url'  		=> base_url() . "tabel/$tabel",
-				'actief'	=> in_array($tabel, $this->url_delen),
+				'naam' 		=> $categorie,
+				'url'  		=> base_url() . "categorie/$categorie",
+				'actief'	=> in_array($categorie, $this->url_delen),
 			];
-		}, $this->CRM->toegestane_tabel_namen);
+		}, $this->CRM->toegestane_categorie_namen);
 
 
 		$pages[] = [
@@ -137,7 +137,7 @@ class Personslist extends CI_Controller
 
 		$data = array();
 
-		$data['tabel_naam'] = $this->CRM->tabel;
+		$data['categorie_naam'] = $this->CRM->categorie;
 		$data = array_merge($data, $this->CRM->maak_form_data());
 		$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
 		$data = array_merge($data, $this->CRM->toon_stijl());
@@ -160,7 +160,7 @@ class Personslist extends CI_Controller
 			$data['acties'] = $this->dirty_get_view('nav/nav.php', [
 				'nav_title'		=> 'acties',
 			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [
-				'is_op_leden' => $this->CRM->tabel === 'leden',
+				'is_op_leden' => $this->CRM->categorie === 'leden',
 			])
 		]);
 		$data['config'] = $this->dirty_get_view('nav/nav.php', [
@@ -168,7 +168,7 @@ class Personslist extends CI_Controller
 			'nav_inhoud'  => $this->dirty_get_view('nav/config.php', [])
 		]);
 		$data['controls'] = $this->dirty_get_view('controls.php', $data);
-		$data['lege_tabel'] = $this->CRM->lege_tabel;
+		$data['lege_categorie'] = $this->CRM->lege_categorie;
 		$this->load->view('layout.php', $data);
 	}
 }

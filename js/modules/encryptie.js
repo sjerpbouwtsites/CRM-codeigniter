@@ -16,7 +16,7 @@ export function maakSleutelEnVersleutel(sleutelBasis) {
 		  .then(function (encryptieSleutel) {
 			
 			var iv = window.crypto.getRandomValues(new Uint8Array(16));
-			// schrijf naar tabel
+			// schrijf naar categorie
 			printIV.value = encGr.byteArrayToBase64(iv);
 			// ieder veld encrypten
 			const veldEncryptiePromises = gr.elArray(".pers-input")
@@ -102,7 +102,7 @@ function veldEncryptieThen(encryptiebuffer, veld){
 
 
 function zetVerzendenInStukken () {
-	const groteFormulier = gr.el("grote-tabel-formulier");
+	const groteFormulier = gr.el("grote-categorie-formulier");
 	const groteFormulierVerzendKnop = gr.el("verzend-grote-formulier-knop");
 	groteFormulierVerzendKnop.addEventListener(
 		"click",
@@ -147,7 +147,7 @@ function verzendInStukkenCallback(e) {
 
 			return axios
 				.request({
-					url: gr.el("grote-tabel-formulier").action,
+					url: gr.el("grote-categorie-formulier").action,
 					method: "post",
 					data: maakSQLVriendelijkePostData(),
 				})
@@ -181,7 +181,7 @@ function verzendInStukkenCallback(e) {
 }
 
 function maakSQLVriendelijkePostData(){
-	const groteFormulier = gr.el("grote-tabel-formulier");
+	const groteFormulier = gr.el("grote-categorie-formulier");
 	const formDataSys = new FormData(groteFormulier);
 
 	/**
@@ -227,7 +227,7 @@ function maakSQLVriendelijkePostData(){
 	SQLVriendelijkePostData.meta = {
 		xsrf: formDataSys.get("form_meta[csrf-token]"),
 		iv: formDataSys.get("form_meta[iv]"),
-		tabel: formDataSys.get("form_meta[tabel_naam]"),
+		categorie: formDataSys.get("form_meta[categorie_naam]"),
 		user: formDataSys.get("form_meta[user]"),
 	};
 	return SQLVriendelijkePostData	
@@ -267,10 +267,10 @@ export function maakSleutelEnOntsleutel(sleutel) {
 }
 
 function perVeldSleutelMapper({ aesKey, versleuteldVeld, ivBytes }) {
-	const legeTabel = gr.el("grote-tabel-formulier").hasAttribute('data-lege-tabel');
+	const legeCategorie = gr.el("grote-categorie-formulier").hasAttribute('data-lege-categorie');
 	return new Promise((veldResolve, veldReject) => {
 		if (DB().ontsleutelFout) veldReject();
-		if (legeTabel) {
+		if (legeCategorie) {
 			veldResolve('');
 		}
 		new Promise((cipherResolve, cipherReject) => {

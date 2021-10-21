@@ -27,7 +27,7 @@ function zetAlsVeranderHandmatigeSelectie(){
 		// zet tekst in button
 		gr.el('handmatige-selectie').innerHTML = nieuweStaat === true ? "in werking" : "staat uit";
 
-		const groteForm = gr.el('grote-tabel-formulier');
+		const groteForm = gr.el('grote-categorie-formulier');
 
 		nieuweStaat === true 
 			? groteForm.setAttribute('data-handmatige-selectie', true)
@@ -35,7 +35,7 @@ function zetAlsVeranderHandmatigeSelectie(){
 	})
 }
 function zetClickRijInHandmatigeSelectie(){
-	gr.el('grote-tabel-formulier').addEventListener('click', rijInHandmatigeSelectie)
+	gr.el('grote-categorie-formulier').addEventListener('click', rijInHandmatigeSelectie)
 }
 
 function rijInHandmatigeSelectie(e){

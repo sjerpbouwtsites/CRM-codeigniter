@@ -12,7 +12,7 @@ function zetBeeldSelectOnChange() {
 		const gekozenOptie = e.target.selectedOptions[0].value;
 		localStorage.setItem("beeld-stijl", gekozenOptie);
 		document
-			.getElementById("grote-tabel-formulier")
+			.getElementById("grote-categorie-formulier")
 			.setAttribute("data-form-stijl", gekozenOptie);
 		document.getElementById("schakel-navigatie-config").click();
 	});
@@ -20,6 +20,6 @@ function zetBeeldSelectOnChange() {
 
 function alsInStorageGebruikBeeldStijl() {
 	const beeldStijl = localStorage.getItem("beeld-stijl");
-	el("grote-tabel-formulier")
+	el("grote-categorie-formulier")
 		.setAttribute("data-form-stijl", beeldStijl || "lijst");
 }

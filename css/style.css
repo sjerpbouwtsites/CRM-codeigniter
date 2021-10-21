@@ -108,14 +108,14 @@ select:hover,
 	background-position: bottom right;
 	justify-content: space-between;
 }
-.formulier-en-controls.tabel-leden{
-	/* background-image: url('/afb/leden-tabel-achtergrond.png'); zie head */
+.formulier-en-controls.categorie-leden{
+	/* background-image: url('/afb/leden-categorie-achtergrond.png'); zie head */
 }
-.formulier-en-controls.tabel-contacten{
-	/* background-image: url('/afb/contacten-tabel-achtergrond.png'); zie head */
+.formulier-en-controls.categorie-contacten{
+	/* background-image: url('/afb/contacten-categorie-achtergrond.png'); zie head */
 }
-.formulier-en-controls.tabel-bondgenoten{
-	/* background-image: url('/afb/bondgenoten-tabel-achtergrond.png'); zie head*/
+.formulier-en-controls.categorie-bondgenoten{
+	/* background-image: url('/afb/bondgenoten-categorie-achtergrond.png'); zie head*/
 }
 .verborgen {
 	display: none !important;

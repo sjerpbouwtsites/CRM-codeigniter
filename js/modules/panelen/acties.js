@@ -26,17 +26,17 @@ function veranderWachtwoord(e){
 	var oudWachtwoord = DB().wachtwoord;
 	var nieuwWachtwoord = prompt('Verander wachtwoord naar');
 	DB().wachtwoord = nieuwWachtwoord;
-	gr.communiceer('Over 10 seconden worden nieuwe tabbladen geopend. In de andere tabellen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen')
+	gr.communiceer('Over 10 seconden worden nieuwe tabbladen geopend. In de andere categorieen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen')
 	setTimeout(()=> {
 
-		const huidigeTabel = document.querySelector('[name="form_meta[tabel_naam]"').value;
+		const huidigeCategorie = document.querySelector('[name="form_meta[categorie_naam]"').value;
 		let baseUrl = document.body.getAttribute('data-base-url');
 		if (baseUrl.includes('localhost')) {
 			baseUrl = baseUrl + "index.php";
 		}
-		['bondgenoten', 'contacten', 'leden'].forEach(tabelNaam => {
-			if (tabelNaam !== huidigeTabel) {
-				window.open(`${baseUrl}/tabel/${tabelNaam}?vernieuwWachtwoord=${nieuwWachtwoord}`)
+		['bondgenoten', 'contacten', 'leden'].forEach(categorieNaam => {
+			if (categorieNaam !== huidigeCategorie) {
+				window.open(`${baseUrl}/categorie/${categorieNaam}?vernieuwWachtwoord=${nieuwWachtwoord}`)
 			}
 		})
 		opslaan();
@@ -115,7 +115,7 @@ function zetAlsMultiBewerkVeranderd(){
 }
 
 function zetClickBeeindigMultiBewerker(){
-	gr.el('grote-tabel-formulier').addEventListener('click', beeindigMultiBewerken)
+	gr.el('grote-categorie-formulier').addEventListener('click', beeindigMultiBewerken)
 }
 function beeindigMultiBewerken(e){
 

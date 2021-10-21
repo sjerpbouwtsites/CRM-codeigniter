@@ -23,14 +23,14 @@ function cel($html = "", $class = '')
 	<?= $kop_en_knoppen ?>
 
 
-	<div class='formulier-en-controls tabel-<?=$tabel_naam?>'>
+	<div class='formulier-en-controls categorie-<?=$categorie_naam?>'>
 
-		<form id='grote-tabel-formulier' <?=$lege_tabel?'data-lege-tabel="true"':""?> data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
+		<form id='grote-categorie-formulier' <?=$lege_categorie?'data-lege-categorie="true"':""?> data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
 
 			<input type='hidden' name='form_meta[user]' value='<?= $_SESSION['user'] ?>'>
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 			<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
-			<input type='hidden' name='form_meta[tabel_naam]' value='<?= $tabel_naam ?>'>
+			<input type='hidden' name='form_meta[categorie_naam]' value='<?= $categorie_naam ?>'>
 
 			<?php
 

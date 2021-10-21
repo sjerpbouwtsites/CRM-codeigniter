@@ -6,7 +6,7 @@ import * as encryptie from "./modules/encryptie.js";
 import printerInit from "./modules/printer.js";
 import DB from "./modules/database.js";
 import {zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler} from "./modules/ui-diversen.js";
-import nieuweTabelInit from "./modules/nieuwe-tabel.js";
+import nieuweCategorieInit from "./modules/nieuwe-categorie.js";
 
 function indexInit() {
 	
@@ -26,7 +26,7 @@ function indexInit() {
 	encryptie.decryptieInit();
 	formulierOntsleutelingsAnimatie();
 	afsluitingsAnimatieHandler();
-	nieuweTabelInit();
+	nieuweCategorieInit();
 
 	devExInit();
 	

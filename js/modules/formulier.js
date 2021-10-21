@@ -11,16 +11,16 @@ export default function formulierInit() {
 	zetUpdateLaatsGezienClick()
 	zetVerwijderRijClick()
 	zetAlsVeranderRijInBewerking()
-	zetAlsLegeTabel();
+	zetAlsLegeCategorie();
 }
 
 /**
  * dirty @TODO
  * @returns 
  */
-function zetAlsLegeTabel(){
-	const groteFormulier = gr.el('grote-tabel-formulier');
-	if (!groteFormulier.hasAttribute('data-lege-tabel')) {
+function zetAlsLegeCategorie(){
+	const groteFormulier = gr.el('grote-categorie-formulier');
+	if (!groteFormulier.hasAttribute('data-lege-categorie')) {
 		return;
 	}
 	groteFormulier.querySelectorAll('.pers-input').forEach(input => {
@@ -40,7 +40,7 @@ function zetAlsLegeTabel(){
 export function formulierOntsleutelingsAnimatie(){
 	DB().alsVeranderdDoe('ontsleuteld', (ontsleutelWaarde)=> {
 
-		const groteFormulier = gr.el('grote-tabel-formulier');
+		const groteFormulier = gr.el('grote-categorie-formulier');
 		if (ontsleutelWaarde === true && !groteFormulier.classList.contains('versleuteld')) {
 			groteFormulier.classList.add('versleuteld');
 		} else if (ontsleutelWaarde === false && groteFormulier.classList.contains('versleuteld')){
@@ -71,7 +71,7 @@ function zetUpdateLaatsGezienClick() {
 
 function zetVerwijderRijClick() {
 	// //verwijder functionaliteit
-	gr.el('grote-tabel-formulier').addEventListener('click', (e)=>{
+	gr.el('grote-categorie-formulier').addEventListener('click', (e)=>{
 		if (!e.target.classList.contains('rij-verwijderen')) {
 			return 	
 		}

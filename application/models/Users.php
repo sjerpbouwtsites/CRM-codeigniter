@@ -39,7 +39,7 @@ class Users extends CI_Model
 
 		if (!$this->user()) {
 			$data = [];
-			$data['tabel_naam'] = '';
+			$data['categorie_naam'] = '';
 			$data['head_el'] = $this->load->view('head/head', $data, TRUE);
 			$this->load->view('set-user.php', 
 			$data);

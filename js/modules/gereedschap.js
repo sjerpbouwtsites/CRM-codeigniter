@@ -2,7 +2,7 @@
 import PersoonRij from "./persoon-rij.js";
 import DB from "./database.js";
 
-// #region grote tabel queries 
+// #region grote categorie queries 
 
 /**
  * @returns Array<NodeList> lijst van alle invoervelden in crm form.
@@ -37,7 +37,7 @@ export function zichtbarePersRijen() {
 			return P.inSelectie(handmatigeSelectieModus);
 		});
 }
-// #endregion grote tabel queries
+// #endregion grote categorie queries
 
 // #region domqueries
 

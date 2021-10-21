@@ -31,7 +31,7 @@ function runVWFilters(){
       riseupAnker.parentNode.parentNode.title = "Ik zit in het CRM èn in Riseup"
     } else {
       riseupAnker.parentNode.parentNode.style = "background-color: #85b3e4;"
-      riseupAnker.parentNode.parentNode.title = "Ik zit wel in Riseup, maar niet in de CRM ledentabel."    
+      riseupAnker.parentNode.parentNode.title = "Ik zit wel in Riseup, maar niet in de CRM ledencategorie."    
     }
   })
   

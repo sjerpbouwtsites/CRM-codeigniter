@@ -1,6 +1,6 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title><?=($_SERVER['REMOTE_ADDR']==='127.0.0.1'? 'DEV 🧨! ':'')?><?= $tabel_naam ?> - Sjerps CRM</title>
+		<title><?=($_SERVER['REMOTE_ADDR']==='127.0.0.1'? 'DEV 🧨! ':'')?><?= $categorie_naam ?> - Sjerps CRM</title>
 		<script src="<?= base_url('js/axios.js') ?>"></script>
 		
 		<link rel='stylesheet' href="<?= base_url('css/normaliseer.css') ?>">
@@ -31,14 +31,14 @@
 			body.lenin-poster {
 				background-image: url("<?=base_url()?>/volg-het-ware-pad.jpg");
 			}
-				.formulier-en-controls.tabel-leden{
-	background-image: url('<?=base_url()?>/afb/leden-tabel-achtergrond.png');
+				.formulier-en-controls.categorie-leden{
+	background-image: url('<?=base_url()?>/afb/leden-categorie-achtergrond.png');
 }
-.formulier-en-controls.tabel-contacten{
-	background-image: url('<?=base_url()?>/afb/contacten-tabel-achtergrond.png');
+.formulier-en-controls.categorie-contacten{
+	background-image: url('<?=base_url()?>/afb/contacten-categorie-achtergrond.png');
 }
-.formulier-en-controls.tabel-bondgenoten{
-	background-image: url('<?=base_url()?>/afb/bondgenoten-tabel-achtergrond.png');
+.formulier-en-controls.categorie-bondgenoten{
+	background-image: url('<?=base_url()?>/afb/bondgenoten-categorie-achtergrond.png');
 }
 
 .start-bewerken-cel {

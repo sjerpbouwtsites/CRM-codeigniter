@@ -3,22 +3,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class CRM extends CI_Model
 {
-	/**
-	 * naam van de db tabel
-	 */
-	public $tabel = 'leden';
-	// gevuld door toegestane_tabel_namen()
-	public $toegestane_tabel_namen = [];
+
+	public $categorie = 'leden';
+	// gevuld door toegestane_categorie_namen()
+	public $toegestane_categorie_namen = [];
 
 	function __construct()
 	{
-		$this->lege_tabel = false;
+		$this->lege_categorie = false;
 		$this->form_data = array();
 		$this->een_naam_klein = '';
 		$this->load->database();
 		$this->post_data = NULL;
 		$this->load->model('users');
-		$this->zet_toegestane_tabel_namen();
+		$this->zet_toegestane_categorie_namen();
 		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 95;
 	}
 
@@ -27,33 +25,23 @@ class CRM extends CI_Model
 	}
 
 	/**
-	 * tabelnamen komen van extern, uit de url of request.
-	 * Dit bepaalt welke tabelnamen gezet mogen worden adhv bestaande tabelnamen.
+	 * categorienamen komen van extern, uit de url of request.
+	 * Dit bepaalt welke categorienamen gezet mogen worden adhv bestaande categorienamen.
 	 */
-	public function zet_toegestane_tabel_namen()
+	public function zet_toegestane_categorie_namen()
 	{
-		// @TODO db naam meenemen 
-		// maar een keer vullen.
-		// if (!count($this->toegestane_tabel_namen)) {
-		// 	$alle_db_tabellen_query = $this->db->query("SHOW TABLES");
-		// 	foreach ($alle_db_tabellen_query->result() as $resultObj) {
-		// 		$tabelnaam = $resultObj->Tables_in_CRM_local;
-		// 		if ($tabelnaam !== 'CSRF' || $tabelnaam !== 'meta') {
-		// 			$this->toegestane_tabel_namen[] = $tabelnaam;
-		// 		}
-		// 	}
-		// }
-		return $this->toegestane_tabel_namen = ['leden', 'bondgenoten', 'contacten'];
+
+		return $this->toegestane_categorie_namen = ['leden', 'bondgenoten', 'contacten'];
 	}
 
-	public function zet_tabel_naam($tabelnaam)
+	public function zet_categorie_naam($categorienaam)
 	{
 
-		if (!in_array($tabelnaam, $this->toegestane_tabel_namen)) {
-			throw new Error("de tabel $tabelnaam bestaat nog niet in de db.");
+		if (!in_array($categorienaam, $this->toegestane_categorie_namen)) {
+			throw new Error("de categorie $cateogorienaam bestaat nog niet in de db.");
 		}
 
-		$this->tabel = $tabelnaam;
+		$this->categorie = $categorienaam;
 	}
 
 	/**
@@ -96,9 +84,9 @@ class CRM extends CI_Model
 	public function maak_form_data()
 	{
 
-		$tabel = $this->tabel;
+		$categorie = $this->categorie;
 		$u = $this->user();
-		$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$tabel' AND user='$u'" )->result_array();
+		$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$categorie' AND user='$u'" )->result_array();
 
 		if (count($q) > 0) {
 			foreach ($q as $p) {
@@ -118,7 +106,7 @@ class CRM extends CI_Model
 		} else {
 
 			$this->form_data[] = $this->form_data_helper();
-			$this->lege_tabel = true;
+			$this->lege_categorie = true;
 			$this->een_naam_klein = '';
 		}
 
@@ -221,10 +209,10 @@ class CRM extends CI_Model
 	public function maak_db_id_lijst()
 	{
 
-		$tabel = $this->tabel;
+		$categorie = $this->categorie;
 		$u = $this->user();
 
-		$id_objs = $this->db->query("SELECT id FROM mensen WHERE categorie = '$tabel' AND user='$u'")->result();
+		$id_objs = $this->db->query("SELECT id FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result();
 		$ids = [];
 		foreach ($id_objs as $io) {
 			$ids[] = $io->id;
@@ -239,7 +227,7 @@ class CRM extends CI_Model
 	public function opslaan_vanuit_api($meta, $ids, $kolommen, $waarden_per_id)
 	{
 
-		$this->zet_tabel_naam($meta['tabel']);
+		$this->zet_categorie_naam($meta['categorie']);
 
 		// controlerenof xsrf goed is.
 		$csrf_db_check_res = $this->controleer_csrf_token($meta['xsrf']);
@@ -284,7 +272,7 @@ class CRM extends CI_Model
 				return "'" . $waarde . "'";
 			}, $waarden);
 			$waarden_met_apostrophe[] = "'".$user."'";
-			$waarden_met_apostrophe[] = "'".$this->tabel."'";
+			$waarden_met_apostrophe[] = "'".$this->categorie."'";
 			$waarden_string_map[] .= "(" . implode(",", $waarden_met_apostrophe) . ")";
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
@@ -292,7 +280,7 @@ class CRM extends CI_Model
 		$sql_s = "INSERT INTO mensen $kolommen_string VALUES $waarden_string";
 
 		try {
-			$this->db->query("DELETE FROM mensen WHERE categorie='$this->tabel' AND user='$user'");
+			$this->db->query("DELETE FROM mensen WHERE categorie='$this->categorie' AND user='$user'");
 			$this->db->query($sql_s);
 
 			$this->zet_iv($meta['iv']);
@@ -304,7 +292,7 @@ class CRM extends CI_Model
 		}
 
 		$leden_er_in = count($ids);
-		$sql_s = "SELECT count(id) as count FROM mensen WHERE categorie = '$this->tabel' AND user='$user'";
+		$sql_s = "SELECT count(id) as count FROM mensen WHERE categorie = '$this->categorie' AND user='$user'";
 		$leden_huidig = $this->db->query($sql_s)->result()[0]->count;
 
 		return [
@@ -321,7 +309,7 @@ class CRM extends CI_Model
 	{
 
 		$form = $this->post_data['form'];
-		$tabel = $this->tabel;
+		$categorie = $this->categorie;
 
 		$this->zet_iv($this->post_data['form_meta']['iv']);
 
@@ -383,9 +371,9 @@ class CRM extends CI_Model
 	public function pak_iv()
 	{
 
-		$tabel = $this->tabel;
+		$categorie = $this->categorie;
 		$u = $this->user();
-		$sql = "SELECT waarde FROM meta WHERE sleutel='$tabel-iv' AND user='$u'";
+		$sql = "SELECT waarde FROM meta WHERE sleutel='$categorie-iv' AND user='$u'";
 
 		$q = $this->db->query($sql);
 		if (count ($q->result()) < 1) {
@@ -402,11 +390,11 @@ die();
 	public function zet_iv($iv = '')
 	{
 
-		$tabel = $this->tabel;
+		$categorie = $this->categorie;
 
 		if ($iv === '') return false;
 $u = $this->user();
-		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$tabel-iv' AND user='$u'");
+		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$categorie-iv' AND user='$u'");
 		return true;
 	}
 
