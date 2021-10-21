@@ -37,8 +37,6 @@ function cel($html = "", $class = '')
 
 			echo "<div id='form-rijen-lijst' class='form-tabel'>";
 
-			echo "<script>console.log(".json_encode($form_data).");</script>";
-
 			foreach ($form_data as $pers) :
 
 				echo "<div id='form-rij-{$pers['id']}' class='form-rij'>";
