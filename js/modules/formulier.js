@@ -11,25 +11,6 @@ export default function formulierInit() {
 	zetUpdateLaatsGezienClick()
 	zetVerwijderRijClick()
 	zetAlsVeranderRijInBewerking()
-	zetAlsLegeTabel();
-}
-
-/**
- * dirty @TODO
- * @returns 
- */
-function zetAlsLegeTabel(){
-	const groteFormulier = gr.el('grote-tabel-formulier');
-	if (!groteFormulier.hasAttribute('data-lege-tabel')) {
-		return;
-	}
-	groteFormulier.querySelectorAll('.pers-input').forEach(input => {
-		input.classList.remove('verborgen');
-		const leesVeld = gr.el(input.id.replace("pers-", "lees-"));
-		leesVeld.innerHTML = '';
-		leesVeld.classList.remove("verborgen");		
-	})
-	document.querySelector('.start-bewerken-cel').click();
 }
 
 /**
