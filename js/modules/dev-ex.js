@@ -2,6 +2,18 @@ import * as gr from "./gereedschap.js"
 
 export default function (){
   autoDecrypt()
+	fixLocalhost();
+}
+
+function fixLocalhost(){
+	document.querySelectorAll("a[href*=localhost]").forEach(anker => {
+		const oudeLink = anker.href;
+		anker.setAttribute('href', oudeLink.replace('/crm/', '/crm/index.php/'));
+	})
+	document.querySelectorAll("form[action*=localhost]").forEach(form => {
+		const oudeLink = form.getAttribute('action');
+		form.setAttribute('action', oudeLink.replace('/crm/', '/crm/index.php/'));
+	})	
 }
 
 /** was eerst alleen voor dev, nu ook na opslaan. */
