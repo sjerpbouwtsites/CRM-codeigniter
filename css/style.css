@@ -2,6 +2,7 @@
 body {
 	font-family: "Verdana", "Arial";
 	background-color: #1e1e1d;
+
 	overflow-x: hidden;
 }
 * {
