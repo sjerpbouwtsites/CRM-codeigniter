@@ -28,13 +28,20 @@ function veranderWachtwoord(e){
 	DB().wachtwoord = nieuwWachtwoord;
 	gr.communiceer('Over 10 seconden worden nieuwe tabbladen geopend. In de andere tabellen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen')
 	setTimeout(()=> {
-		window.open(`tabel/bondgenoten?vernieuwWachtwoord=${nieuwWachtwoord}`)
-		window.open(`tabel/contacten?vernieuwWachtwoord=${nieuwWachtwoord}`)
+
+		const huidigeTabel = document.querySelector('[name="form_meta[tabel_naam]"').value;
+		let baseUrl = document.body.getAttribute('data-base-url');
+		if (baseUrl.includes('localhost')) {
+			baseUrl = baseUrl + "index.php";
+		}
+		['bondgenoten', 'contacten', 'leden'].forEach(tabelNaam => {
+			if (tabelNaam !== huidigeTabel) {
+				window.open(`${baseUrl}/tabel/${tabelNaam}?vernieuwWachtwoord=${nieuwWachtwoord}`)
+			}
+		})
 		opslaan();
 	}, 10000)
 	
-	
-
 }
 
 function zetClickOpenMultiBewerk(){
