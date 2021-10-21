@@ -98,7 +98,7 @@ class CRM extends CI_Model
 
 		$tabel = $this->tabel;
 		$u = $this->user();
-		$q = $this->db->query("SELECT * FROM $tabel WHERE user='$u'" )->result_array();
+		$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$tabel' AND user='$u'" )->result_array();
 
 		if (count($q) > 0) {
 			foreach ($q as $p) {
@@ -224,7 +224,7 @@ class CRM extends CI_Model
 		$tabel = $this->tabel;
 		$u = $this->user();
 
-		$id_objs = $this->db->query("SELECT id FROM $tabel WHERE user='$u'")->result();
+		$id_objs = $this->db->query("SELECT id FROM mensen WHERE categorie = '$tabel' AND user='$u'")->result();
 		$ids = [];
 		foreach ($id_objs as $io) {
 			$ids[] = $io->id;
@@ -274,6 +274,7 @@ class CRM extends CI_Model
 		// }
 
 		$kolommen[] = 'user';
+		$kolommen[] = 'categorie';
 		$user = $meta['user'];
 
 		$kolommen_string = "(" . implode(', ', $kolommen) . ")";
@@ -283,14 +284,15 @@ class CRM extends CI_Model
 				return "'" . $waarde . "'";
 			}, $waarden);
 			$waarden_met_apostrophe[] = "'".$user."'";
+			$waarden_met_apostrophe[] = "'".$this->tabel."'";
 			$waarden_string_map[] .= "(" . implode(",", $waarden_met_apostrophe) . ")";
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
 
-		$sql_s = "INSERT INTO " . $this->tabel . " $kolommen_string VALUES $waarden_string";
+		$sql_s = "INSERT INTO mensen $kolommen_string VALUES $waarden_string";
 
 		try {
-			$this->db->query("DELETE FROM " . $this->tabel . " WHERE user='$user'");
+			$this->db->query("DELETE FROM mensen WHERE categorie='$this->tabel' AND user='$user'");
 			$this->db->query($sql_s);
 
 			$this->zet_iv($meta['iv']);
@@ -302,7 +304,7 @@ class CRM extends CI_Model
 		}
 
 		$leden_er_in = count($ids);
-		$sql_s = "SELECT count(id) as count FROM " . $this->tabel . " WHERE user='$user'";
+		$sql_s = "SELECT count(id) as count FROM mensen WHERE categorie = '$this->tabel' AND user='$user'";
 		$leden_huidig = $this->db->query($sql_s)->result()[0]->count;
 
 		return [
@@ -345,7 +347,7 @@ class CRM extends CI_Model
 			if (in_array($pers['id'], $db_id_lijst)) {
 
 				$zetlijst = $this->maak_zetlijst($pers);
-				$queries['update'][] = "UPDATE $tabel SET $zetlijst WHERE id = {$pers['id']}; AND user = '$this->user()'";
+				$queries['update'][] = "UPDATE mensen SET $zetlijst WHERE id = {$pers['id']}; AND user = '$this->user()'";
 			} else { //niet in id lijst? -> insert sql
 
 				//maar één keer maken.
@@ -354,14 +356,14 @@ class CRM extends CI_Model
 				}
 
 				$waardenlijst = $this->maak_waardenlijst($pers);
-				$queries['insert'][] = "INSERT INTO $tabel $veldenlijst VALUES $waardenlijst;";
+				$queries['insert'][] = "INSERT INTO mensen $veldenlijst VALUES $waardenlijst;";
 			}
 		}
 
 		$u =$this->user();
 		foreach ($db_id_lijst as $aanwezig) {
 			if (!in_array($aanwezig, $form_id_lijst)) {
-				$queries['delete'][] = "DELETE FROM $tabel WHERE id = '$aanwezig' AND user = '$u';";
+				$queries['delete'][] = "DELETE FROM mensen WHERE id = '$aanwezig' AND user = '$u';";
 			}
 		}
 
