@@ -124,8 +124,7 @@ export function alsWachtwoordGewijzigd(){
 	var regex = /vernieuwWachtwoord=(\w*)/;
 	var matches = regex.exec(location.search);
 	if (!matches || !matches.length) {
-		console.warn('geen matches');
-		console.log(matches);
+		return
 	};
 	DB().wachtwoord = matches[1]
 	opslaan();
