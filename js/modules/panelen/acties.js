@@ -4,6 +4,7 @@ import * as gr from "../gereedschap.js";
 import { NavElement } from "../navigatie-animatie.js";
 import DB from "../database.js";
 import PersoonRij from "../persoon-rij.js";
+import {opslaan} from "../encryptie.js";
 
 export default function() {
 	zetLijstKnoppenClicks();
@@ -12,6 +13,28 @@ export default function() {
 	zetClickOpenMultiBewerk();
 	zetAlsMultiBewerkVeranderd()
 	zetClickBeeindigMultiBewerker()
+	zetWachtwoordVeranderen();
+}
+
+function zetWachtwoordVeranderen(){
+	gr.el('wachtwoord-veranderen').addEventListener('click', veranderWachtwoord)
+}
+
+function veranderWachtwoord(e){
+	e.preventDefault();
+	if (!confirm('Weet je zeker dat je het wachtwoord wilt veranderen?')) return;
+	var oudWachtwoord = DB().wachtwoord;
+	var nieuwWachtwoord = prompt('Verander wachtwoord naar');
+	DB().wachtwoord = nieuwWachtwoord;
+	gr.communiceer('Over 10 seconden worden nieuwe tabbladen geopend. In de andere tabellen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen')
+	setTimeout(()=> {
+		window.open(`tabel/bondgenoten?vernieuwWachtwoord=${nieuwWachtwoord}`)
+		window.open(`tabel/contacten?vernieuwWachtwoord=${nieuwWachtwoord}`)
+		opslaan();
+	}, 10000)
+	
+	
+
 }
 
 function zetClickOpenMultiBewerk(){

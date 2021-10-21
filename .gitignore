@@ -1,5 +1,7 @@
 .DS_Store
 
+distros/
+
 application/config/database.php
 application/config/config.php
 
