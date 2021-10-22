@@ -38,7 +38,7 @@ class CRM extends CI_Model
 	{
 
 		if (!in_array($categorienaam, $this->toegestane_categorie_namen)) {
-			throw new Error("de categorie $cateogorienaam bestaat nog niet in de db.");
+			throw new Error("de categorie $categorienaam bestaat nog niet in de db.");
 		}
 
 		$this->categorie = $categorienaam;
