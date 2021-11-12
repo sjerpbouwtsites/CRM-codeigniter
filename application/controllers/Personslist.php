@@ -140,7 +140,6 @@ class Personslist extends CI_Controller
 		$data['categorie_naam'] = $this->CRM->categorie;
 		$data = array_merge($data, $this->CRM->maak_form_data());
 		$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
-		$data = array_merge($data, $this->CRM->toon_stijl());
 		$data['head_el'] = $this->load->view('head/head', $data, TRUE);
 		$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
 		$data['oude_iv'] = $this->CRM->pak_iv();
@@ -156,9 +155,9 @@ class Personslist extends CI_Controller
 		$data['filters'] = $this->dirty_get_view('nav/nav.php', [
 			'nav_title'		=> 'filters',
 			'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
-			]);
-			$data['acties'] = $this->dirty_get_view('nav/nav.php', [
-				'nav_title'		=> 'acties',
+		]);
+		$data['acties'] = $this->dirty_get_view('nav/nav.php', [
+			'nav_title'		=> 'acties',
 			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [
 				'is_op_leden' => $this->CRM->categorie === 'leden',
 			])
