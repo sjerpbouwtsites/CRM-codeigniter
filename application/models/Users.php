@@ -6,34 +6,40 @@ class Users extends CI_Model
 
 	function __construct()
 	{
-    $this->init();
+		$this->init();
 	}
 
-  public function init(){
+	public function init()
+	{
 		if (!isset($_SESSION)) {
 			session_set_cookie_params(0);
 			session_start();
-		}    
-  }
+			$_SESSION["user_foutmelding"] = null;
+		}
+	}
 
-	public function user(){
+	public function user()
+	{
 		if (!array_key_exists('user', $_SESSION)) return null;
 		return $_SESSION['user'];
 	}
 
-	public function check_user_name_in_db($username){
+	public function check_user_name_in_db($username)
+	{
 		$q = $this->db->query("SELECT * FROM users WHERE name = '$username'")->result_array();
 		$user_found = count($q) > 0;
 		if (!$user_found) {
-			echo "<p>User $username niet gevonden.</p>";
+			$_SESSION["user_foutmelding"] = "User $username niet gevonden.";
 		} else {
+			$_SESSION["user_foutmelding"] = null;
 			$_SESSION["user"] = $q[0]['name'];
 		}
 	}
 
-	public function handle_user(){
+	public function handle_user()
+	{
 
-		if(array_key_exists('user', $_POST)) {
+		if (array_key_exists('user', $_POST)) {
 			$this->check_user_name_in_db($_POST['user']);
 		}
 
@@ -41,9 +47,11 @@ class Users extends CI_Model
 			$data = [];
 			$data['categorie_naam'] = '';
 			$data['head_el'] = $this->load->view('head/head', $data, TRUE);
-			$this->load->view('set-user.php', 
-			$data);
+			$this->load->view(
+				'set-user.php',
+				$data
+			);
 			return;
-		}		
-	}  
+		}
+	}
 }
