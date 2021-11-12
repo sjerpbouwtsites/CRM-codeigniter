@@ -1,7 +1,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title><?= ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' ? 'DEV 🧨! ' : '') ?><?= $categorie_naam ?> - Sjerps CRM</title>
-		<script src="<?= base_url('js/axios.js') ?>"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 		<link rel='stylesheet' href="<?= base_url('css/normaliseer.css') ?>">
 		<link rel='stylesheet' href="<?= base_url('css/sleutelaars.css') ?>">
