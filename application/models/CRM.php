@@ -20,7 +20,8 @@ class CRM extends CI_Model
 		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 95;
 	}
 
-	private function user(){
+	private function user()
+	{
 		return $this->users->user();
 	}
 
@@ -86,7 +87,7 @@ class CRM extends CI_Model
 
 		$categorie = $this->categorie;
 		$u = $this->user();
-		$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$categorie' AND user='$u'" )->result_array();
+		$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result_array();
 
 		if (count($q) > 0) {
 			foreach ($q as $p) {
@@ -124,46 +125,6 @@ class CRM extends CI_Model
 		} else {
 			$this->willekeurige_rij = array();
 		}
-	}
-
-	public function toon_stijl()
-	{
-
-		$toon_stijl = '';
-		$label_en_checkboxes = '';
-
-		if (!$this->willekeurige_rij) {
-			$this->willekeurige_rij();
-		}
-
-		foreach ($this->willekeurige_rij as $k => $v) {
-
-			if ($k === 'id') continue;
-
-			if (!$this->post_data or !array_key_exists('check', $this->post_data)) {
-				$val =  "checked='checked'";
-			} else if (array_key_exists($k, $this->post_data['check']) and $this->post_data['check'][$k] === "on") {
-				$val =  "checked='checked'";
-			} else {
-				$val =  "";
-				$toon_stijl .= ".cel-$k{display:none}";
-			}
-
-			$label_en_checkboxes .= "<label for='check-$k'>" . str_replace("_", " ", $k) . "
-				<input
-					id='check-$k'
-					type='checkbox'
-					name='check[$k]'
-					class='toon'
-					$val
-				>
-			</label>";
-		}
-
-		return array(
-			'toon_stijl' => $toon_stijl,
-			'label_en_checkboxes' => $label_en_checkboxes
-		);
 	}
 
 	//update
@@ -271,8 +232,8 @@ class CRM extends CI_Model
 			$waarden_met_apostrophe = array_map(function ($waarde) {
 				return "'" . $waarde . "'";
 			}, $waarden);
-			$waarden_met_apostrophe[] = "'".$user."'";
-			$waarden_met_apostrophe[] = "'".$this->categorie."'";
+			$waarden_met_apostrophe[] = "'" . $user . "'";
+			$waarden_met_apostrophe[] = "'" . $this->categorie . "'";
 			$waarden_string_map[] .= "(" . implode(",", $waarden_met_apostrophe) . ")";
 		}
 		$waarden_string = implode(", ", $waarden_string_map);
@@ -348,7 +309,7 @@ class CRM extends CI_Model
 			}
 		}
 
-		$u =$this->user();
+		$u = $this->user();
 		foreach ($db_id_lijst as $aanwezig) {
 			if (!in_array($aanwezig, $form_id_lijst)) {
 				$queries['delete'][] = "DELETE FROM mensen WHERE id = '$aanwezig' AND user = '$u';";
@@ -376,13 +337,13 @@ class CRM extends CI_Model
 		$sql = "SELECT waarde FROM meta WHERE sleutel='$categorie-iv' AND user='$u'";
 
 		$q = $this->db->query($sql);
-		if (count ($q->result()) < 1) {
+		if (count($q->result()) < 1) {
 			echo "<h1>geen iv gevonden</h1>";
 			echo "<code>$sql</code>";
 			echo "<pre>";
 			var_dump($q);
 			echo "</pre>";
-die();
+			die();
 		}
 		return $q->result()[0]->waarde;
 	}
@@ -393,7 +354,7 @@ die();
 		$categorie = $this->categorie;
 
 		if ($iv === '') return false;
-$u = $this->user();
+		$u = $this->user();
 		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$categorie-iv' AND user='$u'");
 		return true;
 	}
