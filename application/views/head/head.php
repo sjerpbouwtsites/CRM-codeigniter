@@ -12,6 +12,7 @@
 		<link rel='stylesheet' href="<?= base_url('css/nav.css') ?>">
 		<meta http-equiv="Cache-control" content="no-cache">
 		<meta name="viewport" content="width=device-width">
+		<script src="https://d2wy8f7a9ursnm.cloudfront.net/v7/bugsnag.min.js"></script>
 		<link rel="shortcut icon" href="<?= base_url('afb/app-icons/favicon.ico') ?>" />
 		<link rel="apple-touch-icon" sizes="57x57" href="<?= base_url('afb/app-icons/little-penguin-57-27563.png') ?>">
 		<link rel="apple-touch-icon" sizes="72x72" href="<?= base_url('afb/app-icons/little-penguin-72-27563.png') ?>">
@@ -26,6 +27,8 @@
 		<meta name="msapplication-TileImage" content="<?= base_url('afb/app-icons/little-penguin-144-27563.png') ?>">
 		<meta name="theme-color" content="#d73f3f">
 		<base href='<?= base_url() ?>'>
+		<script>
+		</script>
 		<style>
 			body.lenin-poster {
 				background-image: url("<?= base_url('volg-het-ware-pad.jpg') ?>");
