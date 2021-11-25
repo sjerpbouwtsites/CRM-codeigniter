@@ -1,5 +1,5 @@
 export default function bugsnagInit() {
-  if (!Bugsnag) {
+  if (typeof Bugsnag === 'undefined') {
     alert('Whitelist deze site in je blocking addons.')
   }
 

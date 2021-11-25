@@ -16,6 +16,9 @@ function indexInit() {
 	// dingen die gaan draaien na decryptie. async.
 	DB()
 		.alsVeranderdDoe('ontsleuteld', () => {
+			if (!DB().ontsleuteld) {
+				return;
+			}
 			navigatieAnimatie();
 			formulierInit();
 			panelenInit();

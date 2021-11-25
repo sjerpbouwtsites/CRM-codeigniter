@@ -19,6 +19,7 @@ class Personslist extends CI_Controller
 	// dus vloerwerk.org/CRM
 	public function index()
 	{
+
 		if (!$this->users->user()) return;
 		$this->leden();
 	}
