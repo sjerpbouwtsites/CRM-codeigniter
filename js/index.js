@@ -14,7 +14,7 @@ function indexInit() {
 	try {
 		bugsnagInit();
 	} catch (error) {
-		throw error;
+		console.error(error);
 		return;
 	}
 
