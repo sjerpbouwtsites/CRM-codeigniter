@@ -8,7 +8,7 @@
 	<div id='sleutelaars' class='sleutelaars'>
 		<div class='sleutelaars-inner'>
 			<h2 class='versleutelde-titel versleutelde-titel--kleiner'>Sjerps end-to-end encrypted crm <small>v4.1.1</small></h2>
-			<h2 class='versleutelde-titel'>Ontsleutel voor toegang<br>tot <em><?= $categorie_naam ?></em> </h2>
+			<h2 class='versleutelde-titel'>Ontsleutel de <em class='versleutelde-titel-rood'><?= $categorie_naam ?></em> <br> van <em class='versleutelde-titel-rood'><?= $user_name ?></em></h2>
 			<div class='sleutelaars-inner-2'>
 				<label for='ontsleutel'>
 					<input id='ontsleutel' placeholder='wachtwoord' autocapitalize="off">

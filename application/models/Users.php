@@ -9,6 +9,26 @@ class Users extends CI_Model
 		$this->init();
 	}
 
+	private function meldFout(\Throwable $th, $context = '')
+	{
+		$this->bugsnaglib->inst->notifyError($context, $th->getMessage());
+		throw $th;
+		die();
+	}
+
+	private function meldUitzondering(\Throwable $th)
+	{
+		$this->bugsnaglib->inst->notifyException($th->getMessage());
+		throw $th;
+	}
+
+	private function dataPlat($data)
+	{
+		ob_start();
+		print_r($data);
+		return ob_get_clean($data);
+	}
+
 	public function init()
 	{
 		if (!isset($_SESSION)) {
@@ -20,12 +40,17 @@ class Users extends CI_Model
 
 	public function user()
 	{
-		if (!array_key_exists('user', $_SESSION)) return null;
-		return $_SESSION['user'];
+		try {
+			if (!array_key_exists('user', $_SESSION)) return null;
+			return $_SESSION['user'];
+		} catch (\Throwable $th) {
+			$this->meldFout($th, ' user func user model');
+		}
 	}
 
 	public function check_user_name_in_db($username)
 	{
+
 		$q = $this->db->query("SELECT * FROM users WHERE name = '$username'")->result_array();
 		$user_found = count($q) > 0;
 		if (!$user_found) {
@@ -45,7 +70,7 @@ class Users extends CI_Model
 
 		if (!$this->user()) {
 			$data = [];
-			$data['categorie_naam'] = '';
+			$data['title_el'] = 'Sjerps CRM';
 			$data['head_el'] = $this->load->view('head/head', $data, TRUE);
 			$this->load->view(
 				'set-user.php',

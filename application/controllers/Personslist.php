@@ -10,6 +10,7 @@ class Personslist extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
+
 		$this->load->model('users');
 		$this->load->model('CRM');
 		$this->users->handle_user();
@@ -32,7 +33,7 @@ class Personslist extends CI_Controller
 	{
 		if (!$this->users->user()) return;
 		if ($categorie_naam === '') {
-			throw new Error("BOE! een sys error HAHAHA 😱 Je url klopt niet of een categorie die zocht is niet geinstalleerd. Later!");
+			$this->bugsnaglib->inst->notifyException(new Exception("BOE! een sys error HAHAHA 😱 Je url klopt niet of een categorie die zocht is niet geinstalleerd. Later!"));
 		}
 		$this->CRM->zet_categorie_naam($categorie_naam);
 		$this->leden();
@@ -112,63 +113,75 @@ class Personslist extends CI_Controller
 	public function leden()
 	{
 
-		$csrf = $this->make_csrf();
+		try {
+			$csrf = $this->make_csrf();
 
-		// and send it too the cookie.
+			// and send it too the cookie.
 
-		$cookie_dev = [
-			'samesite' =>  'Strict',
-			'expires' => time() + 60 * 60 * 24 * 2,
-			'secure'  => true,
-			'path' 		=> "/"
-		];
+			$cookie_dev = [
+				'samesite' =>  'Strict',
+				'expires' => time() + 60 * 60 * 24 * 2,
+				'secure'  => true,
+				'path' 		=> "/"
+			];
 
-		$cookie_prod = [
-			'samesite' =>  'Strict',
-			'expires' => time() + 60 * 60 * 24 * 2,
-			'domain'  => base_url(),
-			'path'		=> "/",
-			'secure'  => true,
-		];
+			$cookie_prod = [
+				'samesite' =>  'Strict',
+				'expires' => time() + 60 * 60 * 24 * 2,
+				'domain'  => base_url(),
+				'path'		=> "/",
+				'secure'  => true,
+			];
 
-		$is_local = !!strpos(base_url(), 'localhost');
-		setcookie('XSRF-TOKEN', $csrf, $is_local ? $cookie_dev : $cookie_prod);
+			$is_local = !!strpos(base_url(), 'localhost');
+			setcookie('XSRF-TOKEN', $csrf, $is_local ? $cookie_dev : $cookie_prod);
 
-		$this->CRM->registreer_csrf_token($csrf);
+			$this->CRM->registreer_csrf_token($csrf);
+		} catch (\Throwable $th) {
+			$this->bugsnaglib->inst->notifyError($th);
+			throw $th;
+		}
 
-		$data = array();
+		try {
+			$data = array();
 
-		$data['categorie_naam'] = $this->CRM->categorie;
-		$data = array_merge($data, $this->CRM->maak_form_data());
-		$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
-		$data['head_el'] = $this->load->view('head/head', $data, TRUE);
-		$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
-		$data['oude_iv'] = $this->CRM->pak_iv();
-		$data['csrf_form'] = $csrf;
+			$data['categorie_naam'] = $this->CRM->categorie;
+			$data = array_merge($data, $this->CRM->maak_form_data());
+			$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
+			$data['title_el'] = $this->users->user() . " - " . $this->CRM->categorie;
+			$data['head_el'] = $this->load->view('head/head', $data, TRUE);
+			$data['user_name'] = $this->users->user();
+			$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
+			$data['oude_iv'] = $this->CRM->pak_iv();
+			$data['csrf_form'] = $csrf;
 
-		$data['navigatie'] = $this->dirty_get_view('nav/nav.php', [
-			'nav_title'		=> 'menu',
-			'nav_inhoud'	=> $this->dirty_get_view('nav/menu.php', [
-				'nav_title'	=> 'menu',
-				'paginalinks' => $this->make_nav(),
-			])
-		]);
-		$data['filters'] = $this->dirty_get_view('nav/nav.php', [
-			'nav_title'		=> 'filters',
-			'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
-		]);
-		$data['acties'] = $this->dirty_get_view('nav/nav.php', [
-			'nav_title'		=> 'acties',
-			'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [
-				'is_op_leden' => $this->CRM->categorie === 'leden',
-			])
-		]);
-		$data['config'] = $this->dirty_get_view('nav/nav.php', [
-			'nav_title'		=> 'config',
-			'nav_inhoud'  => $this->dirty_get_view('nav/config.php', [])
-		]);
-		$data['controls'] = $this->dirty_get_view('controls.php', $data);
-		$data['lege_categorie'] = $this->CRM->lege_categorie;
-		$this->load->view('layout.php', $data);
+			$data['navigatie'] = $this->dirty_get_view('nav/nav.php', [
+				'nav_title'		=> 'menu',
+				'nav_inhoud'	=> $this->dirty_get_view('nav/menu.php', [
+					'nav_title'	=> 'menu',
+					'paginalinks' => $this->make_nav(),
+				])
+			]);
+			$data['filters'] = $this->dirty_get_view('nav/nav.php', [
+				'nav_title'		=> 'filters',
+				'nav_inhoud'  => $this->dirty_get_view('nav/filters.php', [])
+			]);
+			$data['acties'] = $this->dirty_get_view('nav/nav.php', [
+				'nav_title'		=> 'acties',
+				'nav_inhoud'  => $this->dirty_get_view('nav/acties.php', [
+					'is_op_leden' => $this->CRM->categorie === 'leden',
+				])
+			]);
+			$data['config'] = $this->dirty_get_view('nav/nav.php', [
+				'nav_title'		=> 'config',
+				'nav_inhoud'  => $this->dirty_get_view('nav/config.php', [])
+			]);
+			$data['controls'] = $this->dirty_get_view('controls.php', $data);
+			$data['lege_categorie'] = $this->CRM->lege_categorie;
+			$this->load->view('layout.php', $data);
+		} catch (\Throwable $th) {
+			$this->bugsnaglib->inst->notifyError($th, ' inladen views personslist');
+			throw $th;
+		}
 	}
 }
