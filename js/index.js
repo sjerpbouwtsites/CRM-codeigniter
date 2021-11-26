@@ -11,7 +11,12 @@ import bugsnagInit from "./modules/bugsnag.js";
 
 function indexInit() {
 
-	bugsnagInit();
+	try {
+		bugsnagInit();
+	} catch (error) {
+		throw error;
+		return;
+	}
 
 	// dingen die gaan draaien na decryptie. async.
 	DB()
