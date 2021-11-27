@@ -5,16 +5,16 @@
 		<button class='mob-toon' data-toon='form-acties'>toon admin veld</button>
 	</nav>
 
-	<div id='sleutelaars' class='sleutelaars'>
-		<div class='sleutelaars-inner'>
-			<h2 class='versleutelde-titel versleutelde-titel--kleiner'>Sjerps end-to-end encrypted crm <small>v4.1.1</small></h2>
-			<h2 class='versleutelde-titel'>Ontsleutel de <em class='versleutelde-titel-rood'><?= $categorie_naam ?></em> <br> van <em class='versleutelde-titel-rood'><?= $user_name ?></em></h2>
-			<div class='sleutelaars-inner-2'>
+	<div id='sleutelaars' class='sleutelaars sleutelaars--categorie'>
+		<div class='sleutelaars-inner sleutelaars-inner--categorie'>
+			<h2 class='versleutelde-titel versleutelde-titel--categorie versleutelde-titel--kleiner'>Sjerps end-to-end encrypted crm <small>v4.1.1</small></h2>
+			<h2 class='versleutelde-titel versleutelde-titel--categorie'>Ontsleutel de <em class='versleutelde-titel-rood'><?= $categorie_naam ?></em> <br> van <em class='versleutelde-titel-rood'><?= $user_name ?></em></h2>
+			<div class='sleutelaars-inner-2 sleutelaars-inner-2--categorie'>
 				<label for='ontsleutel'>
 					<input id='ontsleutel' placeholder='wachtwoord' autocapitalize="off">
 				</label>
 				</label>
-				<button id='ontsleutel-knop' class='ontsleutel'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
+				<button id='ontsleutel-knop' class='ontsleutel ontsleutel--categorie'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
 			</div>
 		</div>
 	</div>
