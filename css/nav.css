@@ -315,3 +315,32 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 .actieknoppen {
 	font-size: 0.5em;
 }
+
+.herladen.verborgen{
+	transform: translate(-150%, -50%) ;
+}
+.herladen {
+	text-transform: uppercase;
+	background: linear-gradient(135deg, #aCaD9C15 25%, transparent 25%) -50px 0, linear-gradient(225deg, #aCaD9C20 25%, transparent 25%) -50px 0, linear-gradient(315deg, #ECEDDC25 25%, transparent 25%), linear-gradient(45deg, #ECEDDC30 25%, transparent 25%);
+			background-color: rgba(0, 0, 0, 0);
+			background-position-x: -50px, -50px, 0%, 0%;
+			background-position-y: 0px, 0px, 0%, 0%;
+			background-size: auto, auto, auto, auto;
+	background-size: 8% 120%;
+	background-color: #ac2525;
+	border: 2px solid #c0242433;
+	position: fixed;
+	z-index: 1000;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) ;
+	background-position: center -48%;
+}
+.herladen:hover {
+	background: linear-gradient(135deg, #aCaD9C55 25%, transparent 25%) -50px 0, linear-gradient(225deg, #aCaD9C20 25%, transparent 25%) -50px 0, linear-gradient(315deg, #ECEDDC25 25%, transparent 25%), linear-gradient(45deg, #ECEDDC30 25%, transparent 25%);
+			background-color: rgba(0, 0, 0, 0);
+			background-position-x: -50px, -50px, 0%, 0%;
+			background-position-y: 0px, 0px, 0%, 0%;
+			background-size: auto, auto, auto, auto;	
+	background-size: 8% 150%;
+}

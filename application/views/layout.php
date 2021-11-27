@@ -22,6 +22,7 @@ function cel($html = "", $class = '')
 
 	<?= $kop_en_knoppen ?>
 
+	<button id='herlaad-pagina-knop' class='herladen verborgen'>Herladen</button>
 
 	<div class='formulier-en-controls categorie-<?= $categorie_naam ?>'>
 
