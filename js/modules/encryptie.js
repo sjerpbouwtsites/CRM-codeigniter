@@ -147,7 +147,7 @@ function verzendInStukkenCallback(e) {
 
 			return axios
 				.request({
-					url: gr.el("grote-categorie-formulier").action,
+					url: gr.el("grote-categorie-formulier").dataset.action,
 					method: "post",
 					data: maakSQLVriendelijkePostData(),
 				})
