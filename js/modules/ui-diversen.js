@@ -5,7 +5,8 @@ import { NavElement } from "./navigatie-animatie.js";
 export default {
 	zetEscapeKlikVoorAlles,
 	afsluitingsAnimatieHandler,
-	naOpslaanHerlaadfunctionaliteit
+	naOpslaanHerlaadfunctionaliteit,
+	laadEvtAndereBladen
 }
 
 export function zetEscapeKlikVoorAlles() {
@@ -66,3 +67,20 @@ export function naOpslaanHerlaadfunctionaliteit() {
 	})
 }
 
+/**
+ * checkbox op ontsleutelscherm. Bepaalt of alleen dit blad geopend gaat
+ * worden of dat de andere twee bladen ook geopend moeten worden. 
+ */
+export function laadEvtAndereBladen() {
+
+	if (!document.getElementById('open-andere-bladen').checked) {
+		return;
+	}
+	const base = location.href + location.href.includes('localhost') ? 'index.php/' : '';
+	setTimeout(() => {
+		window.open(base + 'categorie/contacten#herladen-met-wachtwoord');
+	}, 250)
+	setTimeout(() => {
+		window.open(base + 'categorie/bondgenoten#herladen-met-wachtwoord');
+	}, 500)
+}

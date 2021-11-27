@@ -5,7 +5,7 @@ import devExInit from "./modules/dev-ex.js";
 import * as encryptie from "./modules/encryptie.js";
 import printerInit from "./modules/printer.js";
 import DB from "./modules/database.js";
-import { zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler, naOpslaanHerlaadfunctionaliteit } from "./modules/ui-diversen.js";
+import { zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler, naOpslaanHerlaadfunctionaliteit, laadEvtAndereBladen } from "./modules/ui-diversen.js";
 import nieuweCategorieInit from "./modules/nieuwe-categorie.js";
 import bugsnagInit from "./modules/bugsnag.js";
 
@@ -24,6 +24,7 @@ function indexInit() {
 			if (!DB().ontsleuteld) {
 				return;
 			}
+			laadEvtAndereBladen();
 			navigatieAnimatie();
 			formulierInit();
 			panelenInit();
@@ -34,6 +35,7 @@ function indexInit() {
 		})
 
 	// sync
+
 	encryptie.decryptieInit();
 	formulierOntsleutelingsAnimatie();
 	afsluitingsAnimatieHandler();
