@@ -343,6 +343,7 @@ function zetVeldWaarde(plaintextBuffer, versleuteldVeld) {
 export function decryptieInit() {
 	wachtwoordVeldNawerk();
 	zetOntsleutelClick();
+	bijOntsleutelfoutHerlaadgeheugenWissen();
 }
 
 
@@ -368,6 +369,13 @@ function wachtwoordVeldNawerk() {
 	o.value = "";
 	o.focus();
 }
+
+function bijOntsleutelfoutHerlaadgeheugenWissen() {
+	DB().alsVeranderdDoe('ontsleutelFout', (waarde, oudeWaarde) => {
+		console.log(waarde, oudeWaarde)
+	})
+}
+
 function zetOntsleutelClick() {
 	// enter terwijl in invoerveld = klik button
 	gr.el("ontsleutel").addEventListener("keyup", function (e) {
