@@ -46,9 +46,11 @@
 			}
 
 			.start-bewerken-cel {
-
 				background-image: url("<?= base_url('img/account-edit.png') ?>");
+			}
 
+			.transfer-cel {
+				background-image: url("<?= base_url('img/transfer.png') ?>");
 			}
 
 			.rij-in-handmatige-selectie {

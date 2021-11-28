@@ -23,7 +23,7 @@ export default class PersoonRij {
 	/**
 	 * element rij ref
 	 */
-	 element = null;
+	element = null;
 
 	/**
 	 * input-name input-id (zonder voorvoeging) mapping.
@@ -67,11 +67,11 @@ export default class PersoonRij {
 		return new Date(this.laatst_gezien.split("-").reverse()).getTime();
 	}
 
-	get heeftGeldigeTel(){
+	get heeftGeldigeTel() {
 		return document.getElementById(`pers-${this.naamIdMap.telefoon}`).value.length >= 10;
 	}
 
-	get heeftGeldigeEmail(){
+	get heeftGeldigeEmail() {
 		const v = document.getElementById(`pers-${this.naamIdMap.email}`).validity;
 		return !v.valueMissing && !v.typeMismatch;
 	}
@@ -136,7 +136,7 @@ export default class PersoonRij {
 		}
 		if (handmatigeSelectieModus) {
 			return this.element.classList.contains('in-handmatige-selectie')
-		} 
+		}
 
 		return true;
 	}
@@ -149,7 +149,7 @@ export default class PersoonRij {
 			const leesId = `lees-${idBasis}`;
 			const inputId = `pers-${idBasis}`;
 			const print = this._data[naam];
-			
+
 			gr.el(leesId).innerHTML = print;
 			if (print.trim().length === 0) {
 				gr.el(inputId).classList.add("geen-data");
@@ -158,6 +158,7 @@ export default class PersoonRij {
 			}
 		});
 	}
+
 
 	/**
 	 * maakt proxy van eigen object zodat gets en sets gecontroleerd worden.

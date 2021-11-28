@@ -162,7 +162,8 @@ form.crm-formulier {
 .beeindig-bewerken-cel, 
 .beeindig-bewerken-multi,
 .start-bewerken-cel,
-.rij-in-handmatige-selectie {
+.rij-in-handmatige-selectie,
+.transfer-cel {
 	width: 28px;
 	position: absolute;
 	bottom: 0;
@@ -173,11 +174,13 @@ form.crm-formulier {
 	background-position: center center;
 	background-repeat: no-repeat;
 }
+
 .beeindig-bewerken-cel,
 .beeindig-bewerken-multi {
 	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0nd2hpdGUnIGQ9Ik0xOCA3bC0xLjQxLTEuNDEtNi4zNCA2LjM0IDEuNDEgMS40MUwxOCA3em00LjI0LTEuNDFMMTEuNjYgMTYuMTcgNy40OCAxMmwtMS40MSAxLjQxTDExLjY2IDE5bDEyLTEyLTEuNDItMS40MXpNLjQxIDEzLjQxTDYgMTlsMS40MS0xLjQxTDEuODMgMTIgLjQxIDEzLjQxeiIvPjwvc3ZnPgoK);	
 }
-.beeindig-bewerken-cel {
+.beeindig-bewerken-cel, 
+.transfer-cel {
 	display: none;
 }
 .beeindig-bewerken-cel:hover,
@@ -185,6 +188,13 @@ form.crm-formulier {
 .beeindig-bewerken-multi:hover {
 	background-color: #4ebcde;
   filter: brightness(110%)
+}
+.transfer-cel {
+	bottom: 70px;
+	background-color: rgb(75, 75, 221);
+}
+.transfer-cel:hover {
+	background-color: rgb(42, 42, 214);
 }
 .start-bewerken-cel {
 	display: block;
@@ -207,6 +217,9 @@ form.crm-formulier {
 }
 
 .bewerk-modus .beeindig-bewerken-cel {
+	display: block;
+}
+.bewerk-modus .transfer-cel {
 	display: block;
 }
 .bewerk-modus .start-bewerken-cel {

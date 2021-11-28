@@ -8,6 +8,7 @@ import DB from "./modules/database.js";
 import { zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler, naOpslaanHerlaadfunctionaliteit, laadEvtAndereBladen } from "./modules/ui-diversen.js";
 import nieuweCategorieInit from "./modules/nieuwe-categorie.js";
 import bugsnagInit from "./modules/bugsnag.js";
+import mensenOverzettenInit from "./modules/mensen-overzetten.js";
 
 function indexInit() {
 
@@ -33,6 +34,7 @@ function indexInit() {
 			zetEscapeKlikVoorAlles()
 			encryptie.alsWachtwoordGewijzigd();
 			triggerClickSorteerOpNaam();
+			mensenOverzettenInit();
 		})
 
 	// sync

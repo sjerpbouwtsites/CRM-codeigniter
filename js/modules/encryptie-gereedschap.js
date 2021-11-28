@@ -22,14 +22,14 @@ export function verwerkFout(err, voorvoeging) {
 	);
 }
 
-export function byteArrayToBase64 (byteArray) {
-		var binaryString = "";
-		for (var i = 0; i < byteArray.byteLength; i++) {
-			binaryString += String.fromCharCode(byteArray[i]);
-		}
-		var base64String = window.btoa(binaryString);
-		return base64String;
+export function byteArrayToBase64(byteArray) {
+	var binaryString = "";
+	for (var i = 0; i < byteArray.byteLength; i++) {
+		binaryString += String.fromCharCode(byteArray[i]);
 	}
+	var base64String = window.btoa(binaryString);
+	return base64String;
+}
 
 
 export function base64ToByteArray(base64String) {
@@ -47,34 +47,34 @@ export function base64ToByteArray(base64String) {
 }
 
 
-export  function byteArrayToString(byteArray) {
-		if ("TextDecoder" in window) {
-			const decoder = new window.TextDecoder();
-			return decoder.decode(byteArray);
-		}
-
-		// Otherwise, fall back to 7-bit ASCII only
-		var result = "";
-		for (var i = 0; i < byteArray.byteLength; i++) {
-			result += String.fromCharCode(byteArray[i]);
-		}
-		return result;
+export function byteArrayToString(byteArray) {
+	if ("TextDecoder" in window) {
+		const decoder = new window.TextDecoder();
+		return decoder.decode(byteArray);
 	}
 
-
-export function stringToByteArray (s) {
-		if ("TextEncoder" in window) {
-			const encoder = new window.TextEncoder();
-			return encoder.encode(s);
-		}
-
-		// Otherwise, fall back to 7-bit ASCII only
-		var result = new Uint8Array(s.length);
-		for (var i = 0; i < s.length; i++) {
-			result[i] = s.charCodeAt(i);
-		}
-		return result;
+	// Otherwise, fall back to 7-bit ASCII only
+	var result = "";
+	for (var i = 0; i < byteArray.byteLength; i++) {
+		result += String.fromCharCode(byteArray[i]);
 	}
+	return result;
+}
+
+
+export function stringToByteArray(s) {
+	if ("TextEncoder" in window) {
+		const encoder = new window.TextEncoder();
+		return encoder.encode(s);
+	}
+
+	// Otherwise, fall back to 7-bit ASCII only
+	var result = new Uint8Array(s.length);
+	for (var i = 0; i < s.length; i++) {
+		result[i] = s.charCodeAt(i);
+	}
+	return result;
+}
 
 
 /**

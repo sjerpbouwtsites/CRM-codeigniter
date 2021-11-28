@@ -4,12 +4,12 @@
  * @param {string} mailsVanLedenUitCRMJSON
  * @returns javascript
  */
-export default function maakRiseupScript(mailsVanLedenUitCRMJSON){
-return `
+export default function maakRiseupScript(mailsVanLedenUitCRMJSON) {
+  return `
 
 const mailsVanLedenUitCRM = ${mailsVanLedenUitCRMJSON};
 
-function VWRequirementsMet(){
+function VWRequirementsMet(){  
   return location.href.includes('lists.riseup.net') && location.search.includes('size=500')
 }
 
@@ -60,5 +60,5 @@ function VWinitRiseupScript (){
   runVWFilters()
 }
 
-VWinitRiseupScript()`  
+VWinitRiseupScript()`
 }
