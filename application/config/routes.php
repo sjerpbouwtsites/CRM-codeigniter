@@ -52,6 +52,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $route['default_controller'] = 'personslist'; // super shit legacy
 $route['categorie/(:any)'] = "personslist/categorie/$1";
 $route['categorie'] = "personslist";
+$route['hannes'] = "hannes";
 $route['post-batch'] = "api/batch";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

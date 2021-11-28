@@ -40,11 +40,15 @@ function cel($html = "", $class = '')
 
 			foreach ($form_data as $pers) :
 
+
 				echo "<div id='form-rij-{$pers['id']}' class='form-rij'>";
 
-				echo "<button class='start-bewerken-cel'></button>";
-				echo "<button class='beeindig-bewerken-cel'></button>";
-				echo "<button class='rij-in-handmatige-selectie'></button>";
+				echo "<div class='cel-labels form-cel verborgen'></div>";
+
+				echo "<button title='start bewerken deze persoon' class='start-bewerken-cel'></button>";
+				echo "<button title='stop bewerken deze persoon' class='beeindig-bewerken-cel'></button>";
+				echo "<button title='zet deze persoon over naar andere tabel' id='transfer-cel-{$pers['id']}' class='transfer-cel'></button>";
+				echo "<button title='voeg toe aan selectie' class='rij-in-handmatige-selectie'></button>";
 
 				cel("<input
 							class='pers-id'
@@ -54,6 +58,8 @@ function cel($html = "", $class = '')
 							data-naam='id'
 							value='{$pers['id']}'
 							>", "rij-verwijderen");
+
+
 
 
 				foreach ($pers as $k => $v) :

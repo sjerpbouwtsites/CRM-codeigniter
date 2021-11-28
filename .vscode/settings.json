@@ -12,6 +12,20 @@
       "database": "CRM_local",
       "username": "sjerp",
       "password": "sjerp"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MariaDB",
+      "name": "crm",
+      "group": "local",
+      "database": "crm",
+      "username": "sjerp",
+      "password": "sjerp"
     }
   ],
   "restructuredtext.confPath": "",

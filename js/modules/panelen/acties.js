@@ -4,30 +4,30 @@ import * as gr from "../gereedschap.js";
 import { NavElement } from "../navigatie-animatie.js";
 import DB from "../database.js";
 import PersoonRij from "../persoon-rij.js";
-import {opslaan} from "../encryptie.js";
+import { opslaan } from "../encryptie.js";
 
-export default function() {
+export default function () {
 	zetLijstKnoppenClicks();
-	zetRiseupCheckButtonClick();  
-  ZetClickVoegPersoonToe();
+	zetRiseupCheckButtonClick();
+	ZetClickVoegPersoonToe();
 	zetClickOpenMultiBewerk();
 	zetAlsMultiBewerkVeranderd()
 	zetClickBeeindigMultiBewerker()
 	zetWachtwoordVeranderen();
 }
 
-function zetWachtwoordVeranderen(){
+function zetWachtwoordVeranderen() {
 	gr.el('wachtwoord-veranderen').addEventListener('click', veranderWachtwoord)
 }
 
-function veranderWachtwoord(e){
+function veranderWachtwoord(e) {
 	e.preventDefault();
 	if (!confirm('Weet je zeker dat je het wachtwoord wilt veranderen?')) return;
 	var oudWachtwoord = DB().wachtwoord;
 	var nieuwWachtwoord = prompt('Verander wachtwoord naar');
 	DB().wachtwoord = nieuwWachtwoord;
 	gr.communiceer('Over 10 seconden worden nieuwe tabbladen geopend. In de andere categorieen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen')
-	setTimeout(()=> {
+	setTimeout(() => {
 
 		const huidigeCategorie = document.querySelector('[name="form_meta[categorie_naam]"').value;
 		let baseUrl = document.body.getAttribute('data-base-url');
@@ -41,26 +41,26 @@ function veranderWachtwoord(e){
 		})
 		opslaan();
 	}, 10000)
-	
+
 }
 
-function zetClickOpenMultiBewerk(){
+function zetClickOpenMultiBewerk() {
 	gr.el('schakel-multi-bewerk').addEventListener('click', toggleMultiBewerk)
 }
 
-function zetAlsMultiBewerkVeranderd(){
-	DB().alsVeranderdDoe('multiBewerk', (nieuweStaat, oudeStaat)=>{
-		
+function zetAlsMultiBewerkVeranderd() {
+	DB().alsVeranderdDoe('multiBewerk', (nieuweStaat, oudeStaat) => {
+
 		// zet tekst in button
 		const multiBewerkKnop = gr.el('schakel-multi-bewerk');
 		const appBody = gr.el('app-body');
-		if(nieuweStaat === true) {
+		if (nieuweStaat === true) {
 			multiBewerkKnop.innerHTML = "Stop multi bewerking";
 			multiBewerkKnop.setAttribute('data-ingeschakeld', true)
 			appBody.setAttribute('data-multi-bewerking', true)
 		} else {
 			multiBewerkKnop.innerHTML = "Hele selectie bewerken";
-			multiBewerkKnop.removeAttribute('data-ingeschakeld')			
+			multiBewerkKnop.removeAttribute('data-ingeschakeld')
 			appBody.removeAttribute('data-multi-bewerking')
 			const oudeMultiRijBuiten = gr.el('multi-rij-buiten');
 			oudeMultiRijBuiten.parentNode.removeChild(oudeMultiRijBuiten);
@@ -83,14 +83,14 @@ function zetAlsMultiBewerkVeranderd(){
 		rijenLijst.appendChild(multiBewerkSchil)
 		const multiRij = gr.el('form-rij-multi-rij');
 		multiRij.classList.add('multi-rij', 'bewerk-modus')
-		
+
 		// verwijderen uit multi rij
-		const ongewensteElementen = ['.rij-verwijderen', '.cel-naam', '.cel-email', '.cel-telefoon', '.cel-laatst_gezien', '.cel-aantekening' ];
+		const ongewensteElementen = ['.rij-verwijderen', '.cel-naam', '.cel-email', '.cel-telefoon', '.cel-laatst_gezien', '.cel-aantekening'];
 		ongewensteElementen.forEach(ongewenst => {
 			const o = gr.el(ongewenst, multiRij);
 			o.parentNode.removeChild(o)
 		})
-		
+
 		const beeindigBewerken = gr.el('.beeindig-bewerken-cel', multiRij)
 		beeindigBewerken.classList.remove('beeindig-bewerken-cel')
 		beeindigBewerken.classList.add('beeindig-bewerken-multi')
@@ -100,24 +100,24 @@ function zetAlsMultiBewerkVeranderd(){
 		})
 
 		const multiRijUitleg = document.createElement('div');
-		multiRijUitleg.className= 'multi-rij-uitleg';
+		multiRijUitleg.className = 'multi-rij-uitleg';
 		multiRijUitleg.innerHTML = `<h2 class='form-rij-titel'>Je bewerkt meerdere rijen in &eacute;&eacute;n keer.</h2>
 		<p class='form-rij-tekst'>In ieder veld waar je iets invuld zal dit alle voorgaande data bij al deze rijen overschrijven bij de volgende rijen: :</p>
 		<ol class='form-rij-lijst'>
-			${namen.map(naam=> {
-				return `<li class='form-rij-lijst-stuk'>${naam}</li>`;
-			}).join('')}
+			${namen.map(naam => {
+			return `<li class='form-rij-lijst-stuk'>${naam}</li>`;
+		}).join('')}
 		</ol>`
-		;
+			;
 		multiRij.appendChild(multiRijUitleg);
 
 	})
 }
 
-function zetClickBeeindigMultiBewerker(){
+function zetClickBeeindigMultiBewerker() {
 	gr.el('grote-categorie-formulier').addEventListener('click', beeindigMultiBewerken)
 }
-function beeindigMultiBewerken(e){
+function beeindigMultiBewerken(e) {
 
 	if (!gr.vindInOuders(e.target, (element) => {
 		return element.classList.contains("beeindig-bewerken-multi");
@@ -142,26 +142,26 @@ function beeindigMultiBewerken(e){
 		if (sectorNaam.length) {
 			gr.el('[data-naam="sector"]', rij).value = sectorNaam;
 			gr.el('.pers-lezen__sector', rij).innerHTML = sectorNaam;
-		}		
+		}
 		if (contactNaam.length) {
 			gr.el('[data-naam="contact"]', rij).value = contactNaam;
 			gr.el('.pers-lezen__contact', rij).innerHTML = contactNaam;
-		}				
+		}
 		if (woonplaatsNaam.length) {
 			gr.el('[data-naam="woonplaats"]', rij).value = woonplaatsNaam;
 			gr.el('.pers-lezen__woonplaats', rij).innerHTML = woonplaatsNaam;
-		}						
+		}
 		if (ikWil.length) {
 			gr.el('[data-naam="ik_wil"]', rij).value = ikWil;
 			gr.el('.pers-lezen__ik_wil', rij).innerHTML = ikWil;
-		}								
+		}
 	})
 	DB().handmatigeSelectie = false;
 	DB().multiBewerk = false;
 
 }
 
-function toggleMultiBewerk(e){
+function toggleMultiBewerk(e) {
 	e.preventDefault();
 	const db = DB();
 	NavElement.sluitAlleNavElementen();
@@ -171,50 +171,50 @@ function toggleMultiBewerk(e){
 /**
  * zet lijst buttons click handlers.
  */
- function zetLijstKnoppenClicks() {
-  gr.pakElementVeilig("lijst-mail-button")
-	.addEventListener("click", (e) => {
-		maakLijst("mail", e);
-	});
+function zetLijstKnoppenClicks() {
+	gr.pakElementVeilig("lijst-mail-button")
+		.addEventListener("click", (e) => {
+			maakLijst("mail", e);
+		});
 	gr.pakElementVeilig("lijst-telefoon-button")
-	.addEventListener("click", (e) => {
-		maakLijst("telefoon", e);
-	});
+		.addEventListener("click", (e) => {
+			maakLijst("telefoon", e);
+		});
 	gr.pakElementVeilig("lijst-telefoon-multi")
-	.addEventListener("click", (e) => {
-		maakLijst("multi", e);
-	});	
+		.addEventListener("click", (e) => {
+			maakLijst("multi", e);
+		});
 }
 
-function zetRiseupCheckButtonClick(){
+function zetRiseupCheckButtonClick() {
 
 	if (location.href.includes('contacten') || location.href.includes('bondgenoten') || location.href.includes('riders')) return;
 
 	gr.pakElementVeilig("riseup-check")
-	.addEventListener("click", (e) => {
-		e.preventDefault();
-		riseupCheck(e);
-	});	
+		.addEventListener("click", (e) => {
+			e.preventDefault();
+			riseupCheck(e);
+		});
 }
 
 
 /**
  * knalt emails in script dat valt te gebruiken in de console van riseup.
  */
- function riseupCheck(e){
+function riseupCheck(e) {
 	const mailsVanLedenUitCRM = gr
 		.elArray('.pers-input[type="email"]')
 		.map(emailVeld => {
-		return emailVeld.value.toLowerCase().trim()
-	})
+			return emailVeld.value.toLowerCase().trim()
+		})
 	const mailsVanLedenUitCRMJSON = JSON.stringify(mailsVanLedenUitCRM);
 	const riseupScript = maakRiseupScript(mailsVanLedenUitCRMJSON);
 	gr.communiceer(pakTekst('riseup'));
 	gr.schrijfNaarClipboard(riseupScript, !!e);
-	setTimeout(()=>{
+	setTimeout(() => {
 		window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
 	}, 3000)
-		
+
 }
 
 /**
@@ -225,7 +225,7 @@ function zetRiseupCheckButtonClick(){
  * @param {string} lijstWat mail|telefoon
  * @param {event} event click event
  */
- function maakLijst(lijstWat, event = null) {
+function maakLijst(lijstWat, event = null) {
 	event && event.preventDefault();
 	const isMail = lijstWat === "mail";
 	const isMulti = lijstWat === "multi";
@@ -239,34 +239,34 @@ function zetRiseupCheckButtonClick(){
 	// MAIL
 	if (isMail) {
 		persRijen
-		.filter(P => P.heeftGeldigeEmail)
-		.forEach((P, index) => {
-			if (printMetNamen) {
-				printTekst += `${P.naam} &lt;${P.email}&gt;, `.toLowerCase();
-				linkHref += `${P.naam} <${P.email}>, `.toLowerCase();
-			} else {
-				linkHref += `${P.email}, `.toLowerCase();
-				printTekst += `${P.email}, `.toLowerCase();
-			}
-		});
+			.filter(P => P.heeftGeldigeEmail)
+			.forEach((P, index) => {
+				if (printMetNamen) {
+					printTekst += `${P.naam} &lt;${P.email}&gt;, `.toLowerCase();
+					linkHref += `${P.naam} <${P.email}>, `.toLowerCase();
+				} else {
+					linkHref += `${P.email}, `.toLowerCase();
+					printTekst += `${P.email}, `.toLowerCase();
+				}
+			});
 		const a = encodeURIComponent(linkHref);
 		ankerHTML = `
       <span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in </span><a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a><a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>      
 		`;
 	} else if (isMulti) {
 		const tabelRijen = persRijen
-		.map(P => {
-			return `<tr>
+			.map(P => {
+				return `<tr>
 				<td>${P.naam}</td>
 				<td>${P.heeftGeldigeTel ? P.telefoon : ''}</td>
 				<td>${P.heeftGeldigeEmail ? P.email : ''}</td>
 			</tr>`
-		}).join('')
+			}).join('')
 
-		linkHref = `CRM uitdraai ${new Date().toLocaleString()} \n\n`+ persRijen
-		.map(P => {
-			return `${P.naam.padEnd(25, ' ')}${P.heeftGeldigeTel ? P.telefoon.padEnd(15, ' ') : ''.padEnd(15, ' ')}${P.heeftGeldigeEmail ? P.email : ''}\n`
-		}).join('')
+		linkHref = `CRM uitdraai ${new Date().toLocaleString()} \n\n` + persRijen
+			.map(P => {
+				return `${P.naam.padEnd(25, ' ')}${P.heeftGeldigeTel ? P.telefoon.padEnd(15, ' ') : ''.padEnd(15, ' ')}${P.heeftGeldigeEmail ? P.email : ''}\n`
+			}).join('')
 
 		printTekst = `
 			<p>Als je 'm als een nette tabel wilt moet je 'm wel met de hand kopie&euml;ren.</p>
@@ -287,16 +287,16 @@ function zetRiseupCheckButtonClick(){
 	} else {
 		// TELEFOON
 		persRijen
-		.filter(P => P.heeftGeldigeTel)
-		.forEach((P) => {
-			const t  = P.telefoon.replace(/[\s-]/,'');
-			printTekst += printMetNamen ? `${P.naam}: ${t}<br>` : `${t}, `;
-			linkHref += `${t}, `;
-			const a = encodeURIComponent(linkHref);
-			ankerHTML = !printMetNamen ? `
+			.filter(P => P.heeftGeldigeTel)
+			.forEach((P) => {
+				const t = P.telefoon.replace(/[\s-]/, '');
+				printTekst += printMetNamen ? `${P.naam}: ${t}<br>` : `${t}, `;
+				linkHref += `${t}, `;
+				const a = encodeURIComponent(linkHref);
+				ankerHTML = !printMetNamen ? `
       <span class='print-buttons-text'>Stuur:</span>
       <a class='print-button tel-sms' href='sms:${a}'>SMS (mobiel)</a>` : '';
-		});
+			});
 	}
 
 	const printHTML = `
@@ -336,8 +336,8 @@ function voegPersoonToe(e) {
 
 	//
 	const oudeStijl = document.querySelector('.form-rij[style*=background]').getAttribute('style');
-	legeClone.setAttribute('style', oudeStijl); 
-	
+	legeClone.setAttribute('style', oudeStijl);
+
 	gr.el("voeg-rij-toe").removeAttribute("disabled");
 	const db = DB();
 	db.bewerkModus = true;
@@ -353,8 +353,8 @@ function voegPersoonToe(e) {
  *
  * @param {*} persoonRijen
  */
-function maakNieuweId(rijen){
-const id = Math.max(
+function maakNieuweId(rijen) {
+	const id = Math.max(
 		...rijen.map((rij) => {
 			const id = rij.querySelector(".pers-id").value;
 			return Number(id) || 0;
@@ -364,14 +364,14 @@ const id = Math.max(
 }
 
 
-function pakVandaagString(){
+function pakVandaagString() {
 	var datumInstance = new Date();
 	var vandaag =
-	datumInstance.getDate() +
-	"-" +
-	(datumInstance.getMonth() + 1) +
-	"-" +
-	datumInstance.getFullYear();
+		datumInstance.getDate() +
+		"-" +
+		(datumInstance.getMonth() + 1) +
+		"-" +
+		datumInstance.getFullYear();
 	return vandaag;
 }
 
@@ -381,6 +381,8 @@ function maakLegePersoonRij(id) {
 	<div id="form-rij-${id}" class="form-rij" style="">
 	<button class="start-bewerken-cel"></button>
 		<button class="beeindig-bewerken-cel"></button>
+		<button title='zet deze persoon over naar andere tabel' id='transfer-cel-${id}' class='transfer-cel'></button>
+		<button title='voeg toe aan selectie' class='rij-in-handmatige-selectie'></button>
 		<div class="rij-verwijderen form-cel">
 			<input class="pers-id" id="pers-${id}-id" type="hidden" name="form[${id}][id]" data-naam="id" value="${id}">
 		</div>
@@ -429,4 +431,4 @@ function maakLegePersoonRij(id) {
 		</div>
 	</div>
 	`
-} ;
+};

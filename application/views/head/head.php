@@ -46,13 +46,27 @@
 			}
 
 			.start-bewerken-cel {
-
 				background-image: url("<?= base_url('img/account-edit.png') ?>");
+			}
 
+			.transfer-cel {
+				background-image: url("<?= base_url('img/transfer.png') ?>");
 			}
 
 			.rij-in-handmatige-selectie {
 				background-image: url("<?= base_url('img/select-group.png') ?>");
+			}
+
+			.label-tel {
+				background-image: url("<?= base_url('img/geen-tel.png') ?>");
+			}
+
+			.label-mail {
+				background-image: url("<?= base_url('img/geen-mail.png') ?>");
+			}
+
+			.label-tijd {
+				background-image: url("<?= base_url('img/update-nodig.png') ?>");
 			}
 		</style>
 	</head>

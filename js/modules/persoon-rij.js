@@ -23,7 +23,7 @@ export default class PersoonRij {
 	/**
 	 * element rij ref
 	 */
-	 element = null;
+	element = null;
 
 	/**
 	 * input-name input-id (zonder voorvoeging) mapping.
@@ -63,15 +63,29 @@ export default class PersoonRij {
 	 * @readonly
 	 * @memberof PersoonRij
 	 */
-	get laatstGezienInUnix() {
-		return new Date(this.laatst_gezien.split("-").reverse()).getTime();
+	get laatstGezienDate() {
+		const l = document.getElementById(`pers-${this.naamIdMap.laatst_gezien}`).value;
+
+		return !!l ?
+			new Date(l.split("-").reverse())
+			: false;
 	}
 
-	get heeftGeldigeTel(){
+	get afgelopenHalfJaarGezien() {
+		const u = this.laatstGezienDate;
+		if (!u) {
+			return false
+		}
+		const vandaag = new Date();
+		const halfJaarNaLaatstGezien = new Date(u.setMonth(u.getMonth() + 6)).getTime();
+		return halfJaarNaLaatstGezien > vandaag;
+	}
+
+	get heeftGeldigeTel() {
 		return document.getElementById(`pers-${this.naamIdMap.telefoon}`).value.length >= 10;
 	}
 
-	get heeftGeldigeEmail(){
+	get heeftGeldigeEmail() {
 		const v = document.getElementById(`pers-${this.naamIdMap.email}`).validity;
 		return !v.valueMissing && !v.typeMismatch;
 	}
@@ -91,6 +105,41 @@ export default class PersoonRij {
 		});
 	}
 
+	/**
+	 * Of iemand geen email heeft, tel, 
+	 * of te lang niet gezien is.
+	 */
+	zetPersoonsLabels() {
+
+		const tel = this.heeftGeldigeTel
+		const mail = this.heeftGeldigeEmail;
+		const tijd = this.afgelopenHalfJaarGezien;
+		const labelCel = this.element.querySelector('.cel-labels')
+
+		labelCel.innerHTML = '';
+
+		if (!tel || !mail || !tijd) {
+			//	this.element.classList.add('heeft-labels')
+			labelCel.classList.remove('verborgen')
+		} else {
+			//		this.element.classList.remove('heeft-labels')
+			labelCel.classList.add('verborgen')
+			return;
+		}
+
+		let labelHTML = '';
+		if (!tel) {
+			labelHTML += "<span title='telefoonnummer ontbreekt of is ongeldig' class='persoon-label label-tel'></span>"
+		}
+		if (!mail) {
+			labelHTML += "<span title='email ontbreekt of is ongeldig' class='persoon-label label-mail'></span>"
+		}
+		if (!tijd) {
+			labelHTML += "<span title='deze persoon is lang niet gezien' class='persoon-label label-tijd'></span>"
+		}
+		labelCel.innerHTML = labelHTML
+	}
+
 
 	/**
 	 * true als uit data halen, false als uit obj zelf halen.
@@ -107,9 +156,11 @@ export default class PersoonRij {
 				"element",
 				"naamIdMap",
 				"schrijfDataNaarLeesVeldenEnZetGeenDataClass",
-				"laatstGezienInMicroseconden",
+				"laatstGezienDate",
 				"heeftGeldigeEmail",
-				"heeftGeldigeTel"
+				"heeftGeldigeTel",
+				"afgelopenHalfJaarGezien",
+				"zetPersoonsLabels"
 			].includes(sleutelNaam)
 		) {
 			return false;
@@ -136,7 +187,7 @@ export default class PersoonRij {
 		}
 		if (handmatigeSelectieModus) {
 			return this.element.classList.contains('in-handmatige-selectie')
-		} 
+		}
 
 		return true;
 	}
@@ -149,7 +200,7 @@ export default class PersoonRij {
 			const leesId = `lees-${idBasis}`;
 			const inputId = `pers-${idBasis}`;
 			const print = this._data[naam];
-			
+
 			gr.el(leesId).innerHTML = print;
 			if (print.trim().length === 0) {
 				gr.el(inputId).classList.add("geen-data");
@@ -158,6 +209,7 @@ export default class PersoonRij {
 			}
 		});
 	}
+
 
 	/**
 	 * maakt proxy van eigen object zodat gets en sets gecontroleerd worden.
