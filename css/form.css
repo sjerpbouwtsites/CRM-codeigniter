@@ -201,6 +201,22 @@ form.crm-formulier {
 	/* background-image: url("/img/account-edit.png"); zie head*/
 	background-size: 25px;
 }
+
+.cel-labels {
+	position: absolute;
+	bottom: 35px;
+	right: 0;
+	background-color: #211b1b;
+}
+.persoon-label {
+	width: 28px;
+	height: 30px;
+	display: block;
+	background-position: center;
+	background-size: 20px 20px;
+	background-repeat: no-repeat;
+}
+
 .rij-in-handmatige-selectie {
 	display: none;
 	background: transparent;

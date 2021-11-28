@@ -9,6 +9,8 @@ import { zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler, naOpslaanHerlaadfun
 import nieuweCategorieInit from "./modules/nieuwe-categorie.js";
 import bugsnagInit from "./modules/bugsnag.js";
 import mensenOverzettenInit from "./modules/mensen-overzetten.js";
+import { zichtbarePersRijen } from "./modules/gereedschap.js";
+import PersoonRij from "./modules/persoon-rij.js";
 
 function indexInit() {
 
@@ -35,6 +37,9 @@ function indexInit() {
 			encryptie.alsWachtwoordGewijzigd();
 			triggerClickSorteerOpNaam();
 			mensenOverzettenInit();
+			zichtbarePersRijen().forEach(PersoonRij => {
+				PersoonRij.zetPersoonsLabels();
+			})
 		})
 
 	// sync

@@ -40,7 +40,10 @@ function cel($html = "", $class = '')
 
 			foreach ($form_data as $pers) :
 
+
 				echo "<div id='form-rij-{$pers['id']}' class='form-rij'>";
+
+				echo "<div class='cel-labels form-cel verborgen'></div>";
 
 				echo "<button title='start bewerken deze persoon' class='start-bewerken-cel'></button>";
 				echo "<button title='stop bewerken deze persoon' class='beeindig-bewerken-cel'></button>";

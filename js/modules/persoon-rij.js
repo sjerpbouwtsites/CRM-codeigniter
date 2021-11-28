@@ -63,8 +63,22 @@ export default class PersoonRij {
 	 * @readonly
 	 * @memberof PersoonRij
 	 */
-	get laatstGezienInUnix() {
-		return new Date(this.laatst_gezien.split("-").reverse()).getTime();
+	get laatstGezienDate() {
+		const l = document.getElementById(`pers-${this.naamIdMap.laatst_gezien}`).value;
+
+		return !!l ?
+			new Date(l.split("-").reverse())
+			: false;
+	}
+
+	get afgelopenHalfJaarGezien() {
+		const u = this.laatstGezienDate;
+		if (!u) {
+			return false
+		}
+		const vandaag = new Date();
+		const halfJaarNaLaatstGezien = new Date(u.setMonth(u.getMonth() + 6)).getTime();
+		return halfJaarNaLaatstGezien > vandaag;
 	}
 
 	get heeftGeldigeTel() {
@@ -91,6 +105,41 @@ export default class PersoonRij {
 		});
 	}
 
+	/**
+	 * Of iemand geen email heeft, tel, 
+	 * of te lang niet gezien is.
+	 */
+	zetPersoonsLabels() {
+
+		const tel = this.heeftGeldigeTel
+		const mail = this.heeftGeldigeEmail;
+		const tijd = this.afgelopenHalfJaarGezien;
+		const labelCel = this.element.querySelector('.cel-labels')
+
+		labelCel.innerHTML = '';
+
+		if (!tel || !mail || !tijd) {
+			//	this.element.classList.add('heeft-labels')
+			labelCel.classList.remove('verborgen')
+		} else {
+			//		this.element.classList.remove('heeft-labels')
+			labelCel.classList.add('verborgen')
+			return;
+		}
+
+		let labelHTML = '';
+		if (!tel) {
+			labelHTML += "<span title='telefoonnummer ontbreekt of is ongeldig' class='persoon-label label-tel'></span>"
+		}
+		if (!mail) {
+			labelHTML += "<span title='email ontbreekt of is ongeldig' class='persoon-label label-mail'></span>"
+		}
+		if (!tijd) {
+			labelHTML += "<span title='deze persoon is lang niet gezien' class='persoon-label label-tijd'></span>"
+		}
+		labelCel.innerHTML = labelHTML
+	}
+
 
 	/**
 	 * true als uit data halen, false als uit obj zelf halen.
@@ -107,9 +156,11 @@ export default class PersoonRij {
 				"element",
 				"naamIdMap",
 				"schrijfDataNaarLeesVeldenEnZetGeenDataClass",
-				"laatstGezienInMicroseconden",
+				"laatstGezienDate",
 				"heeftGeldigeEmail",
-				"heeftGeldigeTel"
+				"heeftGeldigeTel",
+				"afgelopenHalfJaarGezien",
+				"zetPersoonsLabels"
 			].includes(sleutelNaam)
 		) {
 			return false;
