@@ -10,19 +10,49 @@ class CRM extends CI_Model
 
 	function __construct()
 	{
-		$this->lege_categorie = false;
-		$this->form_data = array();
-		$this->een_naam_klein = '';
-		$this->load->database();
-		$this->post_data = NULL;
-		$this->load->model('users');
-		$this->zet_toegestane_categorie_namen();
-		$this->csrf_table_cleanup_corvee = random_int(0, 100) > 95;
+
+		try {
+			$this->lege_categorie = false;
+			$this->form_data = array();
+			$this->een_naam_klein = '';
+			$this->load->database();
+			$this->post_data = NULL;
+			$this->load->model('users');
+			$this->zet_toegestane_categorie_namen();
+			$this->csrf_table_cleanup_corvee = random_int(0, 100) > 95;
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'contructor crm model');
+			die();
+		}
+	}
+
+	private function meldFout(\Throwable $th, $context = '')
+	{
+		$this->bugsnaglib->inst->notifyError($context, $th->getMessage());
+		throw $th;
+		die();
+	}
+
+	private function meldUitzondering(\Throwable $th)
+	{
+		$this->bugsnaglib->inst->notifyException($th->getMessage());
+		throw $th;
+	}
+
+	private function dataPlat($data)
+	{
+		ob_start();
+		print_r($data);
+		return ob_get_clean($data);
 	}
 
 	private function user()
 	{
-		return $this->users->user();
+		try {
+			return $this->users->user();
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'crm model pak user model user');
+		}
 	}
 
 	/**
@@ -39,7 +69,12 @@ class CRM extends CI_Model
 	{
 
 		if (!in_array($categorienaam, $this->toegestane_categorie_namen)) {
+<<<<<<< HEAD
 			throw new Error("de categorie $categorienaam bestaat nog niet in de db.");
+=======
+			$e = new Exception("de categorie $categorienaam bestaat nog niet in de db.");
+			$this->meldFout($e, 'crm model zet toegestande categorie namen');
+>>>>>>> master
 		}
 
 		$this->categorie = $categorienaam;
@@ -85,9 +120,13 @@ class CRM extends CI_Model
 	public function maak_form_data()
 	{
 
-		$categorie = $this->categorie;
-		$u = $this->user();
-		$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result_array();
+		try {
+			$categorie = $this->categorie;
+			$u = $this->user();
+			$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result_array();
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'crm model select mensen in categorie en user');
+		}
 
 		if (count($q) > 0) {
 			foreach ($q as $p) {
@@ -130,41 +169,52 @@ class CRM extends CI_Model
 	//update
 	public function maak_zetlijst($p)
 	{
+		try {
+			$r = '';
 
-		$r = '';
+			foreach ($p as $veld => $waarde) {
+				if ($veld === "id") continue;
+				$r .= "$veld = '$waarde',";
+			}
 
-		foreach ($p as $veld => $waarde) {
-			if ($veld === "id") continue;
-			$r .= "$veld = '$waarde',";
+			return rtrim($r, ",");
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'maak zetlijst crm');
 		}
-
-		return rtrim($r, ",");
 	}
 
 	//insert
 	public function maak_veldenlijst($p)
 	{
+		try {
+			$r = '';
+			foreach ($p as $veld => $waarde) {
+				if ($veld === "id") continue;
+				$r .= $veld . ",";
+			}
 
-		$r = '';
-		foreach ($p as $veld => $waarde) {
-			if ($veld === "id") continue;
-			$r .= $veld . ",";
+			$r = rtrim($r, ",");
+			return "(" . $r . ")";
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'maak veldenlijst crm');
 		}
-
-		$r = rtrim($r, ",");
-		return "(" . $r . ")";
 	}
 
 	//insert
 	public function maak_waardenlijst($p)
 	{
-		$r = '';
-		foreach ($p as $veld => $waarde) {
-			if ($veld === "id") continue;
-			$r .= "'$waarde',";
+
+		try {
+			$r = '';
+			foreach ($p as $veld => $waarde) {
+				if ($veld === "id") continue;
+				$r .= "'$waarde',";
+			}
+			$r = rtrim($r, ",");
+			return "(" . $r . ")";
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'maak waardenlijst crm');
 		}
-		$r = rtrim($r, ",");
-		return "(" . $r . ")";
 	}
 
 	public function maak_db_id_lijst()
@@ -173,12 +223,16 @@ class CRM extends CI_Model
 		$categorie = $this->categorie;
 		$u = $this->user();
 
-		$id_objs = $this->db->query("SELECT id FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result();
-		$ids = [];
-		foreach ($id_objs as $io) {
-			$ids[] = $io->id;
+		try {
+			$id_objs = $this->db->query("SELECT id FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result();
+			$ids = [];
+			foreach ($id_objs as $io) {
+				$ids[] = $io->id;
+			}
+			return $ids;
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'maak db id lijst crm');
 		}
-		return $ids;
 	}
 
 	/**
@@ -193,12 +247,17 @@ class CRM extends CI_Model
 		// controlerenof xsrf goed is.
 		$csrf_db_check_res = $this->controleer_csrf_token($meta['xsrf']);
 		if ($csrf_db_check_res === 'niet-gevonden') {
+
+			$ex = new Exception("xcsrf token niet gevonden\n" . $this->dataPlat($meta));
+			$this->meldUitzondering($ex);
 			return [
 				'statuscode' => 403,
 				'message'		 => 'Je netverzoek voldoet niet aan de vereisten. Cookies moeten toegestaan zijn voor dit domein. Cookies wissen betekent verbinding effectief verbreken.'
 			];
 		}
 		if ($csrf_db_check_res === 'verouderd') {
+			$ex = new Exception("xcsrf token verouderd\n" . $this->dataPlat($meta));
+			$this->meldUitzondering($ex);
 			return [
 				'statuscode' => 401,
 				'message'		 => 'Je gegsevens zijn verouderd en voldoen niet aan de vereisten. Je mag maximaal 24 uur doen over het invullen en opslaan van het systeem.'
@@ -240,15 +299,37 @@ class CRM extends CI_Model
 
 		$sql_s = "INSERT INTO mensen $kolommen_string VALUES $waarden_string";
 
+		// delete
 		try {
+			// TODO hier dus in een tijdelijke tabel gooien.
 			$this->db->query("DELETE FROM mensen WHERE categorie='$this->categorie' AND user='$user'");
-			$this->db->query($sql_s);
-
-			$this->zet_iv($meta['iv']);
 		} catch (\Throwable $th) {
+			$this->meldUitzondering($th);
 			return [
 				'statuscode' => 500,
-				'message'    => $th,
+				'message'    => "Delete mislukt CRM\n" . $th,
+			];
+		}
+
+		// insert
+		try {
+			$this->db->query($sql_s);
+		} catch (\Throwable $th) {
+			$this->meldUitzondering($th);
+			return [
+				'statuscode' => 500,
+				'message'    => "Insert mislukt CRM\n" . $th,
+			];
+		}
+
+		// zet iv
+		try {
+			$this->zet_iv($meta['iv']);
+		} catch (\Throwable $th) {
+			$this->meldUitzondering($th);
+			return [
+				'statuscode' => 500,
+				'message'    => "zet IV mislukt met {$meta['iv']} \n" . $th,
 			];
 		}
 
@@ -262,73 +343,6 @@ class CRM extends CI_Model
 		];
 	}
 
-	/**
-	 * old form-based function
-	 * @deprecated
-	 */
-	public function opslaan()
-	{
-
-		$form = $this->post_data['form'];
-		$categorie = $this->categorie;
-
-		$this->zet_iv($this->post_data['form_meta']['iv']);
-
-		$veldenlijst = false;
-
-		$db_id_lijst = $this->maak_db_id_lijst();
-		$form_id_lijst = [];
-
-		$queries = array(
-			'insert' => [],
-			'update' => [],
-			'delete' => [],
-		);
-
-		$ret = [];
-		//$ret[] = $this->post_data;
-
-		foreach ($form as $pers) {
-
-			$form_id_lijst[] = $pers['id'];
-
-			//in id lijst? -> update sql
-			if (in_array($pers['id'], $db_id_lijst)) {
-
-				$zetlijst = $this->maak_zetlijst($pers);
-				$queries['update'][] = "UPDATE mensen SET $zetlijst WHERE id = {$pers['id']}; AND user = '$this->user()'";
-			} else { //niet in id lijst? -> insert sql
-
-				//maar één keer maken.
-				if (!$veldenlijst) {
-					$veldenlijst = $this->maak_veldenlijst($pers);
-				}
-
-				$waardenlijst = $this->maak_waardenlijst($pers);
-				$queries['insert'][] = "INSERT INTO mensen $veldenlijst VALUES $waardenlijst;";
-			}
-		}
-
-		$u = $this->user();
-		foreach ($db_id_lijst as $aanwezig) {
-			if (!in_array($aanwezig, $form_id_lijst)) {
-				$queries['delete'][] = "DELETE FROM mensen WHERE id = '$aanwezig' AND user = '$u';";
-			}
-		}
-
-		foreach ($queries as $querielijst) {
-			if (count($querielijst) > 0) {
-				foreach ($querielijst as $sql) {
-					$this->db->query($sql);
-				}
-			}
-		}
-
-		$ret[] = $queries;
-
-		return $ret;
-	}
-
 	public function pak_iv()
 	{
 
@@ -338,12 +352,8 @@ class CRM extends CI_Model
 
 		$q = $this->db->query($sql);
 		if (count($q->result()) < 1) {
-			echo "<h1>geen iv gevonden</h1>";
-			echo "<code>$sql</code>";
-			echo "<pre>";
-			var_dump($q);
-			echo "</pre>";
-			die();
+			$ex = new Exception("Geen IV gevonden voor $categorie en $u");
+			$this->meldFout($ex, 'pak iv crm');
 		}
 		return $q->result()[0]->waarde;
 	}
@@ -351,12 +361,16 @@ class CRM extends CI_Model
 	public function zet_iv($iv = '')
 	{
 
-		$categorie = $this->categorie;
+		try {
+			$categorie = $this->categorie;
 
-		if ($iv === '') return false;
-		$u = $this->user();
-		$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$categorie-iv' AND user='$u'");
-		return true;
+			if ($iv === '') return false;
+			$u = $this->user();
+			$q = $this->db->query("UPDATE meta SET waarde = '$iv' WHERE sleutel='$categorie-iv' AND user='$u'");
+			return true;
+		} catch (\Throwable $th) {
+			$this->meldFout($th, 'zet iv crm');
+		}
 	}
 
 	/**
@@ -368,11 +382,20 @@ class CRM extends CI_Model
 		if (!$csrf) {
 			throw new Error('csrf token registreren maar token is leeg');
 		}
-		$this->db->query("INSERT INTO CSRF (token) VALUES ('$csrf')");
-
-		if ($this->csrf_table_cleanup_corvee) {
-			$this->csrf_table_cleanup();
+		try {
+			$this->db->query("INSERT INTO CSRF (token) VALUES ('$csrf')");
+		} catch (\Throwable $th) {
+			$this->meldFout($th, ' registreer csrf mislukt');
 		}
+
+		try {
+			if ($this->csrf_table_cleanup_corvee) {
+				$this->csrf_table_cleanup();
+			}
+		} catch (\Throwable $th) {
+			$this->meldFout($th, ' csrf table cleanup corvee mislukt');
+		}
+
 
 		return true;
 	}
@@ -394,21 +417,27 @@ class CRM extends CI_Model
 		if (!$csrf) {
 			throw new Error('csrf token controleren maar token is leeg');
 		}
-		$token_in_db_en_actueel_query = $this->db->query("SELECT COUNT(id) as aantal FROM CSRF WHERE token = '$csrf' AND TIMESTAMPDIFF(DAY, modified_on, NOW()) < 1");
-		$token_in_db_query = $this->db->query("SELECT COUNT(id) as aantal FROM CSRF WHERE token = '$csrf'");
 
-		$token_in_db = $token_in_db_query->result()[0]->aantal !== '0';
-		$token_vers = $token_in_db_en_actueel_query->result()[0]->aantal !== '0';
+		try {
+			$token_in_db_en_actueel_query = $this->db->query("SELECT COUNT(id) as aantal FROM CSRF WHERE token = '$csrf' AND TIMESTAMPDIFF(DAY, modified_on, NOW()) < 1");
+			$token_in_db_query = $this->db->query("SELECT COUNT(id) as aantal FROM CSRF WHERE token = '$csrf'");
 
-		if (!$token_in_db) {
-			return 'niet-gevonden';
+			$token_in_db = $token_in_db_query->result()[0]->aantal !== '0';
+			$token_vers = $token_in_db_en_actueel_query->result()[0]->aantal !== '0';
+
+			if (!$token_in_db) {
+				return 'niet-gevonden';
+			}
+			if ($token_in_db && !$token_vers) {
+				return 'verouderd';
+			}
+			if ($token_in_db && $token_vers) {
+				return 'gevonden';
+			}
+		} catch (\Throwable $th) {
+			$this->meldFout($th, ' csrf controle mislukt CRM');
 		}
-		if ($token_in_db && !$token_vers) {
-			return 'verouderd';
-		}
-		if ($token_in_db && $token_vers) {
-			return 'gevonden';
-		}
+
 		// opgefokt?
 		return new Error('shitlogic @controleer_csrf_token');
 	}

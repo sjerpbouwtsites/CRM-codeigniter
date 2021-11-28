@@ -1,19 +1,21 @@
 import * as gr from "./gereedschap.js"
+import DB from "./database.js";
 
-export default function (){
-  autoDecrypt()
+export default function () {
+	autoDecrypt()
 	fixLocalhost();
+	registreerTabTime();
 }
 
-function fixLocalhost(){
+function fixLocalhost() {
 	document.querySelectorAll("a[href*=localhost]").forEach(anker => {
 		const oudeLink = anker.href;
 		anker.setAttribute('href', oudeLink.replace('/crm/', '/crm/index.php/'));
 	})
-	document.querySelectorAll("form[action*=localhost]").forEach(form => {
-		const oudeLink = form.getAttribute('action');
-		form.setAttribute('action', oudeLink.replace('/crm/', '/crm/index.php/'));
-	})	
+	document.querySelectorAll("form[data-action*=localhost]").forEach(form => {
+		const oudeLink = form.getAttribute('data-action');
+		form.setAttribute('data-action', oudeLink.replace('/crm/', '/crm/index.php/'));
+	})
 }
 
 function autoDecrypt() {
@@ -42,6 +44,4 @@ function autoDecrypt() {
 	}
 	gr.communiceer("auto-decrypt", 200);
 }
-
-
 

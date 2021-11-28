@@ -18,14 +18,15 @@ function cel($html = "", $class = '')
 <html>
 <?= $head_el ?>
 
-<body id='app-body'  data-base-url='<?= base_url() ?>'>
+<body id='app-body' data-base-url='<?= base_url() ?>'>
 
 	<?= $kop_en_knoppen ?>
 
+	<button id='herlaad-pagina-knop' class='herladen verborgen'>Herladen</button>
 
-	<div class='formulier-en-controls categorie-<?=$categorie_naam?>'>
+	<div class='formulier-en-controls categorie-<?= $categorie_naam ?>'>
 
-		<form id='grote-categorie-formulier' <?=$lege_categorie?'data-lege-categorie="true"':""?> data-form-stijl='blokken' class='crm-formulier' action='<?= base_url() ?>post-batch'>
+		<form id='grote-categorie-formulier' <?= $lege_categorie ? 'data-lege-categorie="true"' : "" ?> data-form-stijl='blokken' class='crm-formulier' action='smtp://nonsense' data-action='<?= base_url() ?>post-batch'>
 
 			<input type='hidden' name='form_meta[user]' value='<?= $_SESSION['user'] ?>'>
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>

@@ -8,7 +8,17 @@
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	background-color: black;
+	background: black;
+	background-image: linear-gradient(90deg,rgba(255, 100, 0, .1) 0px, rgba(255, 100, 0, .1) 1px,
+  transparent 6%, transparent 100%);
+background-size: 50px 50px;
+
+}
+.sleutelaars--categorie {
+	background: #212121;
+	background-image: linear-gradient(180deg,rgba(255, 100, 0, .05) 0px, rgba(255, 100, 0, .05) 1px,
+  transparent 6%, transparent 100%);	
+	background-size: 50px 50px;
 }
 
 .sleutelaars div {
@@ -25,8 +35,10 @@
 	font-variant: small-caps;
 	font-size: 30px;
 	padding: 0 20px;
-	line-height: .8em;
+	line-height: .85em;
 }
+
+
 .versleutelde-titel--kleiner {
 	font-size: 24px;
 	max-width: 310px;
@@ -34,6 +46,10 @@
 }
 .versleutelde-titel--kleiner small {
 	font-size: 0.6em;
+}
+
+.versleutelde-titel-rood {
+	color: rgb(215, 63, 63)
 }
 
 .sleutelaars div + div {
@@ -75,4 +91,52 @@
 		margin-top: 20px;
 		width: 300px;
 	}
+}
+
+.sleutelaars-inner-2 {
+	display: flex;
+}
+.sleutelaars-inner-2 + .sleutelaars-inner-2 {
+	margin-top: 30px;
+	background: transparent;
+	background-color: none;
+}
+.sleutelaars-inner-2 > * + * {
+	margin-left: 10px;
+}
+
+.open-andere-bladen {
+	width: 1px;
+	height: 1px;
+	opacity: 0.1;
+	position: absolute;
+	bottom: 1px;
+	left: 1px;
+	border: 0;
+}
+.open-andere-bladen-label {
+
+background-color: #d03030;
+line-height: 50px;
+width: 100%;
+text-align: center;
+font-weight: bold;
+color: white;
+margin-left: 0 !important
+}
+.open-andere-bladen-label:hover {
+	cursor: pointer;
+}
+.open-andere-bladen-label::after {
+	content: 'Alleen dit blad openen';
+}
+.open-andere-bladen:focus + .open-andere-bladen-label {
+	outline: 4px solid lightblue;
+
+}
+.open-andere-bladen:checked + .open-andere-bladen-label {
+	background-color: #30d058;
+}
+.open-andere-bladen:checked + .open-andere-bladen-label::after {
+	content: 'Open leden, contacten, bondg. ';
 }

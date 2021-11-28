@@ -28,5 +28,13 @@
       "password": "sjerp"
     }
   ],
-  "restructuredtext.confPath": ""
+  "restructuredtext.confPath": "",
+  "filewatcher.commands": [
+    {
+      "match": "\\.*",
+      "isAsync": true,
+      "cmd": "echo '${file} folder content Changed'",
+      "event": "onFolderChange"
+    }
+  ]
 }
