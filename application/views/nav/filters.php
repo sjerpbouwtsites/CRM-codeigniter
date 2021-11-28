@@ -19,7 +19,7 @@
 
   <span class='crm-nav__tekst'>Sorteer op: <br></span>
   <div class='actieform-rij'>
-    <button data-sorteert='naam' data-startBij='laag' data-postfix='A-Z' id='sorteer-op-naam' class='crm-nav__tabbaar sorteer-knoppen filter-nav-input sorteer-op-naam'>Naam</button>
+    <button data-sorteert='naam' data-startBij='hoog' data-postfix='A-Z' id='sorteer-op-naam' class='crm-nav__tabbaar sorteer-knoppen filter-nav-input sorteer-op-naam'>Naam</button>
     <button data-sorteert='laatst_gezien' data-startBij='hoog' data-postfix='nieuw -> oud' id='sorteer-op-laatst-gezien' class='crm-nav__tabbaar sorteer-knoppen filter-nav-input sorteer-op-laatst-gezien'>Laatst gezien</button>
   </div>
 

@@ -1,8 +1,10 @@
 import * as gr from "./gereedschap.js"
+import DB from "./database.js";
 
 export default function () {
 	autoDecrypt()
 	fixLocalhost();
+	registreerTabTime();
 }
 
 function fixLocalhost() {
@@ -42,6 +44,4 @@ function autoDecrypt() {
 	}
 	gr.communiceer("auto-decrypt", 200);
 }
-
-
 

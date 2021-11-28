@@ -304,14 +304,14 @@ de stijling is dus ook éérst nav, daarna de rest als overschrijving, erdoorhee
 .crm-nav[data-nav-open] .crm-nav__knop-icon--gesloten {
 	display: none;
 }
-
+ 
 /* #endregion menu */
 
-.crm-nav__tekst {
+.crm-nav__tekst { 
 	font-size: 0.5em;
 	line-height: 0.5em;
-}
-
+} 
+ 
 .actieknoppen {
 	font-size: 0.5em;
 }

@@ -168,7 +168,10 @@ function verzendInStukkenCallback(e) {
 							e.preventDefault();
 							localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
 							location.hash = 'herladen-met-wachtwoord';
-							location.reload();
+							gr.communiceer('gaat herladen', 500);
+							setTimeout(() => {
+								location.reload();
+							}, 500);
 						}
 					})
 				});

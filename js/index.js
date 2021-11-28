@@ -1,6 +1,6 @@
 import panelenInit from "./modules/paneel-acties.js";
 import navigatieAnimatie, { NavElement } from "./modules/navigatie-animatie.js";
-import formulierInit, { formulierOntsleutelingsAnimatie } from "./modules/formulier.js";
+import formulierInit, { formulierOntsleutelingsAnimatie, triggerClickSorteerOpNaam } from "./modules/formulier.js";
 import devExInit from "./modules/dev-ex.js";
 import * as encryptie from "./modules/encryptie.js";
 import printerInit from "./modules/printer.js";
@@ -32,6 +32,7 @@ function indexInit() {
 			printerInit();
 			zetEscapeKlikVoorAlles()
 			encryptie.alsWachtwoordGewijzigd();
+			triggerClickSorteerOpNaam();
 		})
 
 	// sync

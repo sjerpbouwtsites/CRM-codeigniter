@@ -34,21 +34,22 @@ export class Database {
     rijInBewerking: null,
     handmatigeSelectie: false,
     multiBewerk: false,
+    tabtime: null,
   }
 
-  constructor(){
+  constructor() {
     // singleton fix
     if (Database._self && Database._self instanceof Database) {
       return Database._self
-    } 
+    }
     this._self = this;
     return this;
   }
-  
+
   // SETTERS
 
   set ontsleuteld(waarde) {
-    if (typeof waarde !== 'boolean'){
+    if (typeof waarde !== 'boolean') {
       throw new Error('ontsleuteling niet bool')
     }
     const oudeWaarde = Database._data.ontsleuteld;
@@ -57,16 +58,16 @@ export class Database {
   }
 
   set ontsleutelFout(waarde) {
-    if (typeof waarde !== 'boolean'){
+    if (typeof waarde !== 'boolean') {
       throw new Error('ontsleutelFout niet bool')
     }
     const oudeWaarde = Database._data.ontsleutelFout;
     Database._data.ontsleutelFout = waarde;
     this._draaiOpVerandering('ontsleutelFout', waarde, oudeWaarde);
-  }  
+  }
 
   set bewerkModus(waarde) {
-    if (typeof waarde !== 'boolean'){
+    if (typeof waarde !== 'boolean') {
       throw new Error('bewerkModus niet bool')
     }
     const oudeWaarde = Database._data.bewerkModus;
@@ -75,17 +76,17 @@ export class Database {
   }
 
   set rijInBewerking(waarde) {
-    if (!waarde instanceof PersoonRij){
+    if (!waarde instanceof PersoonRij) {
       throw new Error('rijInBewerking niet PersoonRij')
     }
     const oudeWaarde = Database._data.rijInBewerking;
     Database._data.rijInBewerking = waarde;
     this._draaiOpVerandering('rijInBewerking', waarde, oudeWaarde);
   }
-  
+
 
   set wachtwoord(waarde) {
-    if (typeof waarde !== 'string'){
+    if (typeof waarde !== 'string') {
       throw new Error('wachtwoord niet string')
     }
     const oudeWaarde = Database._data.wachtwoord;
@@ -93,12 +94,21 @@ export class Database {
     this._draaiOpVerandering('wachtwoord', waarde, oudeWaarde);
   }
 
+  set tabtime(waarde) {
+    if (typeof waarde !== 'string') {
+      throw new Error('tabtime niet string')
+    }
+    const oudeWaarde = Database._data.tabtime;
+    Database._data.tabtime = waarde;
+    this._draaiOpVerandering('tabtime', waarde, oudeWaarde);
+  }
+
   set opslagProcedure(waarde) {
-    if (typeof waarde !== 'string'){
+    if (typeof waarde !== 'string') {
       throw new Error('opslagProcedure niet string')
-    }    
+    }
     if (!['voorbereiding', 'succesvol', 'mislukt', 'herstarten'].includes(waarde)) {
-      throw new Error('opslagProcedure niet toestane waarde '+waarde)
+      throw new Error('opslagProcedure niet toestane waarde ' + waarde)
     }
     const oudeWaarde = Database._data.opslagProcedure;
     Database._data.opslagProcedure = waarde;
@@ -106,7 +116,7 @@ export class Database {
   }
 
   set handmatigeSelectie(waarde) {
-    if (typeof waarde !== 'boolean'){
+    if (typeof waarde !== 'boolean') {
       throw new Error('handmatigeSelectie niet bool')
     }
     const oudeWaarde = Database._data.handmatigeSelectie;
@@ -115,7 +125,7 @@ export class Database {
   }
 
   set multiBewerk(waarde) {
-    if (typeof waarde !== 'boolean'){
+    if (typeof waarde !== 'boolean') {
       throw new Error('multiBewerk niet bool')
     }
     const oudeWaarde = Database._data.multiBewerk;
@@ -125,29 +135,32 @@ export class Database {
 
   // GETTERS
 
-  get ontsleuteld(){
+  get ontsleuteld() {
     return Database._data.ontsleuteld
   }
-  get ontsleutelFout(){
+  get ontsleutelFout() {
     return Database._data.ontsleutelFout
-  }    
-  get bewerkModus(){
+  }
+  get bewerkModus() {
     return Database._data.bewerkModus
-  }  
-  get rijInBewerking(){
+  }
+  get rijInBewerking() {
     return Database._data.rijInBewerking
   }
-  get wachtwoord(){
+  get wachtwoord() {
     return Database._data.wachtwoord
   }
-  get opslagProcedure(){
+  get opslagProcedure() {
     return Database._data.opslagProcedure
   }
-  get handmatigeSelectie(){
+  get handmatigeSelectie() {
     return Database._data.handmatigeSelectie
   }
-  get multiBewerk(){
+  get multiBewerk() {
     return Database._data.multiBewerk
+  }
+  get tabtime() {
+    return Database._data.tabtime
   }
 
   // METHODES
@@ -161,7 +174,7 @@ export class Database {
    */
   _draaiOpVerandering = (recordNaam, waarde, oudeWaarde) => {
     const opVeranderingCallbacks = Database._opVerandering[recordNaam];
-    opVeranderingCallbacks.forEach(func =>{
+    opVeranderingCallbacks.forEach(func => {
       func(waarde, oudeWaarde, recordNaam, Database)
     })
   }
@@ -172,7 +185,7 @@ export class Database {
    *
    * @memberof Database
    */
-  alsVeranderdDoe = (recordNaam, callback) =>{
+  alsVeranderdDoe = (recordNaam, callback) => {
     if (!Database._data.hasOwnProperty(recordNaam)) {
       throw new Error(`op verandering func geregistreerd voor niet bestaande prop ${recordNaam}`)
     }
@@ -197,6 +210,7 @@ export class Database {
     opslagProcedure: [],
     handmatigeSelectie: [],
     multiBewerk: [],
+    tabtime: [],
   }
 
 }

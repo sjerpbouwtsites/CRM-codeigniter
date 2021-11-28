@@ -27,8 +27,7 @@
 		<meta name="msapplication-TileImage" content="<?= base_url('afb/app-icons/little-penguin-144-27563.png') ?>">
 		<meta name="theme-color" content="#d73f3f">
 		<base href='<?= base_url() ?>'>
-		<script>
-		</script>
+		<script src="<?= base_url('js/tabtime.js') ?>" defer></script>
 		<style>
 			body.lenin-poster {
 				background-image: url("<?= base_url('volg-het-ware-pad.jpg') ?>");
