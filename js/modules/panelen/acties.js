@@ -30,13 +30,17 @@ function veranderWachtwoord(e) {
 	setTimeout(() => {
 
 		const huidigeCategorie = document.querySelector('[name="form_meta[categorie_naam]"').value;
+		const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
 		let baseUrl = document.body.getAttribute('data-base-url');
 		if (baseUrl.includes('localhost')) {
 			baseUrl = baseUrl + "index.php";
 		}
 		['bondgenoten', 'contacten', 'leden'].forEach(categorieNaam => {
 			if (categorieNaam !== huidigeCategorie) {
-				window.open(`${baseUrl}/categorie/${categorieNaam}?vernieuwWachtwoord=${nieuwWachtwoord}`)
+				let url = new URL(`${baseUrl}/categorie/${categorieNaam}`, baseUrl);
+				url.searchParams.set('vernieuwWachtwoord', nieuwWachtwoord);
+				url.searchParams.set('user', huidigeUser);
+				window.open(url);
 			}
 		})
 		opslaan();
@@ -410,7 +414,7 @@ function maakLegePersoonRij(id) {
 			<input class="pers-input" id="pers-${id}-email" name="form[${id}][email]" type="email" required="" placeholder="email" data-naam="email">
 			<span data-naam="email" id="lees-${id}-email" class="pers-lezen pers-lezen__email"></span>
 		</div>
-		<div class="cel-telefoon form-cel">
+		<div class="cel-telefoon form-cel"> 
 			<input class="pers-input" id="pers-${id}-telefoon" name="form[${id}][telefoon]" type="tel" placeholder="telefoon" data-naam="telefoon">
 			<span data-naam="telefoon" id="lees-${id}-telefoon" class="pers-lezen pers-lezen__telefoon"></span>
 		</div>

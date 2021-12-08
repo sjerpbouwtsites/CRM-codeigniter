@@ -53,6 +53,11 @@ class Users extends CI_Model
 				return $_POST['meta']['user'];
 			}
 		}
+		if ($_GET) {
+			if (array_key_exists('user', $_GET)) {
+				return $_GET['user'];
+			}
+		}
 		return false;
 	}
 

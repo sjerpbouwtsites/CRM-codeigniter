@@ -324,16 +324,16 @@ div.rij-verwijderen {
 	flex-basis: 50%;
 }
 .form-cel.cel-naam {
-	flex-basis: 70%;
+	/* flex-basis: 70%; */
 }
 .form-cel.cel-naam {
 	font-size: 26px;
 	font-weight: bold;
 }
 .form-cel.cel-groep {
-	flex-basis: 20%;
+	/* flex-basis: 20%; 
 	position: relative;
-	left: -10%;
+	left: -10%; */
 }
 .multi-rij .form-cel.cel-groep {
 	flex-basis: 90%;

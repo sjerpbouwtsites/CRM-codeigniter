@@ -52,22 +52,36 @@ function afsluitingsAnimatie(waarde, oudeWaarde) {
 export function naOpslaanHerlaadfunctionaliteit() {
 	DB().alsVeranderdDoe('opslagProcedure', (huidigeWaardeOpslag) => {
 		if (huidigeWaardeOpslag !== 'succesvol') {
+			console.dir(DB())
 			return;
 		}
+
+		localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
+		const huidigeUser = document.getElementById('huidige-user').value;
+		localStorage.setItem('user', huidigeUser);
+		let herlaadLink = new URL('', location.href);
+		herlaadLink.searchParams.set('user', huidigeUser);
+		const d = new Date();
+		herlaadLink.searchParams.set('willekeurigeData', d.getTime());
+		herlaadLink.hash = 'herladen-met-wachtwoord';
+		document.getElementById('herlaad-pagina-knop').href = herlaadLink;
+
 		setTimeout(() => {
 			gr.pakElementVeilig('herlaad-pagina-knop').classList.remove('verborgen');
 		}, 2500)
 	})
 
-	document.getElementById('herlaad-pagina-knop').addEventListener('click', e => {
-		e.preventDefault();
-		localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
-		location.hash = 'herladen-met-wachtwoord';
-		gr.communiceer('gaat herladen', 500);
-		setTimeout(() => {
-			location.reload()
-		}, 500);
-	})
+
+
+	// document.getElementById('herlaad-pagina-knop').addEventListener('click', e => {
+	// 	e.preventDefault();
+	// 	location.hash = 'herladen-met-wachtwoord';
+	// 	gr.communiceer('gaat herladen', 500);
+	// 	alert('fdfd')
+	// 	setTimeout(() => {
+
+	// 	}, 500);
+	// })
 }
 
 /**
@@ -80,10 +94,11 @@ export function laadEvtAndereBladen() {
 		return;
 	}
 	const base = location.href + location.href.includes('localhost') ? 'index.php/' : '';
+	const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
 	setTimeout(() => {
-		window.open(base + 'categorie/contacten#herladen-met-wachtwoord');
+		window.open(base + `categorie/contacten?user=${huidigeUser}#herladen-met-wachtwoord`);
 	}, 250)
 	setTimeout(() => {
-		window.open(base + 'categorie/bondgenoten#herladen-met-wachtwoord');
+		window.open(base + `categorie/bondgenoten?user=${huidigeUser}#herladen-met-wachtwoord`);
 	}, 500)
 }

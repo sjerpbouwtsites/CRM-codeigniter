@@ -5,7 +5,18 @@ export default function () {
 	autoDecrypt()
 	fixLocalhost();
 	registreerTabTime();
+	dbGLobal();
+	grGLobal()
 }
+
+function dbGLobal() {
+	window.db = DB();
+}
+
+function grGLobal() {
+	window.gr = gr;
+}
+
 
 function fixLocalhost() {
 	document.querySelectorAll("a[href*=localhost]").forEach(anker => {

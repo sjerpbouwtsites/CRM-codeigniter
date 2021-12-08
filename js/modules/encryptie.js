@@ -267,7 +267,6 @@ function maakSQLVriendelijkePostData() {
 export function maakSleutelEnOntsleutel(sleutel) {
 	return new Promise((resolveOntsleutel, rejectOntsleutel) => {
 		const ivBytes = encGr.base64ToByteArray(printIV.value.trim());
-
 		encGr.convertPassphraseToKey(sleutel)
 			.then(function (aesKey) {
 				const veldDecryptiePromises = gr.formInvoerVeldenArray()
