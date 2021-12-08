@@ -5,7 +5,7 @@ import devExInit from "./modules/dev-ex.js";
 import * as encryptie from "./modules/encryptie.js";
 import printerInit from "./modules/printer.js";
 import DB from "./modules/database.js";
-import { zetEscapeKlikVoorAlles, afsluitingsAnimatieHandler, naOpslaanHerlaadfunctionaliteit, laadEvtAndereBladen } from "./modules/ui-diversen.js";
+import * as uiDiversen from "./modules/ui-diversen.js";
 import nieuweCategorieInit from "./modules/nieuwe-categorie.js";
 import bugsnagInit from "./modules/bugsnag.js";
 import mensenOverzettenInit from "./modules/mensen-overzetten.js";
@@ -27,13 +27,13 @@ function indexInit() {
 			if (!DB().ontsleuteld) {
 				return;
 			}
-			laadEvtAndereBladen();
+			uiDiversen.laadEvtAndereBladen();
 			navigatieAnimatie();
 			formulierInit();
 			panelenInit();
 			encryptie.encryptieInit();
 			printerInit();
-			zetEscapeKlikVoorAlles()
+			uiDiversen.zetEscapeKlikVoorAlles()
 			encryptie.alsWachtwoordGewijzigd();
 			triggerClickSorteerOpNaam();
 			mensenOverzettenInit();
@@ -46,10 +46,10 @@ function indexInit() {
 
 	encryptie.decryptieInit();
 	formulierOntsleutelingsAnimatie();
-	afsluitingsAnimatieHandler();
+	uiDiversen.afsluitingsAnimatieHandler();
 	nieuweCategorieInit();
-	naOpslaanHerlaadfunctionaliteit();
-
+	uiDiversen.naOpslaanHerlaadfunctionaliteit();
+	uiDiversen.zetf5herladen();
 	devExInit();
 
 }

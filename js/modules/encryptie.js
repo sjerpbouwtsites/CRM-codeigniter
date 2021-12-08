@@ -174,17 +174,6 @@ function verzendInStukkenCallback(e) {
 						5000
 					);
 
-					document.body.addEventListener('keydown', (e) => {
-						if (e.key === 'F5') {
-							e.preventDefault();
-							localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
-							location.hash = 'herladen-met-wachtwoord';
-							gr.communiceer('gaat herladen', 500);
-							setTimeout(() => {
-								location.reload();
-							}, 500);
-						}
-					})
 				});
 		}) // then van maakSleutelEnVersleutel
 		.catch((e) => {

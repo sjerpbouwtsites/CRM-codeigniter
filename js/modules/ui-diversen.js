@@ -49,26 +49,39 @@ function afsluitingsAnimatie(waarde, oudeWaarde) {
 	}
 }
 
+export function zetf5herladen() {
+	document.body.addEventListener('keydown', (e) => {
+		if (e.key === 'F5') {
+			e.preventDefault();
+			location.href = zetHerlaadStorageEnmaakLink();
+		}
+	})
+}
+
+function zetHerlaadStorageEnmaakLink() {
+	localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
+	const huidigeUser = document.getElementById('huidige-user').value;
+	localStorage.setItem('user', huidigeUser);
+	let herlaadLink = new URL('', location.href);
+	herlaadLink.searchParams.set('user', huidigeUser);
+	const d = new Date();
+	herlaadLink.searchParams.set('willekeurigeData', d.getTime());
+	herlaadLink.hash = 'herladen-met-wachtwoord';
+	return herlaadLink;
+}
+
 export function naOpslaanHerlaadfunctionaliteit() {
 	DB().alsVeranderdDoe('opslagProcedure', (huidigeWaardeOpslag) => {
 		if (huidigeWaardeOpslag !== 'succesvol') {
-			console.dir(DB())
 			return;
 		}
-
-		localStorage.setItem('herladen-met-wachtwoord', DB().wachtwoord)
-		const huidigeUser = document.getElementById('huidige-user').value;
-		localStorage.setItem('user', huidigeUser);
-		let herlaadLink = new URL('', location.href);
-		herlaadLink.searchParams.set('user', huidigeUser);
-		const d = new Date();
-		herlaadLink.searchParams.set('willekeurigeData', d.getTime());
-		herlaadLink.hash = 'herladen-met-wachtwoord';
-		document.getElementById('herlaad-pagina-knop').href = herlaadLink;
 
 		setTimeout(() => {
 			gr.pakElementVeilig('herlaad-pagina-knop').classList.remove('verborgen');
 		}, 2500)
+
+		const herlaadInfo = zetHerlaadStorageEnmaakLink()
+		document.getElementById('herlaad-pagina-knop').href = herlaadInfo;
 	})
 
 
