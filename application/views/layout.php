@@ -27,7 +27,6 @@ function cel($html = "", $class = '')
 	<div class='formulier-en-controls categorie-<?= $categorie_naam ?>'>
 
 		<form id='grote-categorie-formulier' <?= $lege_categorie ? 'data-lege-categorie="true"' : "" ?> data-form-stijl='blokken' class='crm-formulier' action='smtp://nonsense' data-action='<?= base_url() ?>post-batch'>
-			<input type='hidden' name='user' value='<?= $_POST['user'] ?>'>
 			<input type='hidden' name='form_meta[user]' value='<?= $_POST['user']  ?>'>
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 			<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>

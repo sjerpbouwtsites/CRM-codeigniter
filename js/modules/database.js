@@ -28,6 +28,7 @@ export class Database {
   static _data = {
     ontsleuteld: false,
     ontsleutelFout: false,
+    postOntsleutelFout: false,
     wachtwoord: null,
     opslagProcedure: null,
     bewerkModus: false,
@@ -64,6 +65,15 @@ export class Database {
     const oudeWaarde = Database._data.ontsleutelFout;
     Database._data.ontsleutelFout = waarde;
     this._draaiOpVerandering('ontsleutelFout', waarde, oudeWaarde);
+  }
+
+  set postOntsleutelFout(fout) {
+    if (!fout instanceof Error) {
+      throw new Error('postOntsleutelFout niet Error')
+    }
+    const oudeWaarde = Database._data.postOntsleutelFout;
+    Database._data.postOntsleutelFout = fout;
+    this._draaiOpVerandering('postOntsleutelFout', fout, oudeWaarde);
   }
 
   set bewerkModus(waarde) {
@@ -141,6 +151,9 @@ export class Database {
   get ontsleutelFout() {
     return Database._data.ontsleutelFout
   }
+  get postOntsleutelFout() {
+    return Database._data.postOntsleutelFout
+  }
   get bewerkModus() {
     return Database._data.bewerkModus
   }
@@ -204,6 +217,7 @@ export class Database {
   static _opVerandering = {
     ontsleuteld: [],
     ontsleutelFout: [],
+    postOntsleutelFout: [],
     bewerkModus: [],
     rijInBewerking: [],
     wachtwoord: [],

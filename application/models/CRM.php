@@ -232,6 +232,7 @@ class CRM extends CI_Model
 		}
 	}
 
+
 	/**
 	 * verwerkt batch reageert met HTTP status en message. 
 	 * @return array ['statuscode', 'message']

@@ -39,12 +39,29 @@ class Users extends CI_Model
 		return !!strpos($_SERVER['REQUEST_URI'], 'login');
 	}
 
+	private function in_api()
+	{
+		return !!strpos($_SERVER['REQUEST_URI'], 'post-batch');
+	}
+
+	private function pak_user_uit_post()
+	{
+		if ($_POST) {
+			if (array_key_exists('user', $_POST)) {
+				return $_POST['user'];
+			} else if (array_key_exists('meta', $_POST)) {
+				return $_POST['meta']['user'];
+			}
+		}
+		return false;
+	}
+
 	public function init()
 	{
-		if ($_POST && array_key_exists('user', $_POST)) {
-			$this->check_user_name_in_db($_POST['user']);
+		if ($user_from_post = $this->pak_user_uit_post()) {
+			$this->check_user_name_in_db($user_from_post);
 		}
-		if (!$this->logged_in && !$this->on_login_page()) {
+		if (!$this->logged_in && !$this->on_login_page() && !$this->in_api()) {
 
 			if ($_SERVER['HTTP_HOST'] === 'localhost') {
 				redirect(base_url('index.php/login'));
@@ -78,6 +95,7 @@ class Users extends CI_Model
 			$this->error_message = "User $username niet gevonden.";
 		} else {
 			$this->logged_in = true;
+			$this->erroring = false;
 			$this->user_name = $q[0]['name'];
 		}
 	}
