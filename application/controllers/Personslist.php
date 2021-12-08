@@ -80,7 +80,7 @@ class Personslist extends CI_Controller
 
 			return [
 				'naam' 		=> $categorie,
-				'url'  		=> base_url() . "categorie/$categorie",
+				'url'  		=> base_url() . "categorie/$categorie?user=" . $this->users->get_user(),
 				'actief'	=> in_array($categorie, $this->url_delen),
 			];
 		}, $this->CRM->toegestane_categorie_namen);
