@@ -8,8 +8,8 @@
       <h2 class='versleutelde-titel versleutelde-titel--user versleutelde-titel--kleiner'>Sjerps end-to-end encrypted crm <small>v4.4</small></h2>
       <h2 class='versleutelde-titel versleutelde-titel--user'>
         <?php
-        if ($_SESSION["user_foutmelding"] && !is_null($_SESSION["user_foutmelding"])) {
-          echo $_SESSION["user_foutmelding"];
+        if (!empty($error_message)) {
+          echo $error_message;
         } else {
           echo "Wie zijn jullie?";
         }

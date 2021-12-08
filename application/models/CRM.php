@@ -46,10 +46,11 @@ class CRM extends CI_Model
 		return ob_get_clean($data);
 	}
 
-	private function user()
+	private function
+	user()
 	{
 		try {
-			return $this->users->user();
+			return $this->users->get_user();
 		} catch (\Throwable $th) {
 			$this->meldFout($th, 'crm model pak user model user');
 		}
@@ -118,7 +119,7 @@ class CRM extends CI_Model
 
 		try {
 			$categorie = $this->categorie;
-			$u = $this->user();
+			$u = $this->users->get_user();
 			$q = $this->db->query("SELECT * FROM mensen WHERE categorie = '$categorie' AND user='$u'")->result_array();
 		} catch (\Throwable $th) {
 			$this->meldFout($th, 'crm model select mensen in categorie en user');
@@ -343,7 +344,7 @@ class CRM extends CI_Model
 	{
 
 		$categorie = $this->categorie;
-		$u = $this->user();
+		$u = $this->users->get_user();
 		$sql = "SELECT waarde FROM meta WHERE sleutel='$categorie-iv' AND user='$u'";
 
 		$q = $this->db->query($sql);

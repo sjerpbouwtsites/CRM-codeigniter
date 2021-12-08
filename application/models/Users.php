@@ -4,6 +4,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Users extends CI_Model
 {
 
+	public $logged_in = false;
+	public $erroring = false;
+	public $error_message = '';
+	private $user_name = null;
+
 	function __construct()
 	{
 		$this->init();
@@ -29,23 +34,37 @@ class Users extends CI_Model
 		return ob_get_clean($data);
 	}
 
+	private function on_login_page()
+	{
+		return !!strpos($_SERVER['REQUEST_URI'], 'login');
+	}
+
 	public function init()
 	{
-		if (!isset($_SESSION)) {
-			session_set_cookie_params(0);
-			session_start();
-			$_SESSION["user_foutmelding"] = null;
+		if ($_POST && array_key_exists('user', $_POST)) {
+			$this->check_user_name_in_db($_POST['user']);
+		}
+		if (!$this->logged_in && !$this->on_login_page()) {
+
+			if ($_SERVER['HTTP_HOST'] === 'localhost') {
+				redirect(base_url('index.php/login'));
+			} else {
+				redirect(base_url('login'));
+			}
 		}
 	}
 
-	public function user()
+
+	public function get_user()
 	{
-		try {
-			if (!array_key_exists('user', $_SESSION)) return null;
-			return $_SESSION['user'];
-		} catch (\Throwable $th) {
-			$this->meldFout($th, ' user func user model');
+		if (!$this->logged_in) {
+			$this->erroring = true;
+			$this->error_message = 'Eerst inloggen';
 		}
+		if ($this->erroring) {
+			return $this->error_message;
+		}
+		return $this->user_name;
 	}
 
 	public function check_user_name_in_db($username)
@@ -54,29 +73,12 @@ class Users extends CI_Model
 		$q = $this->db->query("SELECT * FROM users WHERE name = '$username'")->result_array();
 		$user_found = count($q) > 0;
 		if (!$user_found) {
-			$_SESSION["user_foutmelding"] = "User $username niet gevonden.";
+			$this->logged_in = false;
+			$this->erroring = true;
+			$this->error_message = "User $username niet gevonden.";
 		} else {
-			$_SESSION["user_foutmelding"] = null;
-			$_SESSION["user"] = $q[0]['name'];
-		}
-	}
-
-	public function handle_user()
-	{
-
-		if (array_key_exists('user', $_POST)) {
-			$this->check_user_name_in_db($_POST['user']);
-		}
-
-		if (!$this->user()) {
-			$data = [];
-			$data['title_el'] = 'Sjerps CRM';
-			$data['head_el'] = $this->load->view('head/head', $data, TRUE);
-			$this->load->view(
-				'set-user.php',
-				$data
-			);
-			return;
+			$this->logged_in = true;
+			$this->user_name = $q[0]['name'];
 		}
 	}
 }

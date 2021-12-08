@@ -12,16 +12,17 @@ class Personslist extends CI_Controller
 		parent::__construct();
 
 		$this->load->model('users');
+		if (!$this->users->logged_in) {
+			$this->users->login_redirect();
+			return;
+		}
 		$this->load->model('CRM');
-		$this->users->handle_user();
 		$this->url_delen = explode('/', $_SERVER['REQUEST_URI']);
 	}
 
 	// dus vloerwerk.org/CRM
 	public function index()
 	{
-
-		if (!$this->users->user()) return;
 		$this->leden();
 	}
 
@@ -31,7 +32,6 @@ class Personslist extends CI_Controller
 	 */
 	public function categorie($categorie_naam)
 	{
-		if (!$this->users->user()) return;
 		if ($categorie_naam === '') {
 			$this->bugsnaglib->inst->notifyException(new Exception("BOE! een sys error HAHAHA 😱 Je url klopt niet of een categorie die zocht is niet geinstalleerd. Later!"));
 		}
@@ -148,9 +148,9 @@ class Personslist extends CI_Controller
 			$data['categorie_naam'] = $this->CRM->categorie;
 			$data = array_merge($data, $this->CRM->maak_form_data());
 			$this->CRM->willekeurige_rij(); //@TODO zie ook todo.html
-			$data['title_el'] = $this->users->user() . " - " . $this->CRM->categorie;
+			$data['title_el'] = $this->users->get_user() . " - " . $this->CRM->categorie;
 			$data['head_el'] = $this->load->view('head/head', $data, TRUE);
-			$data['user_name'] = $this->users->user();
+			$data['user_name'] = $this->users->get_user();
 			$data['kop_en_knoppen'] = $this->load->view('kop_en_knoppen', $data, TRUE);
 			$data['oude_iv'] = $this->CRM->pak_iv();
 			$data['csrf_form'] = $csrf;
