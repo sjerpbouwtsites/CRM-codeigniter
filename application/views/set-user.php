@@ -16,7 +16,7 @@
         ?>
       </h2>
       <label for="ontsleutel">
-        <input name='user' id="ontsleutel" placeholder="naam groep" autocapitalize="off">
+        <input name='user' id="ontsleutel" type='password' placeholder="naam groep" autocapitalize="off">
       </label>
       <button type='submit' id="ontsleutel-knop" class="ontsleutel ontsleutel--user">Verstuur</button>
     </form>
