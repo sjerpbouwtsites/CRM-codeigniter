@@ -11,7 +11,7 @@
 			<h2 class='versleutelde-titel versleutelde-titel--categorie'>Ontsleutel de <em class='versleutelde-titel-rood'><?= $categorie_naam ?></em> <br> van <em class='versleutelde-titel-rood'><?= $user_name ?></em></h2>
 			<div class='sleutelaars-inner-2 sleutelaars-inner-2--categorie'>
 				<label for='ontsleutel'>
-					<input id='ontsleutel' placeholder='wachtwoord' autocapitalize="off">
+					<input id='ontsleutel' type='password' placeholder='wachtwoord' autocapitalize="off">
 				</label>
 				</label>
 				<button id='ontsleutel-knop' class='ontsleutel ontsleutel--categorie'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
