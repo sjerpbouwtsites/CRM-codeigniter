@@ -1,3 +1,13 @@
+	.pers-lezen__naam {
+  max-width: 5ch;
+		max-height: 1.2ch
+		overflow: hidden;
+}
+	.pers-lezen__telefoon, .pers-lezen__email {
+		filter: blur(2px)
+	}
+
+
 
 body {
 	font-family: "Verdana", "Arial";
