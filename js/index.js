@@ -12,6 +12,52 @@ import mensenOverzettenInit from "./modules/mensen-overzetten.js";
 import { zichtbarePersRijen } from "./modules/gereedschap.js";
 import PersoonRij from "./modules/persoon-rij.js";
 
+
+
+var globalCtrlIsPushed = false;
+function copyTextToClipboard(text) {
+  if (!navigator.clipboard) {
+    alert('sorry je PC ondersteunt geen copy paste in browser')
+    return;
+  }
+  navigator.clipboard.writeText(text).then(function() {
+    console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    console.error('Async: Could not copy text: ', err);
+  });
+}
+
+
+function zetTijdelijkKopieerMetCtrl(){
+
+
+document.body.addEventListener('keydown', function(event) {
+
+  if (event.ctrlKey) {
+    globalCtrlIsPushed = true;
+  }
+
+});
+
+document.body.addEventListener('keyup', function(event) {
+
+  if (event.ctrlKey) {
+    globalCtrlIsPushed = false;
+  }
+
+});
+
+document.body.addEventListener('click', function(event) {
+  if (!event.target.classList.contains('pers-lezen')) {
+    return;
+  }
+  copyTextToClipboard(event.target.textContent.trim());
+});
+
+
+}
+
+
 function indexInit() {
 
 	try {
@@ -50,6 +96,7 @@ function indexInit() {
 	nieuweCategorieInit();
 	uiDiversen.naOpslaanHerlaadfunctionaliteit();
 	uiDiversen.zetf5herladen();
+	 zetTijdelijkKopieerMetCtrl();
 	devExInit();
 
 }
