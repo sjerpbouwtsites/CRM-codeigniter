@@ -30,33 +30,20 @@ function veranderWachtwoord(e) {
 		"Over 10 seconden worden nieuwe tabbladen geopend. In de andere categorieen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen"
 	);
 	setTimeout(() => {
-<<<<<<< HEAD
-
-		const huidigeCategorie = document.querySelector('[name="form_meta[categorie_naam]"').value;
-		const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
-		let baseUrl = document.body.getAttribute('data-base-url');
-		if (baseUrl.includes('localhost')) {
-=======
 		const huidigeCategorie = document.querySelector(
 			'[name="form_meta[categorie_naam]"'
 		).value;
+		const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
 		let baseUrl = document.body.getAttribute("data-base-url");
 		if (baseUrl.includes("localhost")) {
->>>>>>> master
 			baseUrl = baseUrl + "index.php";
 		}
 		["bondgenoten", "contacten", "leden"].forEach((categorieNaam) => {
 			if (categorieNaam !== huidigeCategorie) {
-<<<<<<< HEAD
 				let url = new URL(`${baseUrl}/categorie/${categorieNaam}`, baseUrl);
-				url.searchParams.set('vernieuwWachtwoord', nieuwWachtwoord);
-				url.searchParams.set('user', huidigeUser);
+				url.searchParams.set("vernieuwWachtwoord", nieuwWachtwoord);
+				url.searchParams.set("user", huidigeUser);
 				window.open(url);
-=======
-				window.open(
-					`${baseUrl}/categorie/${categorieNaam}?vernieuwWachtwoord=${nieuwWachtwoord}`
-				);
->>>>>>> master
 			}
 		});
 		opslaan();
