@@ -86,7 +86,7 @@ function indexInit() {
 	formulierOntsleutelingsAnimatie();
 	uiDiversen.afsluitingsAnimatieHandler();
 	nieuweCategorieInit();
-	naOpslaanHerlaadfunctionaliteit();
+	//naOpslaanHerlaadfunctionaliteit();
 	zetTijdelijkKopieerMetCtrl();
 
 	devExInit();
