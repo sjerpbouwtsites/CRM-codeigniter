@@ -11,158 +11,186 @@ export default function () {
 	zetRiseupCheckButtonClick();
 	ZetClickVoegPersoonToe();
 	zetClickOpenMultiBewerk();
-	zetAlsMultiBewerkVeranderd()
-	zetClickBeeindigMultiBewerker()
+	zetAlsMultiBewerkVeranderd();
+	zetClickBeeindigMultiBewerker();
 	zetWachtwoordVeranderen();
 }
 
 function zetWachtwoordVeranderen() {
-	gr.el('wachtwoord-veranderen').addEventListener('click', veranderWachtwoord)
+	gr.el("wachtwoord-veranderen").addEventListener("click", veranderWachtwoord);
 }
 
 function veranderWachtwoord(e) {
 	e.preventDefault();
-	if (!confirm('Weet je zeker dat je het wachtwoord wilt veranderen?')) return;
+	if (!confirm("Weet je zeker dat je het wachtwoord wilt veranderen?")) return;
 	var oudWachtwoord = DB().wachtwoord;
-	var nieuwWachtwoord = prompt('Verander wachtwoord naar');
+	var nieuwWachtwoord = prompt("Verander wachtwoord naar");
 	DB().wachtwoord = nieuwWachtwoord;
-	gr.communiceer('Over 10 seconden worden nieuwe tabbladen geopend. In de andere categorieen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen')
+	gr.communiceer(
+		"Over 10 seconden worden nieuwe tabbladen geopend. In de andere categorieen moet het wachtwoord ook gewijzigd worden, maar die moeten eerst nog ontsleutel worden met het oude wachtwoord. Ontsleutel het met het oude wachtwoord. Ze slaan vanzelf op. Dit scherm wordt opgeslagen"
+	);
 	setTimeout(() => {
+<<<<<<< HEAD
 
 		const huidigeCategorie = document.querySelector('[name="form_meta[categorie_naam]"').value;
 		const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
 		let baseUrl = document.body.getAttribute('data-base-url');
 		if (baseUrl.includes('localhost')) {
+=======
+		const huidigeCategorie = document.querySelector(
+			'[name="form_meta[categorie_naam]"'
+		).value;
+		let baseUrl = document.body.getAttribute("data-base-url");
+		if (baseUrl.includes("localhost")) {
+>>>>>>> master
 			baseUrl = baseUrl + "index.php";
 		}
-		['bondgenoten', 'contacten', 'leden'].forEach(categorieNaam => {
+		["bondgenoten", "contacten", "leden"].forEach((categorieNaam) => {
 			if (categorieNaam !== huidigeCategorie) {
+<<<<<<< HEAD
 				let url = new URL(`${baseUrl}/categorie/${categorieNaam}`, baseUrl);
 				url.searchParams.set('vernieuwWachtwoord', nieuwWachtwoord);
 				url.searchParams.set('user', huidigeUser);
 				window.open(url);
+=======
+				window.open(
+					`${baseUrl}/categorie/${categorieNaam}?vernieuwWachtwoord=${nieuwWachtwoord}`
+				);
+>>>>>>> master
 			}
-		})
+		});
 		opslaan();
-	}, 10000)
-
+	}, 10000);
 }
 
 function zetClickOpenMultiBewerk() {
-	gr.el('schakel-multi-bewerk').addEventListener('click', toggleMultiBewerk)
+	gr.el("schakel-multi-bewerk").addEventListener("click", toggleMultiBewerk);
 }
 
 function zetAlsMultiBewerkVeranderd() {
-	DB().alsVeranderdDoe('multiBewerk', (nieuweStaat, oudeStaat) => {
-
+	DB().alsVeranderdDoe("multiBewerk", (nieuweStaat, oudeStaat) => {
 		// zet tekst in button
-		const multiBewerkKnop = gr.el('schakel-multi-bewerk');
-		const appBody = gr.el('app-body');
+		const multiBewerkKnop = gr.el("schakel-multi-bewerk");
+		const appBody = gr.el("app-body");
 		if (nieuweStaat === true) {
 			multiBewerkKnop.innerHTML = "Stop multi bewerking";
-			multiBewerkKnop.setAttribute('data-ingeschakeld', true)
-			appBody.setAttribute('data-multi-bewerking', true)
+			multiBewerkKnop.setAttribute("data-ingeschakeld", true);
+			appBody.setAttribute("data-multi-bewerking", true);
 		} else {
 			multiBewerkKnop.innerHTML = "Hele selectie bewerken";
-			multiBewerkKnop.removeAttribute('data-ingeschakeld')
-			appBody.removeAttribute('data-multi-bewerking')
-			const oudeMultiRijBuiten = gr.el('multi-rij-buiten');
+			multiBewerkKnop.removeAttribute("data-ingeschakeld");
+			appBody.removeAttribute("data-multi-bewerking");
+			const oudeMultiRijBuiten = gr.el("multi-rij-buiten");
 			oudeMultiRijBuiten.parentNode.removeChild(oudeMultiRijBuiten);
 			return;
 		}
 
 		const rijenInBewerking = gr.zichtbarePersRijen();
 		if (!rijenInBewerking.length) {
-			gr.communiceer('Geen rijen gevonden om te bewerken?')
+			gr.communiceer("Geen rijen gevonden om te bewerken?");
 			return;
 		}
 
-		const rijenLijst = gr.el('form-rijen-lijst');
+		const rijenLijst = gr.el("form-rijen-lijst");
 
-		const basisBewerkingRij = maakLegePersoonRij('multi-rij');
-		const multiBewerkSchil = document.createElement('div');
-		multiBewerkSchil.id = 'multi-rij-buiten';
-		multiBewerkSchil.className = 'multi-rij-buiten';
+		const basisBewerkingRij = maakLegePersoonRij("multi-rij");
+		const multiBewerkSchil = document.createElement("div");
+		multiBewerkSchil.id = "multi-rij-buiten";
+		multiBewerkSchil.className = "multi-rij-buiten";
 		multiBewerkSchil.innerHTML = basisBewerkingRij;
-		rijenLijst.appendChild(multiBewerkSchil)
-		const multiRij = gr.el('form-rij-multi-rij');
-		multiRij.classList.add('multi-rij', 'bewerk-modus')
+		rijenLijst.appendChild(multiBewerkSchil);
+		const multiRij = gr.el("form-rij-multi-rij");
+		multiRij.classList.add("multi-rij", "bewerk-modus");
 
 		// verwijderen uit multi rij
-		const ongewensteElementen = ['.rij-verwijderen', '.cel-naam', '.cel-email', '.cel-telefoon', '.cel-laatst_gezien', '.cel-aantekening'];
-		ongewensteElementen.forEach(ongewenst => {
+		const ongewensteElementen = [
+			".rij-verwijderen",
+			".cel-naam",
+			".cel-email",
+			".cel-telefoon",
+			".cel-laatst_gezien",
+			".cel-aantekening",
+		];
+		ongewensteElementen.forEach((ongewenst) => {
 			const o = gr.el(ongewenst, multiRij);
-			o.parentNode.removeChild(o)
-		})
+			o.parentNode.removeChild(o);
+		});
 
-		const beeindigBewerken = gr.el('.beeindig-bewerken-cel', multiRij)
-		beeindigBewerken.classList.remove('beeindig-bewerken-cel')
-		beeindigBewerken.classList.add('beeindig-bewerken-multi')
+		const beeindigBewerken = gr.el(".beeindig-bewerken-cel", multiRij);
+		beeindigBewerken.classList.remove("beeindig-bewerken-cel");
+		beeindigBewerken.classList.add("beeindig-bewerken-multi");
 
-		const namen = rijenInBewerking.map(rij => {
-			return rij.naam
-		})
+		const namen = rijenInBewerking.map((rij) => {
+			return rij.naam;
+		});
 
-		const multiRijUitleg = document.createElement('div');
-		multiRijUitleg.className = 'multi-rij-uitleg';
+		const multiRijUitleg = document.createElement("div");
+		multiRijUitleg.className = "multi-rij-uitleg";
 		multiRijUitleg.innerHTML = `<h2 class='form-rij-titel'>Je bewerkt meerdere rijen in &eacute;&eacute;n keer.</h2>
 		<p class='form-rij-tekst'>In ieder veld waar je iets invuld zal dit alle voorgaande data bij al deze rijen overschrijven bij de volgende rijen: :</p>
 		<ol class='form-rij-lijst'>
-			${namen.map(naam => {
-			return `<li class='form-rij-lijst-stuk'>${naam}</li>`;
-		}).join('')}
-		</ol>`
-			;
+			${namen
+				.map((naam) => {
+					return `<li class='form-rij-lijst-stuk'>${naam}</li>`;
+				})
+				.join("")}
+		</ol>`;
 		multiRij.appendChild(multiRijUitleg);
-
-	})
+	});
 }
 
 function zetClickBeeindigMultiBewerker() {
-	gr.el('grote-categorie-formulier').addEventListener('click', beeindigMultiBewerken)
+	gr.el("grote-categorie-formulier").addEventListener(
+		"click",
+		beeindigMultiBewerken
+	);
 }
 function beeindigMultiBewerken(e) {
-
-	if (!gr.vindInOuders(e.target, (element) => {
-		return element.classList.contains("beeindig-bewerken-multi");
-	}, 3)) {
+	if (
+		!gr.vindInOuders(
+			e.target,
+			(element) => {
+				return element.classList.contains("beeindig-bewerken-multi");
+			},
+			3
+		)
+	) {
 		return;
 	}
 	e.preventDefault();
 
-	const groepNaam = gr.el('pers-multi-rij-groep').value;
-	const sectorNaam = gr.el('pers-multi-rij-sector').value;
-	const contactNaam = gr.el('pers-multi-rij-contact').value;
-	const woonplaatsNaam = gr.el('pers-multi-rij-woonplaats').value;
-	const ikWil = gr.el('pers-multi-rij-ik_wil').value;
+	const groepNaam = gr.el("pers-multi-rij-groep").value;
+	const sectorNaam = gr.el("pers-multi-rij-sector").value;
+	const contactNaam = gr.el("pers-multi-rij-contact").value;
+	const woonplaatsNaam = gr.el("pers-multi-rij-woonplaats").value;
+	const ikWil = gr.el("pers-multi-rij-ik_wil").value;
 
 	const rijenInBewerking = gr.zichtbarePersRijen();
-	rijenInBewerking.forEach(persoonRij => {
+	rijenInBewerking.forEach((persoonRij) => {
 		const rij = persoonRij.element;
 		if (groepNaam.length) {
 			gr.el('[data-naam="groep"]', rij).value = groepNaam;
-			gr.el('.pers-lezen__groep', rij).innerHTML = groepNaam;
+			gr.el(".pers-lezen__groep", rij).innerHTML = groepNaam;
 		}
 		if (sectorNaam.length) {
 			gr.el('[data-naam="sector"]', rij).value = sectorNaam;
-			gr.el('.pers-lezen__sector', rij).innerHTML = sectorNaam;
+			gr.el(".pers-lezen__sector", rij).innerHTML = sectorNaam;
 		}
 		if (contactNaam.length) {
 			gr.el('[data-naam="contact"]', rij).value = contactNaam;
-			gr.el('.pers-lezen__contact', rij).innerHTML = contactNaam;
+			gr.el(".pers-lezen__contact", rij).innerHTML = contactNaam;
 		}
 		if (woonplaatsNaam.length) {
 			gr.el('[data-naam="woonplaats"]', rij).value = woonplaatsNaam;
-			gr.el('.pers-lezen__woonplaats', rij).innerHTML = woonplaatsNaam;
+			gr.el(".pers-lezen__woonplaats", rij).innerHTML = woonplaatsNaam;
 		}
 		if (ikWil.length) {
 			gr.el('[data-naam="ik_wil"]', rij).value = ikWil;
-			gr.el('.pers-lezen__ik_wil', rij).innerHTML = ikWil;
+			gr.el(".pers-lezen__ik_wil", rij).innerHTML = ikWil;
 		}
-	})
+	});
 	DB().handmatigeSelectie = false;
 	DB().multiBewerk = false;
-
 }
 
 function toggleMultiBewerk(e) {
@@ -176,31 +204,32 @@ function toggleMultiBewerk(e) {
  * zet lijst buttons click handlers.
  */
 function zetLijstKnoppenClicks() {
-	gr.pakElementVeilig("lijst-mail-button")
-		.addEventListener("click", (e) => {
-			maakLijst("mail", e);
-		});
-	gr.pakElementVeilig("lijst-telefoon-button")
-		.addEventListener("click", (e) => {
+	gr.pakElementVeilig("lijst-mail-button").addEventListener("click", (e) => {
+		maakLijst("mail", e);
+	});
+	gr.pakElementVeilig("lijst-telefoon-button").addEventListener(
+		"click",
+		(e) => {
 			maakLijst("telefoon", e);
-		});
-	gr.pakElementVeilig("lijst-telefoon-multi")
-		.addEventListener("click", (e) => {
-			maakLijst("multi", e);
-		});
+		}
+	);
+	gr.pakElementVeilig("lijst-telefoon-multi").addEventListener("click", (e) => {
+		maakLijst("multi", e);
+	});
 }
 
 function zetRiseupCheckButtonClick() {
+	if (
+		location.href.includes("contacten") ||
+		location.href.includes("bondgenoten")
+	)
+		return;
 
-	if (location.href.includes('contacten') || location.href.includes('bondgenoten') || location.href.includes('riders')) return;
-
-	gr.pakElementVeilig("riseup-check")
-		.addEventListener("click", (e) => {
-			e.preventDefault();
-			riseupCheck(e);
-		});
+	gr.pakElementVeilig("riseup-check").addEventListener("click", (e) => {
+		e.preventDefault();
+		riseupCheck(e);
+	});
 }
-
 
 /**
  * knalt emails in script dat valt te gebruiken in de console van riseup.
@@ -208,17 +237,18 @@ function zetRiseupCheckButtonClick() {
 function riseupCheck(e) {
 	const mailsVanLedenUitCRM = gr
 		.elArray('.pers-input[type="email"]')
-		.map(emailVeld => {
-			return emailVeld.value.toLowerCase().trim()
-		})
+		.map((emailVeld) => {
+			return emailVeld.value.toLowerCase().trim();
+		});
 	const mailsVanLedenUitCRMJSON = JSON.stringify(mailsVanLedenUitCRM);
 	const riseupScript = maakRiseupScript(mailsVanLedenUitCRMJSON);
-	gr.communiceer(pakTekst('riseup'));
+	gr.communiceer(pakTekst("riseup"));
 	gr.schrijfNaarClipboard(riseupScript, !!e);
 	setTimeout(() => {
-		window.open('https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500')
-	}, 3000)
-
+		window.open(
+			"https://lists.riseup.net/www?sortby=email&action=review&list=vloerwerk-leden&size=500"
+		);
+	}, 3000);
 }
 
 /**
@@ -243,7 +273,7 @@ function maakLijst(lijstWat, event = null) {
 	// MAIL
 	if (isMail) {
 		persRijen
-			.filter(P => P.heeftGeldigeEmail)
+			.filter((P) => P.heeftGeldigeEmail)
 			.forEach((P, index) => {
 				if (printMetNamen) {
 					printTekst += `${P.naam} &lt;${P.email}&gt;, `.toLowerCase();
@@ -259,18 +289,24 @@ function maakLijst(lijstWat, event = null) {
 		`;
 	} else if (isMulti) {
 		const tabelRijen = persRijen
-			.map(P => {
+			.map((P) => {
 				return `<tr>
 				<td>${P.naam}</td>
-				<td>${P.heeftGeldigeTel ? P.telefoon : ''}</td>
-				<td>${P.heeftGeldigeEmail ? P.email : ''}</td>
-			</tr>`
-			}).join('')
+				<td>${P.heeftGeldigeTel ? P.telefoon : ""}</td>
+				<td>${P.heeftGeldigeEmail ? P.email : ""}</td>
+			</tr>`;
+			})
+			.join("");
 
-		linkHref = `CRM uitdraai ${new Date().toLocaleString()} \n\n` + persRijen
-			.map(P => {
-				return `${P.naam.padEnd(25, ' ')}${P.heeftGeldigeTel ? P.telefoon.padEnd(15, ' ') : ''.padEnd(15, ' ')}${P.heeftGeldigeEmail ? P.email : ''}\n`
-			}).join('')
+		linkHref =
+			`CRM uitdraai ${new Date().toLocaleString()} \n\n` +
+			persRijen
+				.map((P) => {
+					return `${P.naam.padEnd(25, " ")}${
+						P.heeftGeldigeTel ? P.telefoon.padEnd(15, " ") : "".padEnd(15, " ")
+					}${P.heeftGeldigeEmail ? P.email : ""}\n`;
+				})
+				.join("");
 
 		printTekst = `
 			<p>Als je 'm als een nette tabel wilt moet je 'm wel met de hand kopie&euml;ren.</p>
@@ -291,15 +327,17 @@ function maakLijst(lijstWat, event = null) {
 	} else {
 		// TELEFOON
 		persRijen
-			.filter(P => P.heeftGeldigeTel)
+			.filter((P) => P.heeftGeldigeTel)
 			.forEach((P) => {
-				const t = P.telefoon.replace(/[\s-]/, '');
+				const t = P.telefoon.replace(/[\s-]/, "");
 				printTekst += printMetNamen ? `${P.naam}: ${t}<br>` : `${t}, `;
 				linkHref += `${t}, `;
 				const a = encodeURIComponent(linkHref);
-				ankerHTML = !printMetNamen ? `
+				ankerHTML = !printMetNamen
+					? `
       <span class='print-buttons-text'>Stuur:</span>
-      <a class='print-button tel-sms' href='sms:${a}'>SMS (mobiel)</a>` : '';
+      <a class='print-button tel-sms' href='sms:${a}'>SMS (mobiel)</a>`
+					: "";
 			});
 	}
 
@@ -315,7 +353,6 @@ function maakLijst(lijstWat, event = null) {
 	gr.schrijfNaarClipboard(linkHref, !!event);
 }
 
-
 function ZetClickVoegPersoonToe() {
 	//laatste rij kopieeren;
 	//vind hoogst aanwezige ID en geef die aan nieuwe rij.
@@ -323,7 +360,6 @@ function ZetClickVoegPersoonToe() {
 }
 
 function voegPersoonToe(e) {
-
 	e.preventDefault();
 
 	gr.el("voeg-rij-toe").setAttribute("disabled", true);
@@ -335,12 +371,14 @@ function voegPersoonToe(e) {
 	// regex replaces
 	legeHouderDiv.innerHTML = maakLegePersoonRij(nieuweId);
 	// inputs leeggooien
-	const legeClone = legeHouderDiv.querySelector('.form-rij');
+	const legeClone = legeHouderDiv.querySelector(".form-rij");
 	gr.el("form-rijen-lijst").appendChild(legeClone);
 
 	//
-	const oudeStijl = document.querySelector('.form-rij[style*=background]').getAttribute('style');
-	legeClone.setAttribute('style', oudeStijl);
+	const oudeStijl = document
+		.querySelector(".form-rij[style*=background]")
+		.getAttribute("style");
+	legeClone.setAttribute("style", oudeStijl);
 
 	gr.el("voeg-rij-toe").removeAttribute("disabled");
 	const db = DB();
@@ -350,7 +388,6 @@ function voegPersoonToe(e) {
 	NavElement.sluitAlleNavElementen();
 }
 
-
 /**
  * berekend hoogste ID waarde en geeft één hoger terug.
  * helper van voegPersoonToe
@@ -358,15 +395,15 @@ function voegPersoonToe(e) {
  * @param {*} persoonRijen
  */
 function maakNieuweId(rijen) {
-	const id = Math.max(
-		...rijen.map((rij) => {
-			const id = rij.querySelector(".pers-id").value;
-			return Number(id) || 0;
-		})
-	) + 1;
-	return id
+	const id =
+		Math.max(
+			...rijen.map((rij) => {
+				const id = rij.querySelector(".pers-id").value;
+				return Number(id) || 0;
+			})
+		) + 1;
+	return id;
 }
-
 
 function pakVandaagString() {
 	var datumInstance = new Date();
@@ -378,7 +415,6 @@ function pakVandaagString() {
 		datumInstance.getFullYear();
 	return vandaag;
 }
-
 
 function maakLegePersoonRij(id) {
 	return `
@@ -434,5 +470,5 @@ function maakLegePersoonRij(id) {
 			<span data-naam="aantekening" id="lees-${id}-aantekening" class="pers-lezen pers-lezen__aantekening"></span>
 		</div>
 	</div>
-	`
-};
+	`;
+}
