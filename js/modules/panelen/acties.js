@@ -45,7 +45,7 @@ function voegToeVanafMail(e) {
 	gr.el('voeg-rij-toe').click();
 
 
-	if (gr.el('categorie-naam') === 'leden') {
+	if (gr.el('categorie-naam').value === 'leden') {
 		[
 			{
 				mail: 'name',
@@ -85,7 +85,7 @@ function voegToeVanafMail(e) {
 		const ik_wil = 'onboarding'
 		document.querySelector('.bewerk-modus [data-naam="ik_wil"]').value = ik_wil
 	} // leden
-	else if (gr.el('categorie-naam') === 'contacten') {
+	else if (gr.el('categorie-naam').value === 'contacten') {
 		[
 			{
 				mail: 'name',
