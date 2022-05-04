@@ -30,7 +30,7 @@ function cel($html = "", $class = '')
 			<input id='huidige-user' type='hidden' name='form_meta[user]' value='<?= $user_name ?>'>
 			<input type='hidden' name='form_meta[csrf-token]' value='<?= $csrf_form ?>'>
 			<input type='hidden' id='printIV' name='form_meta[iv]' value='<?= $oude_iv ?>'>
-			<input type='hidden' name='form_meta[categorie_naam]' value='<?= $categorie_naam ?>'>
+			<input id='categorie-naam' type='hidden' name='form_meta[categorie_naam]' value='<?= $categorie_naam ?>'>
 
 			<?php
 

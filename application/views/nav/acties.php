@@ -3,8 +3,8 @@
   <div class='actieform-rij'>
     <button id='lijst-mail-button' class='crm-nav__tabbaar actieknoppen lijst-email'>📃 mail</button>
     <button id='lijst-telefoon-button' class='crm-nav__tabbaar actieknoppen lijst-telefoon'>📃 tel</button>
-    <button id='lijst-telefoon-multi' class='crm-nav__tabbaar actieknoppen lijst-multi'>📃 multi</button>    
-    <?php if ($is_op_leden) : ?><button id='riseup-check' class='crm-nav__tabbaar actieknoppen riseup-check'>Riseup check</button>    <?php endif; ?>
+    <button id='lijst-telefoon-multi' class='crm-nav__tabbaar actieknoppen lijst-multi'>📃 multi</button>
+    <?php if ($is_op_leden) : ?><button id='riseup-check' class='crm-nav__tabbaar actieknoppen riseup-check'>Riseup check</button> <?php endif; ?>
   </div>
   <div class='actieform-rij'>
     <span class='labels-als-button'>
@@ -16,7 +16,7 @@
     <button id='wijzigingen-ongedaan-maken' class='crm-nav__tabbaar actieknoppen opgepast ongedaan'>alles ongedaan</button>
   </div>
   <div class='actieform-rij'>
-     <button id='schakel-multi-bewerk' class='crm-nav__tabbaar actieknoppen open-multi-bewerk'>Hele selectie bewerken</button>
+    <button id='schakel-multi-bewerk' class='crm-nav__tabbaar actieknoppen open-multi-bewerk'>Hele selectie bewerken</button>
   </div>
 
   <div class='actieform-rij'>
@@ -29,5 +29,12 @@
   <div class='actieform-rij'>
     <button id='voeg-rij-toe' class='crm-nav__tabbaar actieknoppen toevoegen'>🏭 toevoegen </button>
   </div>
+
+  <div class='actieform-rij'>
+    <button id='voeg-toe-uit-mail-activeren' class='crm-nav__tabbaar actieknoppen'>📩 Activeer uit mail toevoegen </button>
+    <textarea id='voeg-toe-uit-mail-veld' class='voeg-toe-uit-mail--veld verborgen'></textarea>
+    <button id='voeg-toe-uit-mail' class='crm-nav__tabbaar actieknoppen verborgen'>📩 Uit mail toevoegen </button>
+  </div>
+
 
 </div>
