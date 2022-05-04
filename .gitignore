@@ -1,36 +1,36 @@
-.DS_Store
+# .DS_Store
 
-distros/
+# distros/
 
-application/config/database.php
-application/config/config.php
+# application/config/database.php
+# application/config/config.php
 
-application/cache/*
-!application/cache/index.html
-!application/cache/.htaccess
+# application/cache/*
+# !application/cache/index.html
+# !application/cache/.htaccess
 
-.htaccess
+# .htaccess
 
-application/logs/*
-!application/logs/index.html
-!application/logs/.htaccess
+# # application/logs/*
+# # !application/logs/index.html
+# # !application/logs/.htaccess
 
-composer.lock
+# composer.lock
 
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
-/vendor/
+# user_guide_src/build/*
+# user_guide_src/cilexer/build/*
+# user_guide_src/cilexer/dist/*
+# user_guide_src/cilexer/pycilexer.egg-info/*
+# /vendor/
 
-# IDE Files
-#-------------------------
-/nbproject/
-.idea/*
+# # IDE Files
+# #-------------------------
+# /nbproject/
+# .idea/*
 
-## Sublime Text cache files
-*.tmlanguage.cache
-*.tmPreferences.cache
-*.stTheme.cache
-*.sublime-workspace
-*.sublime-project
+# ## Sublime Text cache files
+# *.tmlanguage.cache
+# *.tmPreferences.cache
+# *.stTheme.cache
+# *.sublime-workspace
+# *.sublime-project
