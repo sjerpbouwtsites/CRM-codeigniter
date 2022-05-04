@@ -14,7 +14,125 @@ export default function () {
 	zetAlsMultiBewerkVeranderd();
 	zetClickBeeindigMultiBewerker();
 	zetWachtwoordVeranderen();
+	zetVoegToeUitMail()
 }
+
+function zetVoegToeUitMail() {
+
+	if (gr.el('huidige-user').value !== 'riders' || gr.el('categorie-naam') === 'bondgenoten') {
+		gr.el('voeg-toe-uit-mail-activeren').classList.add('verborgen')
+		return;
+	}
+
+	gr.el('voeg-toe-uit-mail-activeren').addEventListener('click', toonVoegToeUitMail);
+	gr.el('voeg-toe-uit-mail').addEventListener('click', e => voegToeVanafMail(e));
+}
+
+function toonVoegToeUitMail(e) {
+	e.preventDefault();
+
+	gr.communiceer('plak het mailresultaat in het vak en de app vult vanzelf een nieuw persoon in.', 2000)
+
+	gr.el('voeg-toe-uit-mail-activeren').classList.add('verborgen')
+	gr.el('voeg-toe-uit-mail-veld').classList.remove('verborgen')
+	gr.el('voeg-toe-uit-mail').classList.remove('verborgen')
+}
+
+function voegToeVanafMail(e) {
+	e.preventDefault();
+	const invoeging = gr.el('voeg-toe-uit-mail-veld').value;
+	gr.el('voeg-rij-toe').click();
+
+
+	if (gr.el('categorie-naam') === 'leden') {
+		[
+			{
+				mail: 'name',
+				selector: '.bewerk-modus [data-naam="naam"]'
+			},
+			{
+				mail: 'mail',
+				selector: '.bewerk-modus [data-naam="email"]'
+			},
+			{
+				mail: 'phone',
+				selector: '.bewerk-modus [data-naam="telefoon"]'
+			},
+			{
+				mail: 'message',
+				selector: '.bewerk-modus [data-naam="aantekening"]'
+			}, {
+				mail: 'city',
+				selector: '.bewerk-modus [data-naam="woonplaats"]'
+			}, {
+				mail: 'company',
+				selector: '.bewerk-modus [data-naam="groep"]'
+			}, {
+				mail: 'warehouse',
+				selector: '.bewerk-modus [data-naam="sector"]'
+			}
+		].forEach(rowConfig => {
+
+			const regEx = new RegExp(rowConfig.mail + '\\s+(\\w.*)');
+			const matchAr = invoeging.match(regEx);
+			if (matchAr && matchAr.length) {
+				gr.el(rowConfig.selector).value = matchAr[1]
+			}
+		})
+
+		const ik_wil = 'onboarding'
+		document.querySelector('.bewerk-modus [data-naam="ik_wil"]').value = ik_wil
+	} // leden
+	else if (gr.el('categorie-naam') === 'contacten') {
+		[
+			{
+				mail: 'name',
+				selector: '.bewerk-modus [data-naam="naam"]'
+			},
+			{
+				mail: 'mail',
+				selector: '.bewerk-modus [data-naam="email"]'
+			},
+			{
+				mail: 'phone',
+				selector: '.bewerk-modus [data-naam="telefoon"]'
+			},
+			{
+				mail: 'city',
+				selector: '.bewerk-modus [data-naam="woonplaats"]'
+			}
+		].forEach(rowConfig => {
+
+			const regEx = new RegExp(rowConfig.mail + '\\s+(\\w.*)');
+			const matchAr = invoeging.match(regEx);
+			if (matchAr && matchAr.length) {
+				gr.el(rowConfig.selector).value = matchAr[1]
+			}
+		})
+
+		const groep = 'stickers'
+		document.querySelector('.bewerk-modus [data-naam="groep"]').value = groep
+
+
+		const addressM = invoeging.replace(/\n/g, ';').match(/address\s(.*)TB/)
+		const addressT = addressM && Array.isArray(addressM) ? addressM[1] : '';
+		const messageM = invoeging.match(/message\s+(\w.*)/);
+		const messageT = messageM && Array.isArray(messageM) ? messageM[1] : '';
+		const stickerMs = invoeging.match(/(\w*\ssticker.*\d+)/g)
+		const stickerText = stickerMs.join('\n');
+
+		document.querySelector('.bewerk-modus [data-naam="aantekening"]').value =
+			`${messageT}
+			${addressT}
+		${stickerText}
+		`
+
+	}
+
+
+
+}
+
 
 function zetWachtwoordVeranderen() {
 	gr.el("wachtwoord-veranderen").addEventListener("click", veranderWachtwoord);
@@ -40,7 +158,7 @@ function veranderWachtwoord(e) {
 		}
 		["bondgenoten", "contacten", "leden"].forEach((categorieNaam) => {
 			if (categorieNaam !== huidigeCategorie) {
-				let url = new URL(`${baseUrl}/categorie/${categorieNaam}`, baseUrl);
+				let url = new URL(`${baseUrl} /categorie/${categorieNaam} `, baseUrl);
 				url.searchParams.set("vernieuwWachtwoord", nieuwWachtwoord);
 				url.searchParams.set("user", huidigeUser);
 				window.open(url);
@@ -113,7 +231,7 @@ function zetAlsMultiBewerkVeranderd() {
 
 		const multiRijUitleg = document.createElement("div");
 		multiRijUitleg.className = "multi-rij-uitleg";
-		multiRijUitleg.innerHTML = `<h2 class='form-rij-titel'>Je bewerkt meerdere rijen in &eacute;&eacute;n keer.</h2>
+		multiRijUitleg.innerHTML = `< h2 class='form-rij-titel' > Je bewerkt meerdere rijen in & eacute;& eacute;n keer.</h2 >
 		<p class='form-rij-tekst'>In ieder veld waar je iets invuld zal dit alle voorgaande data bij al deze rijen overschrijven bij de volgende rijen: :</p>
 		<ol class='form-rij-lijst'>
 			${namen
@@ -263,7 +381,7 @@ function maakLijst(lijstWat, event = null) {
 			.filter((P) => P.heeftGeldigeEmail)
 			.forEach((P, index) => {
 				if (printMetNamen) {
-					printTekst += `${P.naam} &lt;${P.email}&gt;, `.toLowerCase();
+					printTekst += `${P.naam} & lt;${P.email}& gt;, `.toLowerCase();
 					linkHref += `${P.naam} <${P.email}>, `.toLowerCase();
 				} else {
 					linkHref += `${P.email}, `.toLowerCase();
@@ -272,8 +390,8 @@ function maakLijst(lijstWat, event = null) {
 			});
 		const a = encodeURIComponent(linkHref);
 		ankerHTML = `
-      <span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in </span><a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a><a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>      
-		`;
+			<span class='print-buttons-text'>Mail deze ${persRijen.length} adressen in </span><a class='print-button mail-cc' href='mailto:info@vloerwerk.org?cc=${a}'>CC</a><a class='print-button mail-bc' href='mailto:info@vloerwerk.org?bcc=${a}'>BCC</a>
+			`;
 	} else if (isMulti) {
 		const tabelRijen = persRijen
 			.map((P) => {
@@ -289,9 +407,8 @@ function maakLijst(lijstWat, event = null) {
 			`CRM uitdraai ${new Date().toLocaleString()} \n\n` +
 			persRijen
 				.map((P) => {
-					return `${P.naam.padEnd(25, " ")}${
-						P.heeftGeldigeTel ? P.telefoon.padEnd(15, " ") : "".padEnd(15, " ")
-					}${P.heeftGeldigeEmail ? P.email : ""}\n`;
+					return `${P.naam.padEnd(25, " ")}${P.heeftGeldigeTel ? P.telefoon.padEnd(15, " ") : "".padEnd(15, " ")
+						}${P.heeftGeldigeEmail ? P.email : ""}\n`;
 				})
 				.join("");
 
@@ -308,7 +425,7 @@ function maakLijst(lijstWat, event = null) {
 					${tabelRijen}
 				</tbody>
 			</table>
-		`;
+			`;
 
 		ankerHTML = ``;
 	} else {
@@ -329,12 +446,12 @@ function maakLijst(lijstWat, event = null) {
 	}
 
 	const printHTML = `
-	  <span id='copyboard-succes'></span>
-		<small>${printTekst}</small>
-		<div class='printer-buttons'>
-			${ankerHTML}
-		</div>
-	`;
+			<span id='copyboard-succes'></span>
+			<small>${printTekst}</small>
+			<div class='printer-buttons'>
+				${ankerHTML}
+			</div>
+			`;
 
 	gr.communiceer(printHTML);
 	gr.schrijfNaarClipboard(linkHref, !!event);
@@ -380,7 +497,7 @@ function voegPersoonToe(e) {
  * helper van voegPersoonToe
  *
  * @param {*} persoonRijen
- */
+			*/
 function maakNieuweId(rijen) {
 	const id =
 		Math.max(
@@ -405,57 +522,57 @@ function pakVandaagString() {
 
 function maakLegePersoonRij(id) {
 	return `
-	<div id="form-rij-${id}" class="form-rij" style="">
-	<button class="start-bewerken-cel"></button>
-		<button class="beeindig-bewerken-cel"></button>
-		<button title='zet deze persoon over naar andere tabel' id='transfer-cel-${id}' class='transfer-cel'></button>
-		<button title='voeg toe aan selectie' class='rij-in-handmatige-selectie'></button>
-		<div class="rij-verwijderen form-cel">
-			<input class="pers-id" id="pers-${id}-id" type="hidden" name="form[${id}][id]" data-naam="id" value="${id}">
-		</div>
-		<div class="cel-naam form-cel">
-			<input class="pers-input" id="pers-${id}-naam" name="form[${id}][naam]" type="text" placeholder="naam" data-naam="naam">
-			<span data-naam="naam" id="lees-${id}-naam" class="pers-lezen pers-lezen__naam"></span>
-		</div>
-		<div class="cel-groep form-cel">
-			<input class="pers-input" id="pers-${id}-groep" name="form[${id}][groep]" type="groep" placeholder="groep" data-naam="groep">
-			<span data-naam="groep" id="lees-${id}-groep" class="pers-lezen pers-lezen__groep"></span>
-		</div>
-		<div class="cel-sector form-cel">
-			<input class="pers-input" id="pers-${id}-sector" name="form[${id}][sector]" type="sector" placeholder="sector" data-naam="sector">
-			<span data-naam="sector" id="lees-${id}-sector" class="pers-lezen pers-lezen__sector"></span>
-		</div>
-		<div class="cel-contact form-cel">
-			<input class="pers-input" id="pers-${id}-contact" name="form[${id}][contact]" type="contact" placeholder="contact" data-naam="contact">
-			<span data-naam="contact" id="lees-${id}-contact" class="pers-lezen pers-lezen__contact"></span>
-		</div>
-		<div class="cel-woonplaats form-cel">
-			<input class="pers-input" id="pers-${id}-woonplaats" name="form[${id}][woonplaats]" type="woonplaats" placeholder="woonplaats" data-naam="woonplaats">
-			<span data-naam="woonplaats" id="lees-${id}-woonplaats" class="pers-lezen pers-lezen__woonplaats"></span>
-		</div>
-		<div class="cel-email form-cel">
-			<input class="pers-input" id="pers-${id}-email" name="form[${id}][email]" type="email" required="" placeholder="email" data-naam="email">
-			<span data-naam="email" id="lees-${id}-email" class="pers-lezen pers-lezen__email"></span>
-		</div>
-		<div class="cel-telefoon form-cel"> 
-			<input class="pers-input" id="pers-${id}-telefoon" name="form[${id}][telefoon]" type="tel" placeholder="telefoon" data-naam="telefoon">
-			<span data-naam="telefoon" id="lees-${id}-telefoon" class="pers-lezen pers-lezen__telefoon"></span>
-		</div>
-		<div class="cel-laatst_gezien form-cel">
-			<span class="cel-vervanger">
-				<input class="pers-input" id="pers-${id}-laatst_gezien" name="form[${id}][laatst_gezien]" type="tel" placeholder="laatst_gezien" value="${pakVandaagString()}" data-naam="laatst_gezien">
-				<span data-naam="laatst_gezien" id="lees-${id}-laatst_gezien" class="pers-lezen pers-lezen__laatst_gezien"></span>
-				<button class="update-laatst-gezien">NU</button>
-			</span>
-		</div>
-		<div class="cel-ik_wil form-cel">
-			<textarea class="pers-input" id="pers-${id}-ik_wil" name="form[${id}][ik_wil]" placeholder="ik wil" data-naam="ik_wil"></textarea>
-			<span data-naam="ik_wil" id="lees-${id}-ik_wil" class="pers-lezen pers-lezen__ik_wil"></span>
-		</div>
-		<div class="cel-aantekening form-cel">
-			<textarea class="pers-input geen-data" id="pers-${id}-aantekening" name="form[${id}][aantekening]" placeholder="aantekening" data-naam="aantekening"></textarea>
-			<span data-naam="aantekening" id="lees-${id}-aantekening" class="pers-lezen pers-lezen__aantekening"></span>
-		</div>
-	</div>
-	`;
+			<div id="form-rij-${id}" class="form-rij" style="">
+				<button class="start-bewerken-cel"></button>
+				<button class="beeindig-bewerken-cel"></button>
+				<button title='zet deze persoon over naar andere tabel' id='transfer-cel-${id}' class='transfer-cel'></button>
+				<button title='voeg toe aan selectie' class='rij-in-handmatige-selectie'></button>
+				<div class="rij-verwijderen form-cel">
+					<input class="pers-id" id="pers-${id}-id" type="hidden" name="form[${id}][id]" data-naam="id" value="${id}">
+				</div>
+				<div class="cel-naam form-cel">
+					<input class="pers-input" id="pers-${id}-naam" name="form[${id}][naam]" type="text" placeholder="naam" data-naam="naam">
+						<span data-naam="naam" id="lees-${id}-naam" class="pers-lezen pers-lezen__naam"></span>
+				</div>
+				<div class="cel-groep form-cel">
+					<input class="pers-input" id="pers-${id}-groep" name="form[${id}][groep]" type="groep" placeholder="groep" data-naam="groep">
+						<span data-naam="groep" id="lees-${id}-groep" class="pers-lezen pers-lezen__groep"></span>
+				</div>
+				<div class="cel-sector form-cel">
+					<input class="pers-input" id="pers-${id}-sector" name="form[${id}][sector]" type="sector" placeholder="sector" data-naam="sector">
+						<span data-naam="sector" id="lees-${id}-sector" class="pers-lezen pers-lezen__sector"></span>
+				</div>
+				<div class="cel-contact form-cel">
+					<input class="pers-input" id="pers-${id}-contact" name="form[${id}][contact]" type="contact" placeholder="contact" data-naam="contact">
+						<span data-naam="contact" id="lees-${id}-contact" class="pers-lezen pers-lezen__contact"></span>
+				</div>
+				<div class="cel-woonplaats form-cel">
+					<input class="pers-input" id="pers-${id}-woonplaats" name="form[${id}][woonplaats]" type="woonplaats" placeholder="woonplaats" data-naam="woonplaats">
+						<span data-naam="woonplaats" id="lees-${id}-woonplaats" class="pers-lezen pers-lezen__woonplaats"></span>
+				</div>
+				<div class="cel-email form-cel">
+					<input class="pers-input" id="pers-${id}-email" name="form[${id}][email]" type="email" required="" placeholder="email" data-naam="email">
+						<span data-naam="email" id="lees-${id}-email" class="pers-lezen pers-lezen__email"></span>
+				</div>
+				<div class="cel-telefoon form-cel">
+					<input class="pers-input" id="pers-${id}-telefoon" name="form[${id}][telefoon]" type="tel" placeholder="telefoon" data-naam="telefoon">
+						<span data-naam="telefoon" id="lees-${id}-telefoon" class="pers-lezen pers-lezen__telefoon"></span>
+				</div>
+				<div class="cel-laatst_gezien form-cel">
+					<span class="cel-vervanger">
+						<input class="pers-input" id="pers-${id}-laatst_gezien" name="form[${id}][laatst_gezien]" type="tel" placeholder="laatst_gezien" value="${pakVandaagString()}" data-naam="laatst_gezien">
+							<span data-naam="laatst_gezien" id="lees-${id}-laatst_gezien" class="pers-lezen pers-lezen__laatst_gezien"></span>
+							<button class="update-laatst-gezien">NU</button>
+					</span>
+				</div>
+				<div class="cel-ik_wil form-cel">
+					<textarea class="pers-input" id="pers-${id}-ik_wil" name="form[${id}][ik_wil]" placeholder="ik wil" data-naam="ik_wil"></textarea>
+					<span data-naam="ik_wil" id="lees-${id}-ik_wil" class="pers-lezen pers-lezen__ik_wil"></span>
+				</div>
+				<div class="cel-aantekening form-cel">
+					<textarea class="pers-input geen-data" id="pers-${id}-aantekening" name="form[${id}][aantekening]" placeholder="aantekening" data-naam="aantekening"></textarea>
+					<span data-naam="aantekening" id="lees-${id}-aantekening" class="pers-lezen pers-lezen__aantekening"></span>
+				</div>
+			</div>
+			`;
 }
