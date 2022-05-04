@@ -39,6 +39,7 @@ function toonVoegToeUitMail(e) {
 }
 
 function voegToeVanafMail(e) {
+	console.log('voeg toe');
 	e.preventDefault();
 	const invoeging = gr.el('voeg-toe-uit-mail-veld').value;
 	gr.el('voeg-rij-toe').click();
@@ -76,6 +77,7 @@ function voegToeVanafMail(e) {
 			const regEx = new RegExp(rowConfig.mail + '\\s+(\\w.*)');
 			const matchAr = invoeging.match(regEx);
 			if (matchAr && matchAr.length) {
+				console.log(matchAr)
 				gr.el(rowConfig.selector).value = matchAr[1]
 			}
 		})
