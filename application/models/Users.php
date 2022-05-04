@@ -46,35 +46,39 @@ class Users extends CI_Model
 
 	private function pak_user_uit_post()
 	{
+		$this->url_delen = explode('/', $_SERVER['REQUEST_URI']);
+
+		if ($_GET) {
+			if (array_key_exists('user', $_GET)) {
+				return $_GET['user'];
+			}
+		}
+
 		if ($_POST) {
 			if (array_key_exists('user', $_POST)) {
 				return $_POST['user'];
 			} else if (array_key_exists('meta', $_POST)) {
 				return $_POST['meta']['user'];
 			}
+		} elseif (count($this->url_delen) > 4) {
+			return explode('?', $this->url_delen[4])[0];
 		}
-		if ($_GET) {
-			if (array_key_exists('user', $_GET)) {
-				return $_GET['user'];
-			}
-		}
+
 		return false;
 	}
 
 	public function init()
 	{
+
 		if ($user_from_post = $this->pak_user_uit_post()) {
 			$this->check_user_name_in_db($user_from_post);
 		}
-		if (!$this->logged_in && !$this->on_login_page() && !$this->in_api()) {
 
-			if ($_SERVER['HTTP_HOST'] === 'localhost') {
-				redirect(base_url('index.php/login'));
-			} else {
-				redirect(base_url('login'));
-			}
+		if (!$this->logged_in && !$this->on_login_page() && !$this->in_api()) {
+			redirect(base_url('login'));
 		}
 	}
+
 
 
 	public function get_user()

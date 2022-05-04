@@ -36,13 +36,13 @@ function veranderWachtwoord(e) {
 		const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
 		let baseUrl = document.body.getAttribute("data-base-url");
 		if (baseUrl.includes("localhost")) {
-			baseUrl = baseUrl + "index.php";
+			//			baseUrl = baseUrl + "index.php";
 		}
 		["bondgenoten", "contacten", "leden"].forEach((categorieNaam) => {
 			if (categorieNaam !== huidigeCategorie) {
-				let url = new URL(`${baseUrl}/categorie/${categorieNaam}`, baseUrl);
+				let url = new URL(`${baseUrl}categorie/${categorieNaam}/${huidigeUser}`, baseUrl);
 				url.searchParams.set("vernieuwWachtwoord", nieuwWachtwoord);
-				url.searchParams.set("user", huidigeUser);
+				console.log(url);
 				window.open(url);
 			}
 		});
@@ -289,9 +289,8 @@ function maakLijst(lijstWat, event = null) {
 			`CRM uitdraai ${new Date().toLocaleString()} \n\n` +
 			persRijen
 				.map((P) => {
-					return `${P.naam.padEnd(25, " ")}${
-						P.heeftGeldigeTel ? P.telefoon.padEnd(15, " ") : "".padEnd(15, " ")
-					}${P.heeftGeldigeEmail ? P.email : ""}\n`;
+					return `${P.naam.padEnd(25, " ")}${P.heeftGeldigeTel ? P.telefoon.padEnd(15, " ") : "".padEnd(15, " ")
+						}${P.heeftGeldigeEmail ? P.email : ""}\n`;
 				})
 				.join("");
 

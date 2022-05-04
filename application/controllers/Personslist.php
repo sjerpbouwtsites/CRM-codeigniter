@@ -12,10 +12,7 @@ class Personslist extends CI_Controller
 		parent::__construct();
 
 		$this->load->model('users');
-		if (!$this->users->logged_in) {
-			$this->users->login_redirect();
-			return;
-		}
+
 		$this->load->model('CRM');
 		$this->url_delen = explode('/', $_SERVER['REQUEST_URI']);
 	}
@@ -30,12 +27,18 @@ class Personslist extends CI_Controller
 	/**
 	 * Aangeroepen vanuit de routes om andere categorieen dan leden te zien.
 	 */
-	public function categorie($categorie_naam)
+	public function categorie($categorie_naam, $user_naam = null)
 	{
 		if ($categorie_naam === '') {
 			$this->bugsnaglib->inst->notifyException(new Exception("BOE! een sys error HAHAHA 😱 Je url klopt niet of een categorie die zocht is niet geinstalleerd. Later!"));
 		}
 		$this->CRM->zet_categorie_naam($categorie_naam);
+
+		$user_naam_ = explode('?', $user_naam)[0];
+
+		if ($user_naam_) {
+			$this->users->check_user_name_in_db($user_naam_);
+		}
 		$this->leden();
 	}
 
@@ -80,7 +83,7 @@ class Personslist extends CI_Controller
 
 			return [
 				'naam' 		=> $categorie,
-				'url'  		=> base_url() . "categorie/$categorie?user=" . $this->users->get_user(),
+				'url'  		=> base_url() . "categorie/$categorie/" . $this->users->get_user(),
 				'actief'	=> in_array($categorie, $this->url_delen),
 			];
 		}, $this->CRM->toegestane_categorie_namen);

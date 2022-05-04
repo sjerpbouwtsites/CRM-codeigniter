@@ -12,11 +12,8 @@ class Login extends CI_Controller
 
   private function crm_url()
   {
-    if ($_SERVER['HTTP_HOST'] === 'localhost') {
-      return base_url('crm/index.php');
-    } else {
-      return base_url('crm');
-    }
+
+    return base_url('crm');
   }
 
   public function index()

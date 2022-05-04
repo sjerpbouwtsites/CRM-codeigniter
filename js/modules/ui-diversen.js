@@ -106,7 +106,8 @@ export function laadEvtAndereBladen() {
 	if (!document.getElementById('open-andere-bladen').checked) {
 		return;
 	}
-	const base = location.href + (location.href.includes('localhost') ? 'index.php/' : '');
+	//	const base = location.href + (location.href.includes('localhost') ? 'index.php/' : '');
+	const base = location.href
 	const huidigeUser = document.querySelector('[name="form_meta[user]"').value;
 	setTimeout(() => {
 		window.open(base + `categorie/contacten?user=${huidigeUser}#herladen-met-wachtwoord`);

@@ -19,14 +19,15 @@ function grGLobal() {
 
 
 function fixLocalhost() {
-	document.querySelectorAll("a[href*=localhost]").forEach(anker => {
-		const oudeLink = anker.href;
-		anker.setAttribute('href', oudeLink.replace('/crm/', '/crm/index.php/'));
-	})
-	document.querySelectorAll("form[data-action*=localhost]").forEach(form => {
-		const oudeLink = form.getAttribute('data-action');
-		form.setAttribute('data-action', oudeLink.replace('/crm/', '/crm/index.php/'));
-	})
+	console.log('fix localhost uit');
+	// document.querySelectorAll("a[href*=localhost]").forEach(anker => {
+	// 	const oudeLink = anker.href;
+	// 	anker.setAttribute('href', oudeLink.replace('/crm/', '/crm/index.php/'));
+	// })
+	// document.querySelectorAll("form[data-action*=localhost]").forEach(form => {
+	// 	const oudeLink = form.getAttribute('data-action');
+	// 	form.setAttribute('data-action', oudeLink.replace('/crm/', '/crm/index.php/'));
+	// })
 }
 
 function autoDecrypt() {

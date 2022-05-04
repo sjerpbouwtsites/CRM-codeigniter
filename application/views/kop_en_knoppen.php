@@ -17,7 +17,7 @@
 				<button id='ontsleutel-knop' class='ontsleutel ontsleutel--categorie'><span class='emoji-groot'>🐱‍💻</span> ontsleutel</button>
 
 			</div>
-			<div class='sleutelaars-inner-2 sleutelaars-inner-2--categorie'>
+			<div class='sleutelaars-inner-2 verborgen sleutelaars-inner-2--categorie'>
 				<input type='checkbox' name='open-andere-bladen' id='open-andere-bladen' class='open-andere-bladen'>
 				<label for='open-andere-bladen' class='open-andere-bladen-label' id='open-andere-bladen-label'>
 
