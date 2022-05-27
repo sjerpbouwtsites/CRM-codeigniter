@@ -423,7 +423,7 @@ function zetLuisterRegistratieViaJSONChange() {
 }
 
 function verwerkRegistratieJSON(e) {
-	if (!gr.el('json-invoer')) {
+	if (!document.getElementById('json-invoer')) {
 		return;
 	}
 	try {
@@ -437,14 +437,15 @@ function verwerkRegistratieJSON(e) {
 				return;
 			}
 			const [veldNaam, data] = datumRij.split(':')
-			const zuivereData = data.replace(/[\"\`]/g, '').trim();
+			const zuivereData = data.replace(/[\"\`]/g, '').replace(/LINEBREAK/g, `\n`).trim();
+			console.log(zuivereData)
 			const veld = gr.el(`.bewerk-modus .geen-data[data-naam="${veldNaam}"]`);
 			if (veld) {
 				veld.value = zuivereData
 			}
 		})
 
-		gr.communiceer('Succesvol overgenomen!', 300)
+		gr.communiceer('Succesvol overgenomen!', 1000)
 		gr.el('json-invoer-wrapper').parentNode.removeChild(gr.el('json-invoer-wrapper'))
 
 
