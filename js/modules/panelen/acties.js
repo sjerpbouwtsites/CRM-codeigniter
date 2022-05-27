@@ -509,7 +509,7 @@ function maakLegePersoonRij(id) {
 			<span data-naam="aantekening" id="lees-${id}-aantekening" class="pers-lezen pers-lezen__aantekening"></span>
 		</div>
 		<div id='json-invoer-wrapper' class='json-invoer'>
-		<label for='json-invoer' class='json-invoer-tekst json-invoer-element json-invoer-element--label'>Vul data nieuwe registratie vanuit mail-data. Moet <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#example_json' target='_blank'>JSON formaat</a> zijn.</label>
+		<label for='json-invoer' class='json-invoer-tekst json-invoer-element json-invoer-element--label'>Vul data nieuwe registratie vanuit mail-data.</label>
 		<textarea class='json-invoer-element json-invoer-element--textarea' id='json-invoer'></textarea>
 		</div>
 	</div>
