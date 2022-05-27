@@ -10,6 +10,7 @@ export default function () {
 	zetLijstKnoppenClicks();
 	zetRiseupCheckButtonClick();
 	ZetClickVoegPersoonToe();
+	zetLuisterRegistratieViaJSONChange();
 	zetClickOpenMultiBewerk();
 	zetAlsMultiBewerkVeranderd();
 	zetClickBeeindigMultiBewerker();
@@ -402,6 +403,58 @@ function pakVandaagString() {
 	return vandaag;
 }
 
+function zetLuisterRegistratieViaJSONChange() {
+	gr.el('app-body').addEventListener('keydown', e => {
+		if (e.target.id === 'json-invoer') {
+			if (e.ctrlKey && e.key === 'v') {
+				setTimeout(() => {
+					verwerkRegistratieJSON(e)
+				}, 150)
+			}
+		}
+	})
+	gr.el('app-body').addEventListener('change', e => {
+		if (e.target.id === 'json-invoer') {
+			setTimeout(() => {
+				verwerkRegistratieJSON(e)
+			}, 150)
+		}
+	})
+}
+
+function verwerkRegistratieJSON(e) {
+	if (!gr.el('json-invoer')) {
+		return;
+	}
+	try {
+		const registratieData = gr.el('json-invoer').value.replace(/PLAKINCRM/g, '').replace(/\n/g, '').split(',');
+
+		if (!registratieData || !registratieData.length) {
+			return;
+		}
+		registratieData.forEach(datumRij => {
+			if (!datumRij.includes(':')) {
+				return;
+			}
+			const [veldNaam, data] = datumRij.split(':')
+			const zuivereData = data.replace(/[\"\`]/g, '').trim();
+			const veld = gr.el(`.bewerk-modus .geen-data[data-naam="${veldNaam}"]`);
+			if (veld) {
+				veld.value = zuivereData
+			}
+		})
+
+		gr.communiceer('Succesvol overgenomen!', 300)
+		gr.el('json-invoer-wrapper').parentNode.removeChild(gr.el('json-invoer-wrapper'))
+
+
+	} catch (error) {
+		gr.communiceer(`Invoer is niet goed (genoeg). Computer zegt: ${error.message}`)
+		console.error(error);
+	}
+
+}
+
 function maakLegePersoonRij(id) {
 	return `
 	<div id="form-rij-${id}" class="form-rij" style="">
@@ -454,6 +507,10 @@ function maakLegePersoonRij(id) {
 		<div class="cel-aantekening form-cel">
 			<textarea class="pers-input geen-data" id="pers-${id}-aantekening" name="form[${id}][aantekening]" placeholder="aantekening" data-naam="aantekening"></textarea>
 			<span data-naam="aantekening" id="lees-${id}-aantekening" class="pers-lezen pers-lezen__aantekening"></span>
+		</div>
+		<div id='json-invoer-wrapper' class='json-invoer'>
+		<label for='json-invoer' class='json-invoer-tekst json-invoer-element json-invoer-element--label'>Vul data nieuwe registratie vanuit mail-data. Moet <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON#example_json' target='_blank'>JSON formaat</a> zijn.</label>
+		<textarea class='json-invoer-element json-invoer-element--textarea' id='json-invoer'></textarea>
 		</div>
 	</div>
 	`;

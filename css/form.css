@@ -391,3 +391,27 @@ div.rij-verwijderen {
 .crm-formulier .bewerk-modus .form-cel {
 	display: block;
 }
+
+.json-invoer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: calc(100% - 30px);
+	margin-top: 10px;
+	margin-left: 5px;
+}
+.json-invoer-element {
+	flex-basis: calc(50% - 10px);
+	font-family: "Segoe UI";
+	font-variant: small-caps;
+	font-weight: 600;
+	color: #333;	
+	line-height:.9;
+	font-size: .75em;
+}
+.json-invoer-element--label:hover {
+	cursor: pointer;
+}
+.json-invoer-element--textarea {
+	border: 1px solid #f5f5f5;
+}
